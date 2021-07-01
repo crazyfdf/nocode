@@ -1,16 +1,10 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.ele_drag {
+  -webkit-app-region: drag; /* 让元素可拖动，设置了drag的元素不可点击 */
 }
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-* {
-  box-sizing: border-box;
+.no_drag {
+  -webkit-app-region: no-drag; /* 设置了drag的元素将不可点击，故设置no-drag，让元素可点击 */
+  cursor: pointer;
 }
