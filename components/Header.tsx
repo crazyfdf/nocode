@@ -10,59 +10,48 @@ import {
 	UndoOutlined,
 } from '@ant-design/icons';
 import { useRouter } from 'next/dist/client/router';
-const navigation = [
-	{ title: '插件市场', href: '/' },
-	{ title: '创作中心', href: '/created' },
-	{ title: '论坛', href: '#' },
-	{ title: '我的', href: '/user' },
-];
+
 const profile = ['Your Profile', 'Settings', 'Sign out'];
 
 function classNames(...classes) {
 	return classes.filter(Boolean).join(' ');
 }
 
-export default function Header() {
+export default function Header({ navigation }) {
 	const router = useRouter();
 	const [tabIndex, setTabIndex] = useState(0);
-	const changeTab = i => {
-		setTabIndex(i);
-	};
 	const handleBack = async () => {
 		await router.back();
-		console.log(router);
 	};
 	const handReload = () => {
 		router.reload();
 	};
+	let mainWin;
+	useEffect(() => {
+		setTabIndex(navigation.findIndex(item => item.href === router.pathname));
+	}, [router.pathname]);
 	useEffect(() => {
 		if (window.require) {
 			const { remote } = window.require('electron');
-			let mainWin = remote.getCurrentWindow();
-			let aBtn = document.getElementsByClassName('windowTool')[0].getElementsByTagName('span');
-			const close = () => {
-				mainWin.close();
-			};
-			const maximize = () => {
-				if (!mainWin.isMaximized()) {
-					mainWin.maximize();
-				} else {
-					mainWin.restore();
-				}
-			};
-			const minimize = () => {
-				mainWin.minimize();
-			};
-			aBtn[0].addEventListener('click', minimize);
-			aBtn[1].addEventListener('click', maximize);
-			aBtn[2].addEventListener('click', close);
-			return () => {
-				aBtn[0].removeEventListener('click', minimize);
-				aBtn[1].removeEventListener('click', maximize);
-				aBtn[2].removeEventListener('click', close);
-			};
+			mainWin = remote.getCurrentWindow();
+			console.log(mainWin);
 		}
 	}, []);
+	const close = () => {
+		mainWin && mainWin.close();
+	};
+	const maximize = () => {
+		if (mainWin) {
+			if (!mainWin.isMaximized()) {
+				mainWin.maximize();
+			} else {
+				mainWin.restore();
+			}
+		}
+	};
+	const minimize = () => {
+		mainWin && mainWin.minimize();
+	};
 	return (
 		<Disclosure as='nav' className='bg-gray-800 w-auto top-0 left-0 right-0 ele_drag'>
 			{({ open }) => (
@@ -96,12 +85,7 @@ export default function Header() {
 												<Fragment key={item.title}>
 													{/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
 													<Link href={item.href}>
-														<a
-															className='bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium no_drag'
-															onClick={() => {
-																changeTab(itemIdx);
-															}}
-														>
+														<a className='bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium no_drag'>
 															{item.title}
 														</a>
 													</Link>
@@ -109,9 +93,6 @@ export default function Header() {
 											) : (
 												<Link href={item.href} key={item.title}>
 													<a
-														onClick={() => {
-															changeTab(itemIdx);
-														}}
 														href='#'
 														className='text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium no_drag'
 													>
@@ -194,9 +175,21 @@ export default function Header() {
 									</Disclosure.Button>
 								</div>
 								<div className='windowTool ml-5'>
-									<LineOutlined className='text-xl ml-6 no_drag' style={{ color: '#eee' }} />
-									<ExpandOutlined className='text-xl ml-6 no_drag' style={{ color: '#eee' }} />
-									<PoweroffOutlined className='text-xl ml-6 no_drag' style={{ color: '#eee' }} />
+									<LineOutlined
+										className='text-xl ml-6 no_drag'
+										style={{ color: '#eee' }}
+										onClick={minimize}
+									/>
+									<ExpandOutlined
+										className='text-xl ml-6 no_drag'
+										style={{ color: '#eee' }}
+										onClick={maximize}
+									/>
+									<PoweroffOutlined
+										className='text-xl ml-6 no_drag'
+										style={{ color: '#eee' }}
+										onClick={close}
+									/>
 								</div>
 							</div>
 						</div>
@@ -209,24 +202,14 @@ export default function Header() {
 									<Fragment key={item.title}>
 										{/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
 										<Link href={item.href}>
-											<a
-												className='bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium no_drag'
-												onClick={() => {
-													changeTab(itemIdx);
-												}}
-											>
+											<a className='bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium no_drag'>
 												{item.title}
 											</a>
 										</Link>
 									</Fragment>
 								) : (
 									<Link href={item.href} key={item.title}>
-										<a
-											onClick={() => {
-												changeTab(itemIdx);
-											}}
-											className='text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium no_drag'
-										>
+										<a className='text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium no_drag'>
 											{item.title}
 										</a>
 									</Link>

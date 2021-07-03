@@ -1,16 +1,73 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment } from 'react';
-import { Popover, Transition } from '@headlessui/react';
-import { MenuIcon, XIcon } from '@heroicons/react/outline';
-
-const navigation = [
-	{ name: 'Product', href: '#' },
-	{ name: 'Features', href: '#' },
-	{ name: 'Marketplace', href: '#' },
-	{ name: 'Company', href: '#' },
-];
+import React, { useState } from 'react';
+import { Modal, Form, Input, Button, Radio, Select } from 'antd';
+const { Option } = Select;
+const formItemLayout = {
+	labelCol: {
+		xs: { span: 24 },
+		sm: { span: 6 },
+	},
+	wrapperCol: {
+		xs: { span: 24 },
+		sm: { span: 24 },
+	},
+};
+const tailFormItemLayout = {
+	wrapperCol: {
+		xs: {
+			span: 24,
+			offset: 2,
+		},
+		sm: {
+			span: 16,
+			offset: 8,
+		},
+	},
+};
 
 export default function created() {
+	const [isModalVisible, setIsModalVisible] = useState(false);
+	const [isModalLoading, setIsModalLoading] = useState(false);
+
+	const showModal = () => {
+		setIsModalVisible(true);
+	};
+
+	const handleOk = () => {
+		setIsModalVisible(false);
+		if (window.require) {
+			const { remote } = window.require('electron');
+
+			let subWin = new remote.BrowserWindow({
+				width: 1024,
+				height: 768,
+				minWidth: 1024,
+				minHeight: 500,
+				frame: false,
+				webPreferences: {
+					nodeIntegration: true,
+					contextIsolation: false,
+					enableRemoteModule: true,
+				},
+			});
+
+			subWin.loadURL('http://localhost:3000/no-code');
+
+			subWin.on('close', () => {
+				subWin = null;
+			});
+		} else {
+			window.open('http://localhost:3000/no-code');
+		}
+	};
+
+	const handleCancel = () => {
+		setIsModalVisible(false);
+	};
+	const onFinish = (values: any) => {
+		console.log('Received values of form: ', values);
+	};
+
 	return (
 		<div className='relative bg-white overflow-hidden flex-auto'>
 			<div className='max-w-7xl mx-auto h-full'>
@@ -36,20 +93,20 @@ export default function created() {
 							</p>
 							<div className='mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start'>
 								<div className='rounded-md shadow'>
-									<a
-										href='#'
+									<button
+										onClick={showModal}
 										className='w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10'
 									>
 										创建应用
-									</a>
+									</button>
 								</div>
 								<div className='mt-3 sm:mt-0 sm:ml-3'>
-									<a
-										href='#'
+									<button
+										onClick={handleOk}
 										className='w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 md:py-4 md:text-lg md:px-10'
 									>
 										导入应用
-									</a>
+									</button>
 								</div>
 							</div>
 						</div>
@@ -63,6 +120,70 @@ export default function created() {
 					alt=''
 				/>
 			</div>
+
+			<Modal
+				title='创建uni-app应用'
+				visible={isModalVisible}
+				onOk={handleOk}
+				onCancel={handleCancel}
+				footer={null}
+			>
+				<Form {...formItemLayout} name='register' onFinish={onFinish} scrollToFirstError>
+					<Form.Item
+						name='name'
+						label='项目名称'
+						tooltip='您的项目名称'
+						rules={[
+							{ required: true, message: '请输入项目名称，不能超过20个字符', whitespace: true },
+						]}
+					>
+						<Input placeholder='请输入项目名称，不能超过20个字符' />
+					</Form.Item>
+
+					<Form.Item
+						name='id'
+						label='项目标识'
+						tooltip='您的项目标识'
+						rules={[
+							{
+								required: true,
+								message: '请输入项目标识，不能超过20个字符，只能包含小写字母、数字、-或_',
+							},
+						]}
+					>
+						<Input placeholder='请输入项目标识，不能超过20个字符，只能包含小写字母、数字、-或_' />
+					</Form.Item>
+					<Form.Item name='describe' label='项目描述'>
+						<Input.TextArea placeholder='请输入应用描述' />
+					</Form.Item>
+
+					<Form.Item
+						name='gender'
+						label='Gender'
+						rules={[{ required: true, message: 'Please select gender!' }]}
+					>
+						<Select placeholder='select your gender'>
+							<Option value='male'>Male</Option>
+							<Option value='female'>Female</Option>
+							<Option value='other'>Other</Option>
+						</Select>
+					</Form.Item>
+
+					<Form.Item {...tailFormItemLayout}>
+						<Button
+							className='mr-4'
+							htmlType='reset'
+							loading={isModalLoading}
+							onClick={handleCancel}
+						>
+							取消
+						</Button>
+						<Button type='primary' htmlType='submit' loading={isModalLoading}>
+							创建
+						</Button>
+					</Form.Item>
+				</Form>
+			</Modal>
 		</div>
 	);
 }
