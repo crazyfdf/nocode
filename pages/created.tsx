@@ -7,7 +7,8 @@ import { createFromIconfontCN } from '@ant-design/icons';
 const IconFont = createFromIconfontCN({
   scriptUrl: [
     process.env.iconPath as string,
-    /*  icon-javascript, icon-java, icon-shoppingcart (overrided)*/
+
+    //  icon-javascript, icon-java, icon-shoppingcart (overrided)
   ],
 });
 const { Option } = Select;
@@ -107,7 +108,7 @@ export default function created() {
   };
 
   return (
-    <div className="flex items-center justify-around bg-white overflow-hidden flex-auto">
+    <div className='flex items-center justify-around bg-white overflow-hidden flex-auto'>
       {cardModule.map(item => (
         <Card
           key={item.id}
@@ -116,12 +117,12 @@ export default function created() {
           actions={[
             <IconFont
               style={{ fontSize: '32px' }}
-              type="icon-jurassic_add-gongcheng"
+              type='icon-jurassic_add-gongcheng'
               onClick={showModal}
             />,
             <IconFont
               style={{ fontSize: '32px' }}
-              type="icon-jurassic_import-gongcheng"
+              type='icon-jurassic_import-gongcheng'
               onClick={showModal}
             />,
           ]}
@@ -135,7 +136,7 @@ export default function created() {
       ))}
 
       <Modal
-        title="创建uni-app应用"
+        title='创建uni-app应用'
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -143,20 +144,20 @@ export default function created() {
       >
         <Form {...formItemLayout} name='register' onFinish={onFinish} scrollToFirstError>
           <Form.Item
-            name="name"
-            label="项目名称"
-            tooltip="您的项目名称"
+            name='name'
+            label='项目名称'
+            tooltip='您的项目名称'
             rules={[
-              { required: true, message: "请输入项目名称，不能超过20个字符", whitespace: true },
+              { required: true, message: '请输入项目名称，不能超过20个字符', whitespace: true },
             ]}
           >
             <Input placeholder='请输入项目名称，不能超过20个字符' />
           </Form.Item>
 
           <Form.Item
-            name="id"
-            label="项目标识"
-            tooltip="您的项目标识"
+            name='id'
+            label='项目标识'
+            tooltip='您的项目标识'
             rules={[
               {
                 required: true,
@@ -164,9 +165,9 @@ export default function created() {
               },
             ]}
           >
-            <Input placeholder="请输入项目标识，不能超过20个字符，只能包含小写字母、数字、-或_" />
+            <Input placeholder='请输入项目标识，不能超过20个字符，只能包含小写字母、数字、-或_' />
           </Form.Item>
-          <Form.Item name="describe" label="项目描述">
+          <Form.Item name='describe' label='项目描述'>
             <Input.TextArea placeholder='请输入应用描述' />
           </Form.Item>
 

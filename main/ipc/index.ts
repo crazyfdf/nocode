@@ -31,3 +31,4 @@ module.exports = function (mainWindow, appUpdater) {
   //   }
   // });
 };
+export {};
