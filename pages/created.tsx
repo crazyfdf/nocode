@@ -116,7 +116,7 @@ export default function created() {
           actions={[
             <IconFont
               style={{ fontSize: '32px' }}
-              type='icon-jurassic_add-gongcheng'
+              type="icon-jurassic_add-gongcheng"
               onClick={showModal}
             />,
             <IconFont
