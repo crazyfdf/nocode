@@ -166,7 +166,7 @@ export default function created() {
           >
             <Input placeholder='请输入项目标识，不能超过20个字符，只能包含小写字母、数字、-或_' />
           </Form.Item>
-          <Form.Item name='describe' label='项目描述'>
+          <Form.Item name="describe" label="项目描述">
             <Input.TextArea placeholder='请输入应用描述' />
           </Form.Item>
 
