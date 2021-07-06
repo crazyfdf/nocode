@@ -12,8 +12,7 @@
     "lint:css": "stylelint **/*.{ts,tsx}",
     "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
     "tsc:client": "tsc --noEmit -p tsconfig.json",
-    "bump-version": "standard-version --skip.commit --skip.tag",
-    "precommit": "lint-staged"
+    "bump-version": "standard-version --skip.commit --skip.tag"
   },
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
@@ -64,14 +63,14 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run precommit"
+      "pre-commit": "lint-staged && yarn tsc"
     }
   },
   "lint-staged": {
     "*.{tsx,ts,js,jsx}": [
       "stylelint",
-      "yarn lint"
-
+      "prettier --write",
+      "eslint --fix"
     ],
     "*.{css,less,scss}": [
       "stylelint",

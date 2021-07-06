@@ -144,10 +144,10 @@ export default function created() {
         <Form {...formItemLayout} name='register' onFinish={onFinish} scrollToFirstError>
           <Form.Item
             name="name"
-            label='项目名称'
-            tooltip='您的项目名称'
+            label="项目名称"
+            tooltip="您的项目名称"
             rules={[
-              { required: true, message: '请输入项目名称，不能超过20个字符', whitespace: true },
+              { required: true, message: "请输入项目名称，不能超过20个字符", whitespace: true },
             ]}
           >
             <Input placeholder='请输入项目名称，不能超过20个字符' />
