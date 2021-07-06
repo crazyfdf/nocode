@@ -143,7 +143,7 @@ export default function created() {
       >
         <Form {...formItemLayout} name='register' onFinish={onFinish} scrollToFirstError>
           <Form.Item
-            name='name'
+            name="name"
             label='项目名称'
             tooltip='您的项目名称'
             rules={[
