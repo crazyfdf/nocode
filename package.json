@@ -63,7 +63,6 @@
   },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint --config .commitlintrc.js -E HUSKY_GIT_PARAMS",
       "pre-commit": "lint-staged && yarn tsc"
     }
   },

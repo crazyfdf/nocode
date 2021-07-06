@@ -135,7 +135,7 @@ export default function created() {
       ))}
 
       <Modal
-        title='创建uni-app应用'
+        title="创建uni-app应用"
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
