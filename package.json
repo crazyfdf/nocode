@@ -70,7 +70,8 @@
   "lint-staged": {
     "*.{tsx,ts,js,jsx}": [
       "stylelint",
-      "eslint --fix"
+      "yarn lint"
+
     ],
     "*.{css,less,scss}": [
       "stylelint",

@@ -107,7 +107,7 @@ export default function created() {
   };
 
   return (
-    <div className='flex items-center justify-around bg-white overflow-hidden flex-auto'>
+    <div className="flex items-center justify-around bg-white overflow-hidden flex-auto">
       {cardModule.map(item => (
         <Card
           key={item.id}
