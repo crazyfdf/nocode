@@ -6,7 +6,8 @@ import { createFromIconfontCN } from '@ant-design/icons';
 
 const IconFont = createFromIconfontCN({
   scriptUrl: [
-    process.env.iconPath as string, // icon-javascript, icon-java, icon-shoppingcart (overrided)
+    process.env.iconPath as string,
+    /*  icon-javascript, icon-java, icon-shoppingcart (overrided)*/
   ],
 });
 const { Option } = Select;
