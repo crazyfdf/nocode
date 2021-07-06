@@ -154,9 +154,9 @@ export default function created() {
           </Form.Item>
 
           <Form.Item
-            name='id'
-            label='项目标识'
-            tooltip='您的项目标识'
+            name="id"
+            label="项目标识"
+            tooltip="您的项目标识"
             rules={[
               {
                 required: true,
