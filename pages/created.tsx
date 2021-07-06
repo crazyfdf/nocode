@@ -121,7 +121,7 @@ export default function created() {
             />,
             <IconFont
               style={{ fontSize: '32px' }}
-              type='icon-jurassic_import-gongcheng'
+              type="icon-jurassic_import-gongcheng"
               onClick={showModal}
             />,
           ]}
