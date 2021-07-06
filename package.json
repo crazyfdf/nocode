@@ -70,7 +70,6 @@
   "lint-staged": {
     "*.{tsx,ts,js,jsx}": [
       "stylelint",
-      "prettier --write",
       "eslint --fix"
     ],
     "*.{css,less,scss}": [
