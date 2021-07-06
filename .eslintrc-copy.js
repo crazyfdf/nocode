@@ -1,19 +1,34 @@
 module.exports = {
+	// 环境定义了预定义的全局变量。
 	env: {
+		//环境定义了预定义的全局变量。更多在官网查看
 		browser: true,
-		es2021: true,
 		node: true,
+		commonjs: true,
+		amd: true,
+		es6: true,
+		mocha: true,
 	},
-	extends: ['plugin:react/recommended', 'airbnb'],
-	parser: '@typescript-eslint/parser',
+	// JavaScript 语言选项
 	parserOptions: {
+		// ECMAScript 版本
+		ecmaVersion: 6,
+		sourceType: 'script', //module
+		// 想使用的额外的语言特性:
 		ecmaFeatures: {
+			// 允许在全局作用域下使用 return 语句
+			globalReturn: true,
+			// impliedStric
+			impliedStrict: true,
+			// 启用 JSX
 			jsx: true,
 		},
-		ecmaVersion: 12,
-		project: './tsconfig.json',
 	},
-	plugins: ['react', '@typescript-eslint'],
+	/**
+	 * "off" 或 0 - 关闭规则
+	 * "warn" 或 1 - 开启规则，使用警告级别的错误：warn (不会导致程序退出),
+	 * "error" 或 2 - 开启规则，使用错误级别的错误：error (当被触发的时候，程序会退出)
+	 */
 	rules: {
 		// 可能的错误 //
 
@@ -113,12 +128,7 @@ module.exports = {
 		// 参数： allowKeywords：true 使用保留字做属性名时，只能使用.方式取属性
 		// false 使用保留字做属性名时, 只能使用[]方式取属性 e.g [2, {"allowKeywords": false}]
 		// allowPattern: 当属性名匹配提供的正则表达式时，允许使用[]方式取值,否则只能用.号取值 e.g [2, {"allowPattern": "^[a-z]+(_[a-z]+)+$"}]
-		'dot-notation': [
-			2,
-			{
-				allowKeywords: false,
-			},
-		],
+		'dot-notation': [2, { allowKeywords: false }],
 		// 使用 === 替代 == allow-null允许null和undefined==
 		eqeqeq: [2, 'allow-null'],
 		// 要求 for-in 循环中有一个 if 语句
@@ -168,12 +178,7 @@ module.exports = {
 		// 禁止在循环中出现 function 声明和表达式
 		'no-loop-func': 1,
 		// 禁用魔术数字(3.14什么的用常量代替)
-		'no-magic-numbers': [
-			1,
-			{
-				ignore: [0, -1, 1],
-			},
-		],
+		'no-magic-numbers': [1, { ignore: [0, -1, 1] }],
 		// 禁止使用多个空格
 		'no-multi-spaces': 2,
 		// 禁止使用多行字符串，在 JavaScript 中，可以在新行之前使用斜线创建多行字符串
@@ -262,13 +267,7 @@ module.exports = {
 		// 禁止将 undefined 作为标识符
 		'no-undefined': 0,
 		// 禁止出现未使用过的变量
-		'no-unused-vars': [
-			2,
-			{
-				vars: 'all',
-				args: 'none',
-			},
-		],
+		'no-unused-vars': [2, { vars: 'all', args: 'none' }],
 		// 不允许在变量定义之前使用它们
 		'no-use-before-define': 0,
 
@@ -305,23 +304,11 @@ module.exports = {
 		'block-spacing': [1, 'never'],
 		//强制使用一致的缩进 第二个参数为 "tab" 时，会使用tab，
 		// if while function 后面的{必须与if在同一行，java风格。
-		'brace-style': [
-			2,
-			'1tbs',
-			{
-				allowSingleLine: true,
-			},
-		],
+		'brace-style': [2, '1tbs', { allowSingleLine: true }],
 		// 双峰驼命名格式
 		camelcase: 2,
 		// 控制逗号前后的空格
-		'comma-spacing': [
-			2,
-			{
-				before: false,
-				after: true,
-			},
-		],
+		'comma-spacing': [2, { before: false, after: true }],
 		// 控制逗号在行尾出现还是在行首出现 (默认行尾)
 		// http://eslint.org/docs/rules/comma-style
 		'comma-style': [2, 'last'],
@@ -335,27 +322,13 @@ module.exports = {
 		'func-names': 0,
 		// 文件末尾强制换行
 		'eol-last': 2,
-		indent: [0, 2],
-		// 关闭检查使用tab换行
-		'no-tabs': 0,
-
+		indent: [2, 4, { SwitchCase: 1 }],
 		// 强制在对象字面量的属性中键和值之间使用一致的间距
-		'key-spacing': [
-			2,
-			{
-				beforeColon: false,
-				afterColon: true,
-			},
-		],
+		'key-spacing': [2, { beforeColon: false, afterColon: true }],
 		// 强制使用一致的换行风格
-		'linebreak-style': [0, 'windows'],
+		'linebreak-style': [1, 'unix'],
 		// 要求在注释周围有空行 ( 要求在块级注释之前有一空行)
-		'lines-around-comment': [
-			1,
-			{
-				beforeBlockComment: true,
-			},
-		],
+		'lines-around-comment': [1, { beforeBlockComment: true }],
 		// 强制一致地使用函数声明或函数表达式，方法定义风格，参数：
 		// declaration: 强制使用方法声明的方式，function f(){} e.g [2, "declaration"]
 		// expression：强制使用方法表达式的方式，var f = function() {} e.g [2, "expression"]
@@ -370,7 +343,7 @@ module.exports = {
 		// 要求标识符匹配一个指定的正则表达式
 		'id-match': 0,
 		// 强制在 JSX 属性中一致地使用双引号或单引号
-		'jsx-quotes': [2, 'prefer-single'],
+		'jsx-quotes': 0,
 		// 强制在关键字前后使用一致的空格 (前后腰需要)
 		'keyword-spacing': 2,
 		// 强制一行的最大长度
@@ -384,13 +357,7 @@ module.exports = {
 		// 强制每一行中所允许的最大语句数量
 		'max-statements-per-line': 0,
 		// 要求构造函数首字母大写 （要求调用 new 操作符时有首字母大小的函数，允许调用首字母大写的函数时没有 new 操作符。）
-		'new-cap': [
-			2,
-			{
-				newIsCap: true,
-				capIsNew: false,
-			},
-		],
+		'new-cap': [2, { newIsCap: true, capIsNew: false }],
 		// 要求调用无参构造函数时有圆括号
 		'new-parens': 2,
 		// 要求或禁止 var 声明语句后有一行空行
@@ -414,12 +381,7 @@ module.exports = {
 		// 不允许空格和 tab 混合缩进
 		'no-mixed-spaces-and-tabs': 2,
 		// 不允许多个空行
-		'no-multiple-empty-lines': [
-			2,
-			{
-				max: 2,
-			},
-		],
+		'no-multiple-empty-lines': [2, { max: 2 }],
 		// 不允许否定的表达式
 		'no-negated-condition': 0,
 		// 不允许使用嵌套的三元表达式
@@ -449,27 +411,13 @@ module.exports = {
 		// 强制将对象的属性放在不同的行上
 		'object-property-newline': 0,
 		// 强制函数中的变量要么一起声明要么分开声明
-		'one-var': [
-			2,
-			{
-				initialized: 'never',
-			},
-		],
+		'one-var': [2, { initialized: 'never' }],
 		// 要求或禁止在 var 声明周围换行
 		'one-var-declaration-per-line': 0,
 		// 要求或禁止在可能的情况下要求使用简化的赋值操作符
 		'operator-assignment': 0,
 		// 强制操作符使用一致的换行符
-		'operator-linebreak': [
-			2,
-			'after',
-			{
-				overrides: {
-					'?': 'before',
-					':': 'before',
-				},
-			},
-		],
+		'operator-linebreak': [2, 'after', { overrides: { '?': 'before', ':': 'before' } }],
 		// 要求或禁止块内填充
 		'padded-blocks': 0,
 		// 要求对象字面量属性名称用引号括起来
@@ -477,7 +425,7 @@ module.exports = {
 		// 强制使用一致的反勾号、双引号或单引号
 		quotes: [2, 'single', 'avoid-escape'],
 		// 要求使用 JSDoc 注释
-		// 'require-jsdoc': 1,
+		'require-jsdoc': 1,
 		// 要求或禁止使用分号而不是 ASI（这个才是控制行尾部分号的，）
 		semi: [2, 'always'],
 		// 强制分号之前和之后使用一致的空格
@@ -487,33 +435,18 @@ module.exports = {
 		// 强制在块之前使用一致的空格
 		'space-before-blocks': [2, 'always'],
 		// 强制在 function的左括号之前使用一致的空格
-		'space-before-function-paren': [
-			2,
-			{
-				anonymous: 'always', //用于匿名函数表达式（例如function () {}）。
-				named: 'never', //用于命名函数表达式（例如function foo() {}）。
-				asyncArrow: 'always', //用于异步箭头函数表达式（例如async () => {}）。
-			},
-		],
+		'space-before-function-paren': [2, 'always'],
 		// 强制在圆括号内使用一致的空格
 		'space-in-parens': [2, 'never'],
 		// 要求操作符周围有空格
 		'space-infix-ops': 2,
 		// 强制在一元操作符前后使用一致的空格
-		'space-unary-ops': [
-			2,
-			{
-				words: true,
-				nonwords: false,
-			},
-		],
+		'space-unary-ops': [2, { words: true, nonwords: false }],
 		// 强制在注释中 // 或 /* 使用一致的空格
 		'spaced-comment': [
 			2,
 			'always',
-			{
-				markers: ['global', 'globals', 'eslint', 'eslint-disable', '*package', '!'],
-			},
+			{ markers: ['global', 'globals', 'eslint', 'eslint-disable', '*package', '!'] },
 		],
 		// 要求或禁止 Unicode BOM
 		'unicode-bom': 0,
@@ -527,24 +460,12 @@ module.exports = {
 		// 要求箭头函数体使用大括号
 		'arrow-body-style': 2,
 		// 要求箭头函数的参数使用圆括号
-		'arrow-parens': [1, 'as-needed'], //在可以省略的地方强制没有括号。
-		'arrow-spacing': [
-			2,
-			{
-				before: true,
-				after: true,
-			},
-		],
+		'arrow-parens': 2,
+		'arrow-spacing': [2, { before: true, after: true }],
 		// 强制在子类构造函数中用super()调用父类构造函数，TypeScrip的编译器也会提示
 		'constructor-super': 0,
 		// 强制 generator 函数中 * 号周围使用一致的空格
-		'generator-star-spacing': [
-			2,
-			{
-				before: true,
-				after: true,
-			},
-		],
+		'generator-star-spacing': [2, { before: true, after: true }],
 		// 禁止修改类声明的变量
 		'no-class-assign': 2,
 		// 不允许箭头功能，在那里他们可以混淆的比较
@@ -589,30 +510,5 @@ module.exports = {
 		'template-curly-spacing': 1,
 		// 强制在 yield* 表达式中 * 周围使用空格
 		'yield-star-spacing': 2,
-
-		//
-		// React.相关 //
-		//
-
-		'react/react-in-jsx-scope': 0,
-		'react/jsx-indent': 0,
-		'react/jsx-indent-props': 0,
-		'react/jsx-props-no-spreading': 0,
-		'react/prop-types': 0, //防止在react组件定义中缺少props验证
-		'react/jsx-closing-bracket-location': 0,
-		'function-paren-newline': 0,
-		'implicit-arrow-linebreak': 0,
-		'react/jsx-wrap-multilines': 0,
-		'react/jsx-filename-extension': [
-			1,
-			{
-				extensions: ['.js', '.jsx', 'ts', 'tsx'],
-			},
-		],
-
-		//
-		// import.相关 //
-		//
-		'import/no-unresolved': 0,
 	},
 };

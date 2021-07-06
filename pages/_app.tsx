@@ -1,10 +1,11 @@
 import '../styles/globals.css';
 import 'antd/dist/antd.min.css';
-import Header from '../components/Header';
+import Header from '@/components/Header';
 import { Provider } from 'react-redux';
-import WithRedux from '../components/hoc';
+import WithRedux from '@/components/hoc';
 import App from 'next/app';
 import { useRouter } from 'next/dist/client/router';
+
 const navigation = [
 	{ title: '插件市场', href: '/' },
 	{ title: '创作中心', href: '/created' },
@@ -36,5 +37,5 @@ MyApp.getInitialProps = async appContext => {
 
 	return { ...appProps };
 };
-/* 使用WithRedux */
+// 使用WithRedux
 export default WithRedux(MyApp);

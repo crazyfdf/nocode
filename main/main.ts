@@ -23,7 +23,7 @@ app.on('ready', () => {
 		},
 	});
 
-	const urlLocation = isDev ? 'http://localhost:3000' : 'myUrl';
+	const urlLocation = isDev ? 'http://localhost:3000' : process.env.baseURL;
 	mainWindow.on('ready-to-show', () => {
 		mainWindow.show();
 	});

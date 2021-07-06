@@ -42,10 +42,9 @@ export default function HeaderNocode({ navigation }) {
 							<div className='ml-10 flex items-baseline space-x-4'>
 								{navigation.map(item => (
 									<Fragment key={item.title}>
-										{/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
-										<button className='bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium no_drag'>
+										<div className='bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium no_drag'>
 											{item.title}
-										</button>
+										</div>
 									</Fragment>
 								))}
 							</div>
