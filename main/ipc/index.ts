@@ -1,5 +1,7 @@
+// FIXME: -- isolatedModules tsconfig报错
 const { ipcMain } = require('electron');
 
+// FIXME: -- 主窗口无法关闭
 module.exports = function (mainWindow, appUpdater) {
   ipcMain.on('pageMessage', (event, data) => {
     console.log('-----------------------');

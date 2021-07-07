@@ -1,8 +1,8 @@
 // This example requires Tailwind CSS v2.0+
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Form, Input, Button, Select, Card } from 'antd';
-
 import { createFromIconfontCN } from '@ant-design/icons';
+// import test from '@/request/test';
 
 const IconFont = createFromIconfontCN({
   scriptUrl: [
@@ -62,14 +62,52 @@ const cardModule = [
 export default function created() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalLoading, setIsModalLoading] = useState(false);
+  const [filePath, setFilePath] = useState('');
+  const [form] = Form.useForm();
 
   const showModal = () => {
+    // test({
+    //   user: {
+    //     email: 'jake2@jake.jake',
+    //     password: 'jakejake',
+    //   },
+    // });
     setIsModalVisible(true);
   };
+  const selectFile = () => {
+    const { remote } = window.require('electron');
+    remote.dialog
+      .showOpenDialog({
+        defaultPath: '',
+        buttonLabel: '选择目录',
+        title: '选择项目文件夹',
+        properties: ['openDirectory'],
+      })
+      .then(ret => {
+        setFilePath(ret.filePaths[0]);
+        form.setFieldsValue({ file: ret.filePaths[0] });
+      });
+  };
 
-  const handleOk = () => {
+  const handleOk = values => {
     setIsModalVisible(false);
     if (window.require) {
+      const { exec } = window.require('child_process');
+      const cmd1 = `cd ${values.file}`;
+      exec(cmd1, (err, stdout, stderr) => {
+        if (err) {
+          console.log(stderr);
+        } else {
+          console.log(cmd1);
+        }
+      });
+      exec('yo docs', (err1, stdout1, stder1r) => {
+        if (err1) {
+          console.log(stder1r);
+        } else {
+          console.log(stdout1);
+        }
+      });
       const { remote } = window.require('electron');
 
       let subWin = new remote.BrowserWindow({
@@ -85,13 +123,13 @@ export default function created() {
         },
       });
 
-      subWin.loadURL(`${process.env.baseURL}/no-code`);
+      subWin.loadURL(`${process.env.baseURL}/no-code/app`);
 
       subWin.on('close', () => {
         subWin = null;
       });
     } else {
-      window.open(`${process.env.baseURL}/no-code`);
+      window.open(`${process.env.baseURL}/no-code/app`);
     }
   };
 
@@ -102,7 +140,7 @@ export default function created() {
     setIsModalLoading(true);
     console.log('Received values of form: ', values);
 
-    handleOk();
+    handleOk(values);
 
     setIsModalLoading(false);
   };
@@ -142,11 +180,17 @@ export default function created() {
         onCancel={handleCancel}
         footer={null}
       >
-        <Form {...formItemLayout} name='register' onFinish={onFinish} scrollToFirstError>
+        <Form
+          {...formItemLayout}
+          form={form}
+          name='register'
+          onFinish={onFinish}
+          scrollToFirstError
+        >
           <Form.Item
             name='name'
             label='项目名称'
-            tooltip='您的项目名称'
+            tooltip='不能超过20个字符'
             rules={[
               { required: true, message: '请输入项目名称，不能超过20个字符', whitespace: true },
             ]}
@@ -155,9 +199,9 @@ export default function created() {
           </Form.Item>
 
           <Form.Item
-            name='id'
+            name='nameId'
             label='项目标识'
-            tooltip='您的项目标识'
+            tooltip='只能包含小写字母、数字、-或_'
             rules={[
               {
                 required: true,
@@ -172,6 +216,15 @@ export default function created() {
           </Form.Item>
 
           <Form.Item
+            name='file'
+            label='项目路径'
+            rules={[{ required: true, message: '项目路径不能为空', whitespace: true }]}
+          >
+            <Button onClick={selectFile}>选择项目文件夹</Button>
+            <Input value={filePath} placeholder='请选择项目文件夹' />
+          </Form.Item>
+
+          {/* <Form.Item
             name='gender'
             label='Gender'
             rules={[{ required: true, message: 'Please select gender!' }]}
@@ -181,7 +234,7 @@ export default function created() {
               <Option value='female'>Female</Option>
               <Option value='other'>Other</Option>
             </Select>
-          </Form.Item>
+          </Form.Item> */}
 
           <Form.Item {...tailFormItemLayout}>
             <Button

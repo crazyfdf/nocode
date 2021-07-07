@@ -31,7 +31,7 @@ const moduleList = [
   { key: 3, title: '应用', icon: 'icon-yingyong' },
 ];
 
-export default function noCode() {
+export default function noCodeApp() {
   const [visibleLeft, setVisibleLeft] = useState(false);
   const [visibleRight, setVisibleRight] = useState(true);
   const [currentLeft, setCurrentLeft] = useState('0');
@@ -116,6 +116,7 @@ export default function noCode() {
         </div>
         <div className='flex flex-1 justify-around'>
           <div
+            id='uniApp'
             style={{
               backgroundImage: '/images/iphone.png',
               backgroundRepeat: 'no-repeat',
