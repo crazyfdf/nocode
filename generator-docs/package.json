@@ -1,0 +1,13 @@
+{
+  "name": "generator-docs",
+  "version": "0.1.0",
+  "license": "MIT",
+  "dependencies": {
+    "shelljs": "^0.8.4",
+    "yeoman-generator": "^4.0.1",
+    "plop": "plop"
+  },
+  "devDependencies": {
+    "plop": "^2.7.4"
+  }
+}

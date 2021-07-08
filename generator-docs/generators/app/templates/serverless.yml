@@ -1,0 +1,24 @@
+# serverless.yml
+
+component: 'website'
+name: <%= name %>
+app: <%= name %> # (可选) 该 nuxt.js 项目名称
+stage: dev # (可选) 用于区分环境信息，默认值是 dev
+inputs:
+  src:
+    src: ./docs/.vuepress/dist # Upload static files
+    index: index.html
+    error: 404.html
+  region: ap-guangzhou
+  bucketName: <%= name %>
+  cors:
+    - allowedOrigins:
+        - '*'
+      allowedMethods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - HEAD
+      allowedHeaders: '*'
+      maxAgeSeconds: 10

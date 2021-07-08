@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Form, Input, Button, Select, Card } from 'antd';
 import { createFromIconfontCN } from '@ant-design/icons';
-// import test from '@/request/test';
+import { createdComponents } from '@/request/api';
 
 const IconFont = createFromIconfontCN({
   scriptUrl: [
@@ -66,12 +66,6 @@ export default function created() {
   const [form] = Form.useForm();
 
   const showModal = () => {
-    // test({
-    //   user: {
-    //     email: 'jake2@jake.jake',
-    //     password: 'jakejake',
-    //   },
-    // });
     setIsModalVisible(true);
   };
   const selectFile = () => {
@@ -89,25 +83,11 @@ export default function created() {
       });
   };
 
-  const handleOk = values => {
-    setIsModalVisible(false);
+  const handleOk = async values => {
+    await createdComponents({
+      values,
+    });
     if (window.require) {
-      const { exec } = window.require('child_process');
-      const cmd1 = `cd ${values.file}`;
-      exec(cmd1, (err, stdout, stderr) => {
-        if (err) {
-          console.log(stderr);
-        } else {
-          console.log(cmd1);
-        }
-      });
-      exec('yo docs', (err1, stdout1, stder1r) => {
-        if (err1) {
-          console.log(stder1r);
-        } else {
-          console.log(stdout1);
-        }
-      });
       const { remote } = window.require('electron');
 
       let subWin = new remote.BrowserWindow({
@@ -123,13 +103,13 @@ export default function created() {
         },
       });
 
-      subWin.loadURL(`${process.env.baseURL}/no-code/app`);
+      subWin.loadURL(`${process.env.baseURL}/no-code/components`);
 
       subWin.on('close', () => {
         subWin = null;
       });
     } else {
-      window.open(`${process.env.baseURL}/no-code/app`);
+      window.open(`${process.env.baseURL}/no-code/components`);
     }
   };
 
@@ -188,7 +168,7 @@ export default function created() {
           scrollToFirstError
         >
           <Form.Item
-            name='name'
+            name='title'
             label='项目名称'
             tooltip='不能超过20个字符'
             rules={[
@@ -199,7 +179,7 @@ export default function created() {
           </Form.Item>
 
           <Form.Item
-            name='nameId'
+            name='name'
             label='项目标识'
             tooltip='只能包含小写字母、数字、-或_'
             rules={[

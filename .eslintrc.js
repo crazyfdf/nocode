@@ -169,7 +169,7 @@ module.exports = {
     'no-loop-func': 1,
     // 禁用魔术数字(3.14什么的用常量代替)
     'no-magic-numbers': [
-      1,
+      0,
       {
         ignore: [0, -1, 1],
       },

@@ -34,7 +34,6 @@ export default function Header({ navigation }) {
     if (window.require) {
       const { remote } = window.require('electron');
       mainWin = remote.getCurrentWindow();
-      console.log(mainWin);
     }
   }, []);
   const close = () => {

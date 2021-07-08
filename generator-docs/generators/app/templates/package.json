@@ -1,0 +1,30 @@
+{
+  "name": "<%= name %>",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "vue-dev": "vuepress dev docs",
+    "vite-dev": "vitepress dev docs --open",
+    "comeMd": "vue-docgen --watch",
+    "docs": "concurrently \"vue-docgen --watch\" \"vuepress dev docs\"",
+    "vite-server": "vue-docgen && vitepress build docs && vitepress dev docs --open",
+    "vue-server": "vue-docgen && vuepress build docs && vuepress dev docs",
+    "deploy": "vue-docgen && vuepress build docs && sls deploy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "<%= github %>"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^6.0.0",
+    "yeoman-generator": "^5.4.0"
+  },
+  "devDependencies": {
+    "vitepress": "^0.12.2",
+    "vue": "2.6.14",
+    "vue-docgen-cli": "^4.36.1",
+    "vuepress": "^1.8.2"
+  }
+}
