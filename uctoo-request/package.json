@@ -1,6 +1,6 @@
 {
   "name": "uctoo-request",
-  "version": "0.0.10",
+  "version": "0.0.8",
   "description": "",
   "main": "index.js",
   "scripts": {
