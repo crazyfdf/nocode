@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Form, Input, Button, Select, Card } from 'antd';
 import { createFromIconfontCN } from '@ant-design/icons';
-import { createdComponents } from '@/request/api';
+import { postComponentDocsApi } from '@/request/api';
 
 const IconFont = createFromIconfontCN({
   scriptUrl: [
@@ -84,7 +84,7 @@ export default function created() {
   };
 
   const handleOk = async values => {
-    await createdComponents({
+    await postComponentDocsApi({
       values,
     });
     if (window.require) {
@@ -120,8 +120,9 @@ export default function created() {
     setIsModalLoading(true);
     console.log('Received values of form: ', values);
 
-    handleOk(values);
+    await handleOk(values);
 
+    setIsModalVisible(false);
     setIsModalLoading(false);
   };
 

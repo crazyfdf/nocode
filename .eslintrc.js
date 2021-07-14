@@ -102,7 +102,7 @@ module.exports = {
     // 要求 return 语句要么总是指定返回的值，要么不指定
     'consistent-return': 0,
     // 强制所有控制语句使用一致的括号风格
-    curly: [2, 'all'],
+    curly: [0, 'multi'],
     // switch 语句强制 default 分支，也可添加 // no default 注释取消此次警告
     'default-case': 2,
     // 强制object.key 中 . 的位置，参数:
@@ -263,7 +263,7 @@ module.exports = {
     'no-undefined': 0,
     // 禁止出现未使用过的变量
     'no-unused-vars': [
-      1,
+      0,
       {
         vars: 'all',
         args: 'none',
@@ -351,7 +351,7 @@ module.exports = {
     'linebreak-style': [0, 'windows'],
     // 要求在注释周围有空行 ( 要求在块级注释之前有一空行)
     'lines-around-comment': [
-      1,
+      0,
       {
         beforeBlockComment: true,
       },
@@ -374,7 +374,7 @@ module.exports = {
     // 强制在关键字前后使用一致的空格 (前后腰需要)
     'keyword-spacing': 2,
     // 强制一行的最大长度
-    'max-len': [1, 200],
+    'max-len': [0, 200],
     // 强制最大行数
     'max-lines': 0,
     // 强制 function 定义中最多允许的参数数量
@@ -525,7 +525,7 @@ module.exports = {
     //
 
     // 要求箭头函数体使用大括号
-    'arrow-body-style': 2,
+    'arrow-body-style': 0,
     // 要求箭头函数的参数使用圆括号
     'arrow-parens': [1, 'as-needed'], //在可以省略的地方强制没有括号。
     'arrow-spacing': [
@@ -603,6 +603,8 @@ module.exports = {
     'function-paren-newline': 0,
     'implicit-arrow-linebreak': 0,
     'react/jsx-wrap-multilines': 0,
+    'react/require-default-props': 0,
+    'react/jsx-boolean-value': 0,
     'react/jsx-filename-extension': [
       1,
       {

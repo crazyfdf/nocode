@@ -4,7 +4,10 @@ module.exports = {
   env: {
     dirname: path.resolve(),
     baseURL: 'http://localhost:3000',
-    iconPath: '//at.alicdn.com/t/font_2649131_9i1vsux6oza.js',
+    iconPath: '//at.alicdn.com/t/font_2649131_c835bz6h1x.js',
+  },
+  sassOptions: {
+    includePaths: [path.join(__dirname, 'styles')],
   },
   webpack: (config, { buildId, dev, isServer, defaultLoaders }) => {
     // if (dev) {

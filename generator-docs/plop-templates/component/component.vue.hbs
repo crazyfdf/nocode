@@ -1,28 +1,18 @@
 <template>
-  <view class='{{name}}'>
-    
+  <view class="{{title}}">
+      <{{title}} class="mt100" v-bind="item"></{{title}}>
   </view>
 </template>
 
 <script>
-
+import item from './index.js';
 export default {
-  components: {
-
-  },
-  props: {
-
-  },
-  data () {
+  data() {
     return {
-
+      item
     };
-  },
-  methods: {
-
   },
 };
 </script>
 
-<style scoped lang="scss">
-</style>
+<style scoped lang="scss"></style>

@@ -1,10 +1,74 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-.ele_drag {
+
+@import '~zarm/dist/zarm.min.css';
+
+.ele-drag {
   -webkit-app-region: drag; /* 让元素可拖动，设置了drag的元素不可点击 */
 }
-.no_drag {
+
+.no-drag {
   -webkit-app-region: no-drag; /* 设置了drag的元素将不可点击，故设置no-drag，让元素可点击 */
   cursor: pointer;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+}
+
+:root {
+  --sk-size: 40px;
+  --sk-color: #06c;
+}
+
+#form_editor .za-cell::after {
+  border-top: 0;
+}
+
+#form_editor .za-cell__content {
+  font-size: 14px;
+}
+
+#form_editor .za-select--arrow .za-select__input::after {
+  display: none;
+}
+
+#form_editor .ant-upload-list-picture-card-container {
+  display: flex;
+  margin-left: 30px;
+}
+
+img {
+  -webkit-user-drag: none;
+}
+
+.rotate-animate {
+  align-items: center;
+  animation: rotate 2s linear infinite;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #2842d8;
+  display: flex;
+  font-size: 12px;
+  height: 130px;
+  justify-content: center;
+  margin: 100px auto;
+  width: 130px;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }

@@ -15,11 +15,11 @@ const IconFont = createFromIconfontCN({
   ],
 });
 
-const navigation: Object = [
+const navigation: object[] = [
   { title: '模板库', icon: '', handler: 'user' },
   { title: '撤销', icon: '', handler: '' },
   { title: '重做', icon: '', handler: 'created' },
-  { title: '阅览', icon: '', handler: '' },
+  { title: '预览', icon: '', handler: '' },
   { title: '发布', icon: '', handler: 'user' },
   { title: '保存', icon: '', handler: 'user' },
   { title: '打开VSCode', icon: '', handler: 'user' },

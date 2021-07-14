@@ -1,4 +1,3 @@
-// FIXME: -- isolatedModules tsconfig报错
 const { ipcMain } = require('electron');
 
 // FIXME: -- 主窗口无法关闭

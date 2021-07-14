@@ -67,12 +67,12 @@ export default function Header({ navigation }) {
                 </div>
                 <div>
                   <LeftOutlined
-                    className='text-xl ml-6 no_drag'
+                    className='text-xl ml-6 noDrag'
                     onClick={handleBack}
                     style={{ color: '#eee' }}
                   />
                   <UndoOutlined
-                    className='text-xl ml-6 no_drag'
+                    className='text-xl ml-6 noDrag'
                     onClick={handReload}
                     style={{ color: '#eee' }}
                   />
@@ -85,7 +85,7 @@ export default function Header({ navigation }) {
                           <Link href={item.href}>
                             <a
                               href='/'
-                              className='bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium no_drag'
+                              className='bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium noDrag'
                             >
                               {item.title}
                             </a>
@@ -95,7 +95,7 @@ export default function Header({ navigation }) {
                         <Link href={item.href} key={item.title}>
                           <a
                             href='/'
-                            className='text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium no_drag'
+                            className='text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium noDrag'
                           >
                             {item.title}
                           </a>
@@ -120,7 +120,7 @@ export default function Header({ navigation }) {
                           <div>
                             <Menu.Button
                               className='max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none
-                            focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white no_drag'
+                            focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white noDrag'
                             >
                               <span className='sr-only'>Open user menu</span>
                               <img
@@ -151,7 +151,7 @@ export default function Header({ navigation }) {
                                       href='/'
                                       className={classNames(
                                         active ? 'bg-gray-100' : '',
-                                        'block px-4 py-2 text-sm text-gray-700 no_drag',
+                                        'block px-4 py-2 text-sm text-gray-700 noDrag',
                                       )}
                                     >
                                       {item}
@@ -170,7 +170,7 @@ export default function Header({ navigation }) {
                 <div className='-mr-2 flex md:hidden'>
                   <Disclosure.Button
                     className='bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400
-                  hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white no_drag'
+                  hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white noDrag'
                   >
                     <span className='sr-only'>Open main menu</span>
                     {open ? (
@@ -182,17 +182,17 @@ export default function Header({ navigation }) {
                 </div>
                 <div className='windowTool ml-5'>
                   <LineOutlined
-                    className='text-xl ml-6 no_drag'
+                    className='text-xl ml-6 noDrag'
                     style={{ color: '#eee' }}
                     onClick={minimize}
                   />
                   <ExpandOutlined
-                    className='text-xl ml-6 no_drag'
+                    className='text-xl ml-6 noDrag'
                     style={{ color: '#eee' }}
                     onClick={maximize}
                   />
                   <PoweroffOutlined
-                    className='text-xl ml-6 no_drag'
+                    className='text-xl ml-6 noDrag'
                     style={{ color: '#eee' }}
                     onClick={close}
                   />
@@ -210,7 +210,7 @@ export default function Header({ navigation }) {
                     <Link href={item.href}>
                       <a
                         href='/'
-                        className='bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium no_drag'
+                        className='bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium noDrag'
                       >
                         {item.title}
                       </a>
@@ -220,7 +220,7 @@ export default function Header({ navigation }) {
                   <Link href={item.href} key={item.title}>
                     <a
                       href='/'
-                      className='text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium no_drag'
+                      className='text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium noDrag'
                     >
                       {item.title}
                     </a>
@@ -245,7 +245,7 @@ export default function Header({ navigation }) {
                 </div>
                 <div
                   className='ml-auto bg-gray-800 flex-shrink-0 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none
-                focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white no_drag'
+                focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white noDrag'
                 >
                   <span className='sr-only'>View notifications</span>
                   <BellIcon className='h-6 w-6' aria-hidden='true' />
@@ -256,7 +256,7 @@ export default function Header({ navigation }) {
                   <a
                     key={item}
                     href='/'
-                    className='block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700 no_drag'
+                    className='block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700 noDrag'
                   >
                     {item}
                   </a>

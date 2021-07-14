@@ -1,13 +1,17 @@
 import HeaderNocode from '@/components/Header-nocode';
-import { Menu, Drawer } from 'antd';
-
-import { useState } from 'react';
+import { Menu, Drawer, Dropdown, List, Card } from 'antd';
+import { useMemo, useRef, useState } from 'react';
 
 import { createFromIconfontCN } from '@ant-design/icons';
-// import { readFile } from 'fs';
-// import { promisify } from 'util';
 import glob from 'globby';
-// import { join } from 'path';
+import { getComponentASTApi, postComponentsCreatedApi } from '@/request/api';
+import { ComponentDoc } from '@/types/component';
+import FormRender from '@/components/renderer/FormRender';
+
+interface docComponentsInterface {
+  title?: string;
+  file: string;
+}
 
 const IconFont = createFromIconfontCN({
   scriptUrl: [
@@ -15,28 +19,28 @@ const IconFont = createFromIconfontCN({
   ],
 });
 
-const navigation: Object = [
+const navigation: object[] = [
   { title: '模板库', icon: '', handler: 'user' },
-  { title: '撤销', icon: '', handler: '' },
-  { title: '重做', icon: '', handler: 'created' },
-  { title: '阅览', icon: '', handler: '' },
+  { title: '预览', icon: '', handler: '' },
   { title: '发布', icon: '', handler: 'user' },
-  { title: '保存', icon: '', handler: 'user' },
   { title: '打开VSCode', icon: '', handler: 'user' },
+  { title: '生成组件文档', icon: '', handler: 'user' },
 ];
-const moduleList = [
-  { key: 0, title: '页面', icon: 'icon-shouye' },
-  { key: 1, title: '组件', icon: 'icon-guanlizujian' },
-  { key: 2, title: '模板', icon: 'icon-APPmoban' },
-  { key: 3, title: '应用', icon: 'icon-yingyong' },
-];
+const moduleList = [{ key: '0', title: '我的组件', icon: 'icon-guanlizujian' }];
 
-export default function noCodeComponents() {
-  const [visibleLeft, setVisibleLeft] = useState(false);
+export default function noCodeComponents({ docComponents }) {
+  const [visibleLeft, setVisibleLeft] = useState(true);
   const [visibleRight, setVisibleRight] = useState(true);
   const [currentLeft, setCurrentLeft] = useState('0');
-  const [title, setTitle] = useState('');
+  const [currentComponent, setCurrentComponent] = useState(0);
+  const [title, setTitle] = useState('我的组件');
   const [currentRight, setCurrentRight] = useState('0');
+  const astTemplateInit: ComponentDoc = {
+    displayName: '',
+    props: [],
+    exportName: '',
+  };
+  const [astTemplate, setAstTemplate] = useState(astTemplateInit);
   const showDrawerLeft = () => {
     setVisibleLeft(true);
   };
@@ -62,6 +66,46 @@ export default function noCodeComponents() {
   const handleClick = e => {
     setCurrentRight(e.key);
   };
+
+  const changeComponent = async index => {
+    const { data } = await getComponentASTApi(docComponents[index]);
+    let json = {};
+    await postComponentsCreatedApi({
+      title: docComponents[index].title,
+      file: `${process.env.dirname}/uni-components/`,
+      json: json,
+    });
+
+    console.log(data);
+    setAstTemplate(data);
+    setCurrentComponent(index);
+  };
+  const editComponent = ({ key }) => {};
+
+  const handleFormSave = useMemo(() => {
+    return async (data: any) => {
+      console.log(JSON.stringify(data));
+      await postComponentsCreatedApi({
+        title: docComponents[currentComponent].title,
+        file: `${process.env.dirname}/uni-components/`,
+        json: data,
+      });
+    };
+  }, [currentComponent]);
+  const handleDel = useMemo(() => {
+    return (id: any) => {
+      console.log(id);
+    };
+  }, []);
+  const ref = useRef<HTMLDivElement>(null);
+
+  const menu = (
+    <Menu onClick={editComponent}>
+      <Menu.Item key='0'>修改名称</Menu.Item>
+      <Menu.Item key='1'>添加封面</Menu.Item>
+      <Menu.Item key='2'>删除组件</Menu.Item>
+    </Menu>
+  );
 
   return (
     <div className='overflow-hidden'>
@@ -97,68 +141,88 @@ export default function noCodeComponents() {
             </Menu.Item>
           ))}
         </Menu>
-        <div style={{ width: '260px' }}>
+        <div style={{ width: '400px' }}>
           <Drawer
             title={title}
+            width={400}
             style={{ top: '65px', left: '80px' }}
             placement='left'
             onClose={onCloseLeft}
             maskClosable={false}
+            closable={false}
             mask={false}
             visible={visibleLeft}
             key='left'
           >
-            {currentLeft === '0' && <p>0</p>}
-            {currentLeft === '1' && <p>1</p>}
-            {currentLeft === '2' && <p>2</p>}
-            {currentLeft === '3' && <p>3</p>}
+            {currentLeft === '0' && (
+              <List
+                grid={{ gutter: 16, column: 2 }}
+                dataSource={docComponents}
+                renderItem={(item: docComponentsInterface, index: number) => (
+                  <List.Item
+                    className='shadow-md'
+                    onClick={() => {
+                      changeComponent(index);
+                    }}
+                  >
+                    <Card
+                      extra={
+                        <Dropdown overlay={menu}>
+                          <IconFont
+                            onClick={e => e.stopPropagation()}
+                            style={{ fontSize: '24px' }}
+                            type='icon-more'
+                          />
+                        </Dropdown>
+                      }
+                      hoverable
+                      type='inner'
+                      headStyle={
+                        currentComponent === index
+                          ? { background: 'linear-gradient(to right, #00F5A0, #00D9F5)' }
+                          : {}
+                      }
+                      bodyStyle={
+                        currentComponent === index
+                          ? { background: 'linear-gradient(to right, #00F5A0, #00D9F5)' }
+                          : {}
+                      }
+                      title={item.title}
+                    >
+                      {currentComponent}
+                    </Card>
+                  </List.Item>
+                )}
+              />
+            )}
+            <div style={{ height: '50px' }} />
           </Drawer>
         </div>
-        <div className='flex flex-1 justify-around'>
-          <div
-            id='uniApp'
-            style={{
-              backgroundImage: '/images/iphone.png',
-              backgroundRepeat: 'no-repeat',
-              backgroundSize: 'contain',
-              height: '812px',
-              width: '375px', // 375+22+22
-              boxShadow: '0 4px 30px 0 rgba(4, 59, 85, 0.2)',
-              transformOrigin: 'top',
-              transform: 'translate(0, 20px) scale(0.75)',
-              borderRadius: '30px',
-            }}
-          >
-            1111111
-          </div>
-          <div
-            style={{
-              height: '812px',
-              width: '375px', // 375+22+22
-              boxShadow: '0 4px 30px 0 rgba(4, 59, 85, 0.2)',
-              transformOrigin: 'top',
-              transform: 'translate(0, 20px) scale(0.75)',
-              borderRadius: '30px',
-            }}
-          >
-            <iframe
-              title='uni-app'
-              scrolling='auto'
-              src='https://uct-h5-1257264070.cos-website.ap-guangzhou.myqcloud.com?current=0'
-              style={{ height: '100%', width: '100%', borderRadius: '30px' }}
-            />
-          </div>
+        <div
+          style={{
+            height: '812px',
+            width: '375px', // 375+22+22
+            boxShadow: '0 4px 30px 0 rgba(4, 59, 85, 0.2)',
+            transformOrigin: 'top',
+            transform: 'translate(0, 20px) scale(0.75)',
+            borderRadius: '30px',
+          }}
+        >
+          <iframe
+            title='uni-app'
+            scrolling='auto'
+            src='http://localhost:8080/#/'
+            style={{ height: '100%', width: '100%', borderRadius: '30px' }}
+          />
         </div>
-        <div style={{ width: '340px' }}>
+        <div style={{ width: '480px' }}>
           <Drawer
             title={
               <Menu onClick={handleClick} selectedKeys={[currentRight]} mode='horizontal'>
-                <Menu.Item key='component'>组件编辑</Menu.Item>
-                <Menu.Item key='page'>页面编辑</Menu.Item>
-                <Menu.Item key='application'>应用编辑</Menu.Item>
+                <Menu.Item key='0'>组件属性</Menu.Item>
               </Menu>
             }
-            width={340}
+            width={480}
             style={{ top: '65px' }}
             placement='right'
             maskClosable={false}
@@ -168,9 +232,19 @@ export default function noCodeComponents() {
             visible={visibleRight}
             key='right'
           >
-            {currentRight === 'component' && <p>component</p>}
-            {currentRight === 'page' && <p>page</p>}
-            {currentRight === 'application' && <p>application</p>}
+            {currentRight === '0' && (
+              <FormRender
+                config={astTemplate.props ?? []}
+                uid={astTemplate.exportName}
+                defaultValue={{}}
+                onSave={handleFormSave}
+                onDel={handleDel}
+                rightPannelRef={ref}
+              />
+            )}
+            {currentRight === '1' && <p>page</p>}
+            {currentRight === '2' && <p>application</p>}
+            <div style={{ height: '50px' }} />
           </Drawer>
         </div>
       </div>
@@ -181,9 +255,12 @@ export default function noCodeComponents() {
 export async function getStaticProps() {
   // const read = promisify(readFile);
 
-  const cwd = 'D:/my-project/node_modules/uctui';
-  const docComponents = glob.sync('components/uct-*/*.vue', { cwd }).map(f => cwd + '/' + f); // .substr(10)
+  const cwd = 'uni-components/node_modules/uctui';
+  const docComponents = glob.sync('components/uct-*/*.vue', { cwd }).map(f => {
+    const titleReg: RegExpExecArray | null = /\/uct-(.+)\/(.+).vue$/g.exec(f);
+    const title = titleReg ? titleReg[2] : null;
+    return { title, file: cwd + '/' + f };
+  });
 
-  console.log(docComponents);
   return { props: { docComponents } };
 }

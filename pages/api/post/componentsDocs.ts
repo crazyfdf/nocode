@@ -12,7 +12,7 @@ export default function (req, res) {
       console.log(yeoman);
     }
   });
-  const plop = `cd /D ${process.env.dirname}/generator-docs && yarn plop component ${name} ${title} ${file}/`;
+  const plop = `cd /D ${process.env.dirname}/generator-docs && yarn plop componentDocs ${name} ${title} ${file}/`;
 
   exec(plop, (err, stdout, stderr) => {
     if (err) {

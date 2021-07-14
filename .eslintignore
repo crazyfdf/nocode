@@ -3,10 +3,8 @@
 /dist
 /.next
 /coverage
-/tailwind.config.js
-/postcss.config.js
-/next.config.js
+/*.js
 /next-env.d.ts
-/.eslintrc.js
 /generator-docs
 /uctoo-request
+/uni-components
