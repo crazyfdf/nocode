@@ -110,6 +110,24 @@ export function throttle(fn: Function, delay: number) {
   };
 }
 
+export const debounce = (fn, time = 500, isImmediate = true) => {
+  let timer: any = null;
+  return (...args: any) => {
+    if (timer !== null) clearTimeout(timer);
+    if (isImmediate) {
+      if (!timer) {
+        typeof fn === 'function' && fn(...args);
+      }
+      timer = setTimeout(() => {
+        timer = null;
+      }, time);
+    } else {
+      timer = setTimeout(() => {
+        typeof fn === 'function' && fn(...args);
+      }, time);
+    }
+  };
+};
 export function formatTime(fmt: string, dateObj: any): string {
   const date = dateObj || new Date();
   const o: any = {

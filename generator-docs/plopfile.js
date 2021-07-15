@@ -74,11 +74,6 @@ module.exports = plop => {
       },
       {
         type: 'input',
-        name: 'json',
-        default: 'json',
-      },
-      {
-        type: 'input',
         name: 'file',
         default: 'file',
       },
@@ -89,12 +84,6 @@ module.exports = plop => {
         path: `{{file}}src/pages/index/index.vue`,
         pattern: /<uct-(.*)/gi,
         template: '<{{title}} class="mt100" v-bind="item"></{{title}}>',
-      },
-      {
-        type: 'add',
-        path: `{{file}}src/pages/index/index.js`,
-        force: true,
-        templateFile: 'plop-templates/component/component.js.hbs',
       },
     ],
   });

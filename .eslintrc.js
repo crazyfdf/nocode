@@ -602,6 +602,8 @@ module.exports = {
     'react/jsx-closing-bracket-location': 0,
     'function-paren-newline': 0,
     'implicit-arrow-linebreak': 0,
+    'jsx-a11y/click-events-have-key-events': 0,
+    'jsx-a11y/no-static-element-interactions': 0,
     'react/jsx-wrap-multilines': 0,
     'react/require-default-props': 0,
     'react/jsx-boolean-value': 0,

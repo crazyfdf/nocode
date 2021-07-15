@@ -158,12 +158,11 @@ export type baseFormTextTpl = {
   placeholder: string;
 };
 
-export type baseFormTextTipTpl = {
+export type baseFormSwitchTpl = {
   id: string;
-  type: 'MyTextTip';
+  type: 'Switch';
   label: string;
-  color: string;
-  fontSize: number;
+  placeholder: string;
 };
 
 export type baseFormNumberTpl = {
@@ -180,23 +179,23 @@ export type baseFormTextAreaTpl = {
   placeholder: string;
 };
 
-export type baseFormMyRadioTpl = {
+export type baseFormRadioTpl = {
   id: string;
-  type: 'MyRadio';
+  type: 'Radio';
   label: string;
   options: baseFormOptionsType[];
 };
 
-export type baseFormMyCheckboxTpl = {
+export type baseFormCheckboxTpl = {
   id: string;
-  type: 'MyCheckbox';
+  type: 'Checkbox';
   label: string;
   options: baseFormOptionsType[];
 };
 
-export type baseFormMySelectTpl = {
+export type baseFormSelectTpl = {
   id: string;
-  type: 'MySelect';
+  type: 'Select';
   label: string;
   options: baseFormOptionsType[];
 };
@@ -209,22 +208,22 @@ export type baseFormDateTpl = {
 };
 
 export type baseFormUnion =
+  | baseFormSwitchTpl
   | baseFormTextTpl
-  | baseFormTextTipTpl
   | baseFormNumberTpl
   | baseFormTextAreaTpl
-  | baseFormMyRadioTpl
-  | baseFormMyCheckboxTpl
-  | baseFormMySelectTpl
+  | baseFormRadioTpl
+  | baseFormCheckboxTpl
+  | baseFormSelectTpl
   | baseFormDateTpl;
 export type baseFormUnionType =
+  | baseFormSwitchTpl['type']
   | baseFormTextTpl['type']
-  | baseFormTextTipTpl['type']
   | baseFormNumberTpl['type']
   | baseFormTextAreaTpl['type']
-  | baseFormMyRadioTpl['type']
-  | baseFormMyCheckboxTpl['type']
-  | baseFormMySelectTpl['type']
+  | baseFormRadioTpl['type']
+  | baseFormCheckboxTpl['type']
+  | baseFormSelectTpl['type']
   | baseFormDateTpl['type'];
 
 export type TFormItemsDefaultType = Array<baseFormUnion>;

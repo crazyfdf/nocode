@@ -2,14 +2,14 @@ import React, { ReactText } from 'react';
 import { Button } from 'antd';
 import {
   baseFormDateTpl,
-  baseFormMyRadioTpl,
-  baseFormMyCheckboxTpl,
-  baseFormMySelectTpl,
+  baseFormRadioTpl,
+  baseFormCheckboxTpl,
+  baseFormSelectTpl,
   baseFormNumberTpl,
   baseFormTextAreaTpl,
   baseFormTextTpl,
-  baseFormTextTipTpl,
   baseFormUnionType,
+  baseFormSwitchTpl,
 } from '@/types/types';
 
 // 维护表单控件， 提高form渲染性能
@@ -51,7 +51,7 @@ const BaseForm: TBaseForm = {
       </Button>
     );
   },
-  MyRadio: (props: baseFormMyRadioTpl & { onChange: (v: string | undefined | number) => void }) => {
+  Radio: (props: baseFormRadioTpl & { onChange: (v: string | undefined | number) => void }) => {
     const { label, onChange } = props;
     return (
       <Button style={{ color: '#fff', backgroundColor: '#4a4a4a' }} onChange={() => onChange}>
@@ -59,9 +59,17 @@ const BaseForm: TBaseForm = {
       </Button>
     );
   },
-  MyCheckbox: (
-    props: baseFormMyCheckboxTpl & { onChange: (v: Array<ReactText> | undefined) => void },
+  Checkbox: (
+    props: baseFormCheckboxTpl & { onChange: (v: Array<ReactText> | undefined) => void },
   ) => {
+    const { label, onChange } = props;
+    return (
+      <Button style={{ color: '#fff', backgroundColor: '#4a4a4a' }} onChange={() => onChange}>
+        {label}
+      </Button>
+    );
+  },
+  Switch: (props: baseFormSwitchTpl & { onChange: (v: Array<ReactText> | undefined) => void }) => {
     const { label, onChange } = props;
     return (
       <Button style={{ color: '#fff', backgroundColor: '#4a4a4a' }} onChange={() => onChange}>
@@ -77,27 +85,12 @@ const BaseForm: TBaseForm = {
       </Button>
     );
   },
-  MySelect: (
-    props: baseFormMySelectTpl & { onChange: ((v: Record<string, any>) => void) | undefined },
+  Select: (
+    props: baseFormSelectTpl & { onChange: ((v: Record<string, any>) => void) | undefined },
   ) => {
     const { label, onChange } = props;
     return (
       <Button style={{ color: '#fff', backgroundColor: '#4a4a4a' }} onChange={() => onChange}>
-        {label}
-      </Button>
-    );
-  },
-  MyTextTip: (props: baseFormTextTipTpl) => {
-    const { label } = props;
-    return (
-      <Button
-        style={{
-          color: '#fff',
-          backgroundColor: '#4a4a4a',
-          borderRadius: '2px',
-          lineHeight: '0px',
-        }}
-      >
         {label}
       </Button>
     );

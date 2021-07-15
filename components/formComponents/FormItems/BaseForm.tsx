@@ -1,17 +1,16 @@
-import { Input, Cell, DateSelect, Radio, Select, Checkbox } from 'zarm';
-import React, { ReactText, useState } from 'react';
 import {
   baseFormDateTpl,
-  baseFormMyRadioTpl,
-  baseFormMyCheckboxTpl,
-  baseFormMySelectTpl,
+  baseFormRadioTpl,
+  baseFormCheckboxTpl,
+  baseFormSelectTpl,
   baseFormNumberTpl,
   baseFormTextAreaTpl,
   baseFormTextTpl,
-  baseFormTextTipTpl,
+  baseFormSwitchTpl,
   baseFormUnionType,
 } from '@/types/types';
-import { formatTime } from '@/utils/tool';
+import { uuid } from '@/utils/tool';
+import { Checkbox, DatePicker, Form, Input, Radio, Select, Switch } from 'antd';
 // 维护表单控件， 提高form渲染性能
 
 type TBaseForm = {
@@ -19,100 +18,107 @@ type TBaseForm = {
 };
 
 const BaseForm: TBaseForm = {
-  Text: (props: baseFormTextTpl & { onChange: (v: string | undefined) => void }) => {
-    const { label, placeholder, onChange } = props;
+  Text: (props: baseFormTextTpl & { onChange }) => {
+    const { id, placeholder, onChange } = props;
     return (
-      <Cell className='flex-1' title={label}>
-        <Input clearable type='text' placeholder={placeholder} onChange={onChange} />
-      </Cell>
+      <Form.Item
+        className='flex-1'
+        style={{ margin: 0 }}
+        tooltip={id}
+        label={placeholder}
+        name={id}
+      >
+        <Input />
+      </Form.Item>
     );
   },
-  Textarea: (props: baseFormTextAreaTpl & { onChange: (v: string | undefined) => void }) => {
-    const { label, placeholder, onChange } = props;
+  Textarea: (props: baseFormTextAreaTpl & { onChange }) => {
+    const { id, placeholder, onChange } = props;
     return (
-      <Cell className='flex-1' title={label}>
-        <Input
-          type='text'
-          rows={1}
-          autoHeight
-          showLength
-          placeholder={placeholder}
-          onChange={onChange}
-        />
-      </Cell>
+      <Form.Item
+        className='flex-1'
+        style={{ margin: 0 }}
+        tooltip={id}
+        label={placeholder}
+        name={id}
+      >
+        <Input.TextArea />
+      </Form.Item>
     );
   },
-  Number: (props: baseFormNumberTpl & { onChange: (v: string | undefined | number) => void }) => {
-    const { label, placeholder, onChange } = props;
+  Number: (props: baseFormNumberTpl & { onChange }) => {
+    const { id, placeholder, onChange } = props;
     return (
-      <Cell className='flex-1' title={label}>
-        <Input type='number' placeholder={placeholder} onChange={onChange} />
-      </Cell>
+      <Form.Item
+        className='flex-1'
+        style={{ margin: 0 }}
+        tooltip={id}
+        label={placeholder}
+        name={id}
+      >
+        <Input type='number' />
+      </Form.Item>
     );
   },
-  MyRadio: (props: baseFormMyRadioTpl & { onChange: (v: string | undefined | number) => void }) => {
-    const { label, options, onChange } = props;
+  Switch: (props: baseFormSwitchTpl & { onChange }) => {
+    const { id, placeholder, onChange } = props;
     return (
-      <Cell className='flex-1' title={label}>
-        <Radio.Group onChange={onChange}>
-          {options.map(item => (
-            <Radio value={item.value} key={item.label}>
-              {item.label}
+      <Form.Item
+        className='flex-1'
+        style={{ margin: 0 }}
+        tooltip={id}
+        label={placeholder}
+        name={id}
+      >
+        <Switch />
+      </Form.Item>
+    );
+  },
+  Radio: (props: baseFormRadioTpl & { onChange }) => {
+    const { id, options, onChange } = props;
+    return (
+      <Form.Item className='flex-1' style={{ margin: 0 }} tooltip={id} label={id} name={id}>
+        <Radio.Group>
+          {options.map((v: any) => (
+            <Radio value={v.value} key={uuid(6, 10)}>
+              {v.label}
             </Radio>
           ))}
         </Radio.Group>
-      </Cell>
+      </Form.Item>
     );
   },
-  MyCheckbox: (
-    props: baseFormMyCheckboxTpl & { onChange: (v: Array<ReactText> | undefined) => void },
-  ) => {
-    const { label, options, onChange } = props;
+  Checkbox: (props: baseFormCheckboxTpl & { onChange }) => {
+    const { label, options, id, onChange } = props;
     return (
-      <Cell className='flex-1' title={label}>
-        <Checkbox.Group onChange={onChange}>
-          {options.map(item => (
-            <Checkbox value={item.value} key={item.label}>
-              {item.label}
-            </Checkbox>
-          ))}
-        </Checkbox.Group>
-      </Cell>
+      <Form.Item className='flex-1' style={{ margin: 0 }} tooltip={id} label={label} name={id}>
+        <Checkbox.Group options={options} />
+      </Form.Item>
     );
   },
-  Date: (props: baseFormDateTpl & { onChange: (v: string) => void }) => {
-    const { label, placeholder, onChange } = props;
-    const [value, setValue] = useState<any>('');
-    const handleChange = (v: any) => {
-      setValue(v);
-      onChange && onChange(formatTime('yyyy-MM-dd', v));
-    };
+  Date: (props: baseFormDateTpl & { onChange }) => {
+    const { label, id, onChange } = props;
     return (
-      <Cell className='flex-1' title={label}>
-        <DateSelect
-          placeholder={placeholder}
-          mode='date'
-          min='1949-05-15'
-          max='2100-05-15'
-          value={value}
-          onOk={handleChange}
-        />
-      </Cell>
+      <Form.Item className='flex-1' style={{ margin: 0 }} tooltip={id} label={label} name={id}>
+        <DatePicker />
+      </Form.Item>
     );
   },
-  MySelect: (
-    props: baseFormMySelectTpl & { onChange: ((v: Record<string, any>) => void) | undefined },
-  ) => {
-    const { label, options, onChange } = props;
+  Select: (props: baseFormSelectTpl & { onChange }) => {
+    const { label, id, options, onChange } = props;
     return (
-      <Cell className='flex-1' title={label}>
-        <Select dataSource={options} onOk={onChange} />
-      </Cell>
+      <Form.Item className='flex-1' style={{ margin: 0 }} tooltip={id} label={label} name={id}>
+        <Select placeholder='请选择'>
+          {options.map((v: any) => {
+            return (
+              <Select.Option value={v.key} key={uuid(6, 10)}>
+                {v.text}
+              </Select.Option>
+            );
+          })}
+        </Select>
+      </Form.Item>
     );
-  },
-  MyTextTip: (props: baseFormTextTipTpl) => {
-    const { label, color, fontSize } = props;
-    return <Cell className='flex-1' title={<div style={{ color, fontSize }}>{label}</div>} />;
   },
 };
 

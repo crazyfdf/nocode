@@ -7,6 +7,7 @@ import glob from 'globby';
 import { getComponentASTApi, postComponentsCreatedApi } from '@/request/api';
 import { ComponentDoc } from '@/types/component';
 import FormRender from '@/components/renderer/FormRender';
+import { debounce } from '@/utils/tool';
 
 interface docComponentsInterface {
   title?: string;
@@ -75,22 +76,23 @@ export default function noCodeComponents({ docComponents }) {
       file: `${process.env.dirname}/uni-components/`,
       json: json,
     });
-
+    console.log('====================================');
     console.log(data);
+    console.log('====================================');
     setAstTemplate(data);
     setCurrentComponent(index);
   };
   const editComponent = ({ key }) => {};
 
   const handleFormSave = useMemo(() => {
-    return async (data: any) => {
-      console.log(JSON.stringify(data));
+    const saveData = async (data: any) => {
       await postComponentsCreatedApi({
         title: docComponents[currentComponent].title,
         file: `${process.env.dirname}/uni-components/`,
         json: data,
       });
     };
+    return debounce(saveData, 1000, false);
   }, [currentComponent]);
   const handleDel = useMemo(() => {
     return (id: any) => {
@@ -239,7 +241,7 @@ export default function noCodeComponents({ docComponents }) {
                 defaultValue={{}}
                 onSave={handleFormSave}
                 onDel={handleDel}
-                rightPannelRef={ref}
+                rightPanelRef={ref}
               />
             )}
             {currentRight === '1' && <p>page</p>}

@@ -3,16 +3,23 @@ import { isType } from '@/utils/tool';
 
 const { exec } = require('child_process');
 
-const zy = (data: Object) => {
+const escape = (data: Object) => {
   let json = {};
-  Object.entries(data).forEach(item => {
-    if (isType(item[1], 'Object') || isType(item[1], 'String')) {
-      item[1] = `'${item[1]}'`;
+  const zy = (item: any) => {
+    if (isType(item[1], 'String')) {
+      return `'${item[1]}'`;
     }
-    json = {
-      ...json,
-      [`'${item[0]}'`]: item[1],
-    };
+    if (isType(item[1], 'Object')) {
+      let children = {};
+      Object.entries(item[1]).forEach(element => {
+        children = Object.assign(children, { [`'${element[0]}'`]: zy(element) });
+      });
+      return children;
+    }
+    return item[1];
+  };
+  Object.entries(data).forEach(item => {
+    json = Object.assign(json, { [`'${item[0]}'`]: zy(item) });
   });
   console.log(json);
 
@@ -20,9 +27,9 @@ const zy = (data: Object) => {
 };
 export default function (req, res) {
   const { file, json, title } = req.body;
-  const plop = `cd /D ${process.env.dirname}/generator-docs && yarn plop component ${title} ${zy(
-    json,
-  )} ${file}/`;
+  const plop = `cd /D ${
+    process.env.dirname
+  }/generator-docs && yarn plop component ${title} ${escape(json)} ${file}`;
 
   exec(plop, (err, stdout, stderr) => {
     if (err) {

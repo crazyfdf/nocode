@@ -1,11 +1,12 @@
 import { baseFormUnion, TFormItemsDefaultType } from '@/types/types';
 import { uuid } from '@/utils/tool';
 import { PlusOutlined, MinusCircleFilled, EditFilled } from '@ant-design/icons';
-import { Button, Tooltip } from 'antd';
-import { RefObject, useCallback, useEffect, useState } from 'react';
+import { Button, Form, Tooltip } from 'antd';
+import React, { RefObject, useCallback, useEffect, useState, memo } from 'react';
 import BasePopoverForm from '@/components/formComponents/FormItems/BasePopoverForm';
 import EditorModal from '@/components/formComponents/FormItems/EditorModal';
 import BaseForm from '@/components/formComponents/FormItems/BaseForm';
+import { Store } from 'antd/lib/form/interface';
 
 const formTpl: TFormItemsDefaultType = [
   {
@@ -22,7 +23,13 @@ const formTpl: TFormItemsDefaultType = [
   },
   {
     id: '',
-    type: 'MyRadio',
+    type: 'Switch',
+    label: 'boolean',
+    placeholder: 'boolean属性默认值',
+  },
+  {
+    id: '',
+    type: 'Radio',
     label: 'type',
     options: [
       { label: '选项一', value: '1' },
@@ -31,7 +38,7 @@ const formTpl: TFormItemsDefaultType = [
   },
   {
     id: '',
-    type: 'MyCheckbox',
+    type: 'Checkbox',
     label: 'array',
     options: [
       { label: '选项一', value: '1' },
@@ -43,17 +50,24 @@ const formTpl: TFormItemsDefaultType = [
     id: '',
     type: 'Date',
     label: 'date',
-    placeholder: '请输入日期',
+    placeholder: 'date属性默认值',
   },
 ];
+const formItemLayout = {
+  labelCol: { span: 6 },
+  wrapperCol: { span: 16 },
+};
 interface FormItemsProps {
   formList?: TFormItemsDefaultType;
-  onChange?: (v: TFormItemsDefaultType) => void;
+  onChange?: (v: any) => void;
   data: any;
-  rightPannelRef: RefObject<HTMLDivElement>;
+  rightPanelRef: RefObject<HTMLDivElement>;
 }
-export default function EditableFormItems(props: FormItemsProps) {
-  const { formList, onChange, rightPannelRef: rightPanelRef } = props;
+function EditableFormItems(props: FormItemsProps) {
+  const { formList, data, onChange, rightPanelRef } = props;
+  console.log('====================================');
+  console.log(formList, data);
+  console.log('====================================');
   const [formData, setFormData] = useState<TFormItemsDefaultType>(formList || []);
   const [visible, setVisible] = useState(false);
   const [curItem, setCurItem] = useState<baseFormUnion>();
@@ -120,18 +134,35 @@ export default function EditableFormItems(props: FormItemsProps) {
       }
     };
   }, [force, rightPanelRef]);
+  const [form] = Form.useForm();
+  const handlechange = () => {
+    onFinish(form.getFieldsValue());
+  };
+  const onFinish = (values: Store) => {
+    onChange && onChange(values);
+  };
   return (
     <div>
-      {formData.map((item: baseFormUnion) => {
-        let FormItem = BaseForm[item.type];
-        return (
-          <div className='flex justify-between items-center' key={item.id}>
-            <MinusCircleFilled onClick={() => handleDelItem(item)} />
-            <FormItem className='flex-1' {...item} />
-            <EditFilled onClick={() => handleEditItem(item)} />
-          </div>
-        );
-      })}
+      <Form
+        form={form}
+        name={data.id}
+        layout='horizontal'
+        {...formItemLayout}
+        onFinish={onFinish}
+        initialValues={formData}
+        onValuesChange={handlechange}
+      >
+        {formData.map((item: baseFormUnion) => {
+          let FormItem = BaseForm[item.type];
+          return (
+            <div className='flex justify-between items-center mb-4' key={uuid(6, 10)}>
+              <MinusCircleFilled onClick={() => handleDelItem(item)} />
+              <FormItem {...item} />
+              <EditFilled onClick={() => handleEditItem(item)} />
+            </div>
+          );
+        })}
+      </Form>
       <Tooltip
         placement='leftBottom'
         title={
@@ -139,18 +170,13 @@ export default function EditableFormItems(props: FormItemsProps) {
             {formTpl.map(item => {
               let FormItem = BasePopoverForm[item.type];
               return (
-                <Button key={item.id} onClick={() => handleAddItem(item)}>
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      overflow: 'row',
-                      marginTop: '10px',
-                    }}
-                  >
-                    <FormItem {...item} />
-                  </div>
-                </Button>
+                <div
+                  key={uuid(6, 10)}
+                  className='flex flex-col mb-1'
+                  onClick={() => handleAddItem(item)}
+                >
+                  <FormItem {...item} />
+                </div>
               );
             })}
           </>
@@ -169,3 +195,7 @@ export default function EditableFormItems(props: FormItemsProps) {
     </div>
   );
 }
+function compare(preProps, nextProps) {
+  return true;
+}
+export default memo(EditableFormItems, compare);

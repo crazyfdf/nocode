@@ -5,4 +5,4 @@ function escape2Html(str) {
   });
 }
 
-export default JSON.parse(escape2Html('{}'));
+export default JSON.parse(escape2Html('{&#x27;text&#x27;:&#x27;123&#x27;}'));

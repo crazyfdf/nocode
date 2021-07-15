@@ -1,6 +1,7 @@
 import React, { FC, memo, useEffect } from 'react';
 import { Form, Select, Input, Modal, Button, InputNumber } from 'antd';
 import { baseFormOptionsType } from '@/types/types';
+import { uuid } from '@/utils/tool';
 // import Color from '../Color';
 
 const { Option } = Select;
@@ -118,7 +119,7 @@ const EditorModal: FC<EditorModalProps> = props => {
                   maxTagTextLength={16}
                 >
                   {item.options.map((v: baseFormOptionsType) => (
-                    <Option value={v.value} key={v.label}>
+                    <Option value={v.value} key={uuid(6, 10)}>
                       {v.label}
                     </Option>
                   ))}

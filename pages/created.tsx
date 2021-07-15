@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Form, Input, Button, Select, Card } from 'antd';
 import { createFromIconfontCN } from '@ant-design/icons';
 import { postComponentDocsApi } from '@/request/api';
+import { uuid } from '@/utils/tool';
 
 const IconFont = createFromIconfontCN({
   scriptUrl: [
@@ -130,7 +131,7 @@ export default function created() {
     <div className='flex items-center justify-around bg-white overflow-hidden flex-auto'>
       {cardModule.map(item => (
         <Card
-          key={item.id}
+          key={uuid(6, 10)}
           style={{ width: 300 }}
           cover={<></>}
           actions={[

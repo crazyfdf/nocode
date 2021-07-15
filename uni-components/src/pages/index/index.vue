@@ -1,6 +1,6 @@
 <template>
   <view>
-    <uct-alert class="mt100" v-bind="item"></uct-alert>
+    <uct-button class="mt100" v-bind="item"></uct-button>
   </view>
 </template>
 
