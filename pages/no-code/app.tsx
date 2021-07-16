@@ -1,4 +1,4 @@
-import HeaderNocode from '@/components/Header-nocode';
+import HeaderNocode from '@/components/Header/Header-nocode';
 import { Menu, Drawer } from 'antd';
 
 import { useState } from 'react';

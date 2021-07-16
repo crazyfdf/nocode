@@ -3,9 +3,9 @@ import { uuid } from '@/utils/tool';
 import { PlusOutlined, MinusCircleFilled, EditFilled } from '@ant-design/icons';
 import { Button, Form, Tooltip } from 'antd';
 import React, { RefObject, useCallback, useEffect, useState, memo } from 'react';
-import BasePopoverForm from '@/components/formComponents/FormItems/BasePopoverForm';
-import EditorModal from '@/components/formComponents/FormItems/EditorModal';
-import BaseForm from '@/components/formComponents/FormItems/BaseForm';
+import BasePopoverForm from '@/components/FormComponents/FormItems/BasePopoverForm';
+import EditorModal from '@/components/FormComponents/FormItems/EditorModal';
+import BaseForm from '@/components/FormComponents/FormItems/BaseForm';
 import { Store } from 'antd/lib/form/interface';
 
 const formTpl: TFormItemsDefaultType = [

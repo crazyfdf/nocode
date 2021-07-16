@@ -1,12 +1,12 @@
-import HeaderNocode from '@/components/Header-nocode';
+import HeaderNocode from '@/components/Header/Header-nocode';
 import { Menu, Drawer, Dropdown, List, Card } from 'antd';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { createFromIconfontCN } from '@ant-design/icons';
 import glob from 'globby';
 import { getComponentASTApi, postComponentsCreatedApi } from '@/request/api';
 import { ComponentDoc } from '@/types/component';
-import FormRender from '@/components/renderer/FormRender';
+import FormRender from '@/components/Renderer/FormRender';
 import { debounce } from '@/utils/tool';
 
 interface docComponentsInterface {

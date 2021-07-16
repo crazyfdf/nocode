@@ -1,8 +1,8 @@
 import React, { memo, RefObject, useEffect } from 'react';
 import { Form, Select, InputNumber, Input, Switch, Radio } from 'antd';
 import { Store } from 'antd/lib/form/interface';
-import { configAdapter, defaultAdapter } from '@/components/renderer/FormRenderAdapter';
-import FormItems from '@/components/formComponents/FormItems';
+import { configAdapter, defaultAdapter } from '@/components/Renderer/FormRenderAdapter';
+import FormItems from '@/components/FormComponents/FormItems';
 import { uuid } from '@/utils/tool';
 // import Upload from '../../components/FormComponents/Upload';
 // import DataList from '../../components/FormComponents/DataList';

@@ -4,6 +4,7 @@
 /.next
 /coverage
 /*.js
+/**/*.jsx
 /next-env.d.ts
 /generator-docs
 /uctoo-request
