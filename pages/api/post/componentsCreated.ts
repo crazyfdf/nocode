@@ -26,10 +26,10 @@ const escape = (data: Object) => {
   return JSON.stringify(json);
 };
 export default function (req, res) {
-  const { file, json, title } = req.body;
-  const plop = `cd /D ${
-    process.env.dirname
-  }/generator-docs && yarn plop component ${title} ${escape(json)} ${file}`;
+  const { file, json, name } = req.body.data;
+  const plop = `cd /D ${process.env.dirname}/generator-docs && yarn plop component ${name} ${escape(
+    json,
+  )} ${file}`;
 
   exec(plop, (err, stdout, stderr) => {
     if (err) {

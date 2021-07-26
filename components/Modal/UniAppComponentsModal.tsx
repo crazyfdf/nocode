@@ -1,5 +1,5 @@
 import { Select, Modal, Form, Input, Button } from 'antd';
-import { postComponentDocsApi } from '@/request/api';
+import { postComponentDocs } from '@/request/api';
 import { useEffect, useState, useImperativeHandle, forwardRef } from 'react';
 
 const { Option } = Select;
@@ -27,13 +27,13 @@ const tailFormItemLayout = {
     },
   },
 };
-function UniappComponentsModal(props, ref) {
+function UniAppComponentsModal(props, ref) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalLoading, setIsModalLoading] = useState(false);
   const [filePath, setFilePath] = useState('');
   const [form] = Form.useForm();
   useImperativeHandle(ref, () => ({
-    changeVal: newVal => {
+    changeComponentsVal: newVal => {
       setIsModalVisible(newVal);
     },
   }));
@@ -53,8 +53,8 @@ function UniappComponentsModal(props, ref) {
   };
 
   const handleOk = async values => {
-    await postComponentDocsApi({
-      values,
+    await postComponentDocs({
+      data: values,
     });
     if (window.require) {
       const { remote } = window.require('electron');
@@ -101,7 +101,13 @@ function UniappComponentsModal(props, ref) {
       onCancel={handleCancel}
       footer={null}
     >
-      <Form {...formItemLayout} form={form} name='register' onFinish={onFinish} scrollToFirstError>
+      <Form
+        {...formItemLayout}
+        form={form}
+        name='components'
+        onFinish={onFinish}
+        scrollToFirstError
+      >
         <Form.Item
           name='title'
           label='项目名称'
@@ -126,7 +132,7 @@ function UniappComponentsModal(props, ref) {
         >
           <Input placeholder='请输入项目标识，不能超过20个字符，只能包含小写字母、数字、-或_' />
         </Form.Item>
-        <Form.Item name='describe' label='项目描述'>
+        <Form.Item name='description' label='项目描述'>
           <Input.TextArea placeholder='请输入应用描述' />
         </Form.Item>
 
@@ -164,4 +170,4 @@ function UniappComponentsModal(props, ref) {
   );
 }
 
-export default forwardRef(UniappComponentsModal);
+export default forwardRef(UniAppComponentsModal);

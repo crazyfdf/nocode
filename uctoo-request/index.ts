@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig, Canceler, CancelTokenStatic, AxiosInstance } from 'axios';
 import { apiConfig, RequestConfig } from './env';
+import { AxiosResponse } from 'axios';
 
 // 防止重复提交，利用axios的cancelToken
 let pending: any[] = []; // 声明一个数组用于存储每个ajax请求的取消函数和ajax标识
@@ -46,17 +47,27 @@ const api = {
     // request拦截器
     request.interceptors.request.use(
       (_config: AxiosRequestConfig) => {
-        // 如果config.pending内有当前url则取消之前的请求，返回最后的请求(例如搜索)
-        // 如果config.pending内没有当前url则取消之后的请求，返回最开始的请求(例如绝大部分请求)
-        // 生成cancelToken
-        _config.cancelToken = new CancelToken((c: Canceler) => {
-          const apiConfig = config;
-          apiConfig.url = _config.url;
-          removePending(apiConfig, c);
-        });
+        if (config.isPending) {
+          // 如果config.pending内有当前url则取消之前的请求，返回最后的请求(例如搜索)
+          // 如果config.pending内没有当前url则取消之后的请求，返回最开始的请求(例如绝大部分请求)
+          // 生成cancelToken
+          _config.cancelToken = new CancelToken((c: Canceler) => {
+            const apiConfig = config;
+            apiConfig.url = _config.url;
+            removePending(apiConfig, c);
+          });
+        }
         // 设置统一的请求头
-        if (_config.headers && config.headers) {
+        if (config.headers) {
           _config.headers = Object.assign(config.headers, _config.headers);
+        }
+        // 设置get请求参数
+        if (_config.method === 'get' && _config.data && Object.entries(_config.data).length) {
+          if (_config.params && Object.entries(_config.params).length) {
+            _config.params = Object.assign(_config.data, _config.params);
+          } else {
+            _config.params = _config.data;
+          }
         }
         return _config;
       },
@@ -66,14 +77,16 @@ const api = {
     );
     // respone拦截器
     request.interceptors.response.use(
-      (response: any) => {
+      (response: AxiosResponse<any>): AxiosResponse<any>['data'] => {
         // 移除队列中的该请求，注意这时候没有传第二个参数f
-        removePending(response.config);
+        if (config.isPending) {
+          removePending(response.config);
+        }
         // 获取返回数据，并处理。按自己业务需求修改。下面只是个demo
-        if (response.status !== 200) {
-          return Promise.reject('error');
-        } else {
+        if (response.status >= 200 && response.status < 400) {
           return response.data;
+        } else {
+          return Promise.reject('error 状态码异常');
         }
       },
       (error: any) => {

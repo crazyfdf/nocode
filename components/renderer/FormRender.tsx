@@ -1,9 +1,10 @@
-import React, { memo, RefObject, useEffect } from 'react';
+import React, { memo, RefObject, useEffect, useImperativeHandle, useState } from 'react';
 import { Form, Select, InputNumber, Input, Switch, Radio } from 'antd';
 import { Store } from 'antd/lib/form/interface';
-import { configAdapter, defaultAdapter } from '@/components/Renderer/FormRenderAdapter';
+import { formListAdapter } from '@/components/Renderer/FormRenderAdapter';
 import FormItems from '@/components/FormComponents/FormItems';
 import { uuid } from '@/utils/tool';
+// TODO:丰富组件类型
 // import Upload from '../../components/FormComponents/Upload';
 // import DataList from '../../components/FormComponents/DataList';
 // import MutiText from '../../components/FormComponents/MutiText';
@@ -35,16 +36,20 @@ interface FormEditorProps {
   onDel: Function;
   defaultValue: { [id: string]: any };
   config: Array<any>;
-  rightPanelRef: RefObject<HTMLDivElement>;
+  rightPanelRef: RefObject<{ changeVal }>;
 }
 
 const FormEditor = (props: FormEditorProps) => {
-  let { config, defaultValue, onSave, uid, rightPanelRef } = props;
-  config = configAdapter(config);
+  const { config, defaultValue, onSave, uid, rightPanelRef } = props;
+  const [fromDefaultValue, setFromDefaultValue] = useState(defaultValue);
   const onFinish = (values: Store) => {
     onSave && onSave(values);
   };
-
+  useImperativeHandle(rightPanelRef, () => ({
+    changeVal: newVal => {
+      setFromDefaultValue(newVal);
+    },
+  }));
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -53,11 +58,11 @@ const FormEditor = (props: FormEditorProps) => {
     };
   }, [uid, form]);
 
-  const handlechange = () => {
-    onFinish(form.getFieldsValue());
-  };
-  const onChange = value => {
-    onFinish(form.getFieldsValue());
+  const handlechange = changedValues => {
+    console.log('====================================');
+    console.log(changedValues);
+    console.log('====================================');
+    onFinish(Object.assign(form.getFieldsValue(), changedValues));
   };
 
   return (
@@ -67,7 +72,7 @@ const FormEditor = (props: FormEditorProps) => {
       layout='horizontal'
       {...formItemLayout}
       onFinish={onFinish}
-      initialValues={defaultValue}
+      initialValues={fromDefaultValue}
       onValuesChange={handlechange}
     >
       {config.map(item => {
@@ -126,14 +131,17 @@ const FormEditor = (props: FormEditorProps) => {
               </Form.Item>
             )}
             {item.type === 'FormItems' && (
-              <Form.Item tooltip={item.id} label={item.label} name={item.id}>
+              <>
+                <div>
+                  {item.id}：{item.label}
+                </div>
                 <FormItems
-                  formList={defaultAdapter(item)}
+                  formList={formListAdapter(item)}
                   data={item}
                   rightPanelRef={rightPanelRef}
-                  onChange={onChange}
+                  onChange={handlechange}
                 />
-              </Form.Item>
+              </>
             )}
             {/* {item.type === 'MutiText' && (
               <Form.Item tooltip={item.id} label={item.label} name={item.id}>
@@ -191,5 +199,8 @@ const FormEditor = (props: FormEditorProps) => {
     </Form>
   );
 };
+const compare = (preProps, nextProps) => {
+  return preProps.uid === nextProps.uid;
+};
 
-export default memo(FormEditor);
+export default memo(FormEditor, compare);

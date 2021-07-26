@@ -1,19 +1,18 @@
 import HeaderNocode from '@/components/Header/Header-nocode';
-import { Menu, Drawer } from 'antd';
+import { Menu, Drawer, Tabs } from 'antd';
+import React, { useState } from 'react';
+import Icon from '@/components/Icon/Icon';
+import SourceBox from '@/components/SourceBox/SourceBox';
+import {
+  getApp,
+  getCollectionComponents,
+  getComponentAST,
+  getPage,
+  getUniPagesConfig,
+} from '@/request/api';
+import PagesBox from '@/components/SourceBox/PagesBox';
 
-import { useState } from 'react';
-
-import { createFromIconfontCN } from '@ant-design/icons';
-// import { readFile } from 'fs';
-// import { promisify } from 'util';
-import glob from 'globby';
-// import { join } from 'path';
-
-const IconFont = createFromIconfontCN({
-  scriptUrl: [
-    process.env.iconPath as string, // icon-javascript, icon-java, icon-shoppingcart (overrided)
-  ],
-});
+const { TabPane } = Tabs;
 
 const navigation: object[] = [
   { title: '模板库', icon: '', handler: 'user' },
@@ -31,123 +30,97 @@ const moduleList = [
   { key: 3, title: '应用', icon: 'icon-yingyong' },
 ];
 
-export default function noCodeApp() {
-  const [visibleLeft, setVisibleLeft] = useState(false);
+export default function noCodeApp({ myCollection, app, page }) {
   const [visibleRight, setVisibleRight] = useState(true);
-  const [currentLeft, setCurrentLeft] = useState('0');
-  const [title, setTitle] = useState('');
   const [currentRight, setCurrentRight] = useState('0');
-  const showDrawerLeft = () => {
-    setVisibleLeft(true);
-  };
 
-  const onCloseLeft = () => {
-    setVisibleLeft(false);
+  const showDrawerRight = () => {
+    setVisibleRight(true);
   };
-
-  // const showDrawerRight = () => {
-  //   setVisibleRight(true);
-  // };
 
   const onCloseRight = () => {
     setVisibleRight(false);
-  };
-
-  const changeModule = item => {
-    visibleLeft || showDrawerLeft();
-    setCurrentLeft(item.key);
-    setTitle(moduleList[parseInt(item.key, 10)].title);
   };
 
   const handleClick = e => {
     setCurrentRight(e.key);
   };
 
+  const changePage = async (index: number) => {
+    console.log(page[index]);
+    const res = await getUniPagesConfig({ id: page[index].name });
+    console.log(res);
+  };
+
   return (
     <div className='overflow-hidden'>
       <HeaderNocode navigation={navigation} />
       <div className='flex-auto flex justify-between'>
-        <Menu
-          style={{ width: '80px' }}
-          className='h-full'
-          defaultSelectedKeys={[]}
-          defaultOpenKeys={[]}
-          mode='inline'
-          theme='light'
-          inlineCollapsed={false}
-          onClick={changeModule}
-        >
-          {moduleList.map(item => (
-            <Menu.Item
-              key={item.key}
-              style={{
-                height: '80px',
-                padding: 0,
-                display: 'flex',
-                width: '80px',
-                justifyContent: 'center',
-                alignItems: 'center',
-                flexDirection: 'column',
-                textAlign: 'center',
-              }}
-              title={item.title}
-              icon={<IconFont style={{ fontSize: '36px' }} type={item.icon} />}
-            >
-              <div style={{ marginLeft: '-10px', width: '80px' }}>{item.title}</div>
-            </Menu.Item>
-          ))}
-        </Menu>
-        <div style={{ width: '260px' }}>
-          <Drawer
-            title={title}
-            style={{ top: '65px', left: '80px' }}
-            placement='left'
-            onClose={onCloseLeft}
-            maskClosable={false}
-            mask={false}
-            visible={visibleLeft}
+        <div style={{ width: '400px' }}>
+          <Tabs
+            type='line'
+            tabBarStyle={{ backgroundColor: '#fafafa' }}
+            className='h-full shadow-xl'
             key='left'
+            tabPosition='left'
           >
-            {currentLeft === '0' && <p>0</p>}
-            {currentLeft === '1' && <p>1</p>}
-            {currentLeft === '2' && <p>2</p>}
-            {currentLeft === '3' && <p>3</p>}
-          </Drawer>
+            <TabPane
+              className='p-4'
+              tab={
+                <div className='flex flex-col justify-center'>
+                  <Icon style={{ fontSize: '36px', margin: 0 }} type={moduleList[0].icon} />
+                  <div>{moduleList[0].title}</div>
+                </div>
+              }
+              key={moduleList[0].key}
+            >
+              <PagesBox data={page} changePage={changePage} />
+            </TabPane>
+            <TabPane
+              className='p-4'
+              tab={
+                <div className='flex flex-col justify-center'>
+                  <Icon style={{ fontSize: '36px', margin: 0 }} type={moduleList[1].icon} />
+                  <div>{moduleList[1].title}</div>
+                </div>
+              }
+              key={moduleList[1].key}
+            >
+              <SourceBox header={{}} dataSource={myCollection} />
+            </TabPane>
+            <TabPane
+              className='p-4'
+              tab={
+                <div className='flex flex-col justify-center'>
+                  <Icon style={{ fontSize: '36px', margin: 0 }} type={moduleList[2].icon} />
+                  <div>{moduleList[2].title}</div>
+                </div>
+              }
+              key={moduleList[2].key}
+            >
+              <p>2</p>
+            </TabPane>
+            <TabPane
+              className='p-4'
+              tab={
+                <div className='flex flex-col justify-center'>
+                  <Icon style={{ fontSize: '36px', margin: 0 }} type={moduleList[3].icon} />
+                  <div>{moduleList[3].title}</div>
+                </div>
+              }
+              key={moduleList[3].key}
+            >
+              <SourceBox header={{}} dataSource={app} />
+            </TabPane>
+          </Tabs>
         </div>
-        <div className='flex flex-1 justify-around'>
-          <div
-            id='uniApp'
-            style={{
-              backgroundImage: '/images/iphone.png',
-              backgroundRepeat: 'no-repeat',
-              backgroundSize: 'contain',
-              height: '812px',
-              width: '375px', // 375+22+22
-              boxShadow: '0 4px 30px 0 rgba(4, 59, 85, 0.2)',
-              transformOrigin: 'top',
-              transform: 'translate(0, 20px) scale(0.75)',
-              borderRadius: '30px',
-            }}
-          >
-            1111111
-          </div>
-          <div
-            style={{
-              height: '812px',
-              width: '375px', // 375+22+22
-              boxShadow: '0 4px 30px 0 rgba(4, 59, 85, 0.2)',
-              transformOrigin: 'top',
-              transform: 'translate(0, 20px) scale(0.75)',
-              borderRadius: '30px',
-            }}
-          >
-            <iframe
-              title='uni-app'
-              scrolling='auto'
-              src='https://uct-h5-1257264070.cos-website.ap-guangzhou.myqcloud.com?current=0'
-              style={{ height: '100%', width: '100%', borderRadius: '30px' }}
-            />
-          </div>
+        <div className='iframe'>
+          <iframe
+            title='uni-app'
+            scrolling='auto'
+            src='localhost:8080'
+            style={{ height: '100%', width: '100%', borderRadius: '30px' }}
+          />
         </div>
         <div style={{ width: '340px' }}>
           <Drawer
@@ -163,7 +136,6 @@ export default function noCodeApp() {
             placement='right'
             maskClosable={false}
             closable={false}
-            onClose={onCloseRight}
             mask={false}
             visible={visibleRight}
             key='right'
@@ -178,12 +150,19 @@ export default function noCodeApp() {
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps(context) {
   // const read = promisify(readFile);
+  const { data: _myCollection } = await getCollectionComponents();
 
-  const cwd = 'D:/my-project/node_modules/uctui';
-  const docComponents = glob.sync('components/uct-*/*.vue', { cwd }).map(f => cwd + '/' + f); // .substr(10)
+  const myCollection = await Promise.all(
+    _myCollection.map(async item => {
+      const { data } = await getComponentAST(item);
+      return Object.assign(item, data);
+    }),
+  );
 
-  console.log(docComponents);
-  return { props: { docComponents } };
+  const { data: app } = await getApp(context.query);
+  const { data: page } = await getPage(context.query || {});
+
+  return { props: { myCollection, app, page } };
 }

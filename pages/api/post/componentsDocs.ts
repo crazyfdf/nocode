@@ -2,8 +2,7 @@
 const { exec } = require('child_process');
 
 export default function (req, res) {
-  const { values } = req.body;
-  const { name, file, describe, title } = values;
+  const { name, file, describe, title } = req.body.data;
   const yeoman = `cd /D ${file} && yo docs name:${name} describe:${describe}`;
   exec(yeoman, (err, stdout, stderr) => {
     if (err) {

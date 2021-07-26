@@ -1,10 +1,13 @@
 const path = require('path');
+// const glob=require('glob')
+// const PurifyCssPlugin =require('purifycss-webpack')
 module.exports = {
   reactStrictMode: true,
   env: {
     dirname: path.resolve(),
-    baseURL: 'http://localhost:3000',
-    iconPath: '//at.alicdn.com/t/font_2649131_c835bz6h1x.js',
+    baseURL: 'http://localhost:3000/api',
+    baasBaseURL: 'https://cloudcms.uctoo.com/api/v1.0',
+    iconPath: '//at.alicdn.com/t/font_2649131_tpmmr9k6729.js',
   },
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
@@ -23,6 +26,11 @@ module.exports = {
     //     },
     //   });
     // }
+    // config.plugins=[
+    //   new PurifyCssPlugin ({
+    //     paths: glob.sync(path.join(__dirname,'src/**/*.html'))
+    //   })
+    // ]
     config.resolve.alias = {
       ...config.resolve.alias,
       '@': path.resolve(__dirname),

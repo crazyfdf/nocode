@@ -1,24 +1,24 @@
 import HeaderNocode from '@/components/Header/Header-nocode';
 import { Menu, Drawer, Dropdown, List, Card } from 'antd';
-import { useEffect, useMemo, useRef, useState } from 'react';
-
-import { createFromIconfontCN } from '@ant-design/icons';
+import { RefObject, useEffect, useMemo, useRef, useState } from 'react';
+import { configAdapter, defaultAdapter } from '@/components/Renderer/FormRenderAdapter';
 import glob from 'globby';
-import { getComponentASTApi, postComponentsCreatedApi } from '@/request/api';
-import { ComponentDoc } from '@/types/component';
+import Icon from '@/components/Icon/Icon';
+import {
+  getComponentAST,
+  postComponentsCreated,
+  postCollectionComponents,
+  getCollectionComponents,
+} from '@/request/api';
 import FormRender from '@/components/Renderer/FormRender';
 import { debounce } from '@/utils/tool';
 
 interface docComponentsInterface {
   title?: string;
+  name?: string;
+  isCollection: number;
   file: string;
 }
-
-const IconFont = createFromIconfontCN({
-  scriptUrl: [
-    process.env.iconPath as string, // icon-javascript, icon-java, icon-shoppingcart (overrided)
-  ],
-});
 
 const navigation: object[] = [
   { title: '模板库', icon: '', handler: 'user' },
@@ -27,21 +27,21 @@ const navigation: object[] = [
   { title: '打开VSCode', icon: '', handler: 'user' },
   { title: '生成组件文档', icon: '', handler: 'user' },
 ];
-const moduleList = [{ key: '0', title: '我的组件', icon: 'icon-guanlizujian' }];
+const moduleList = [
+  { key: '0', title: 'uct组件', icon: 'icon-guanlizujian' },
+  { key: '1', title: '我的组件', icon: 'icon-guanlizujian' },
+];
 
-export default function noCodeComponents({ docComponents }) {
-  const [visibleLeft, setVisibleLeft] = useState(true);
-  const [visibleRight, setVisibleRight] = useState(true);
-  const [currentLeft, setCurrentLeft] = useState('0');
-  const [currentComponent, setCurrentComponent] = useState(0);
-  const [title, setTitle] = useState('我的组件');
-  const [currentRight, setCurrentRight] = useState('0');
-  const astTemplateInit: ComponentDoc = {
-    displayName: '',
-    props: [],
-    exportName: '',
-  };
-  const [astTemplate, setAstTemplate] = useState(astTemplateInit);
+export default function noCodeComponents({ docComponents, myCollection }) {
+  const [visibleLeft, setVisibleLeft] = useState(true); // 是否显示左抽屉
+  const [visibleRight, setVisibleRight] = useState(true); // 是否显示右抽屉
+  const [currentLeft, setCurrentLeft] = useState('1'); // 当前左侧栏下标
+  const [currentComponent, setCurrentComponent] = useState(0); // 当前组件
+  const [currentRight, setCurrentRight] = useState('0'); // 当前右侧栏下标
+  const [dataSource, setDataSource] = useState(docComponents); // 当前左侧列表数据
+  const ref: RefObject<{ changeVal }> = useRef(null);
+
+  // const [astTemplate, setAstTemplate] = useState(docComponents[]); // 组件ast语法树
   const showDrawerLeft = () => {
     setVisibleLeft(true);
   };
@@ -50,10 +50,6 @@ export default function noCodeComponents({ docComponents }) {
     setVisibleLeft(false);
   };
 
-  // const showDrawerRight = () => {
-  //   setVisibleRight(true);
-  // };
-
   const onCloseRight = () => {
     setVisibleRight(false);
   };
@@ -61,7 +57,16 @@ export default function noCodeComponents({ docComponents }) {
   const changeModule = item => {
     visibleLeft || showDrawerLeft();
     setCurrentLeft(item.key);
-    setTitle(moduleList[parseInt(item.key, 10)].title);
+    switch (item.key) {
+      case '0':
+        setDataSource(docComponents);
+        break;
+      case '1':
+        setDataSource(myCollection);
+        break;
+      default:
+        break;
+    }
   };
 
   const handleClick = e => {
@@ -69,25 +74,21 @@ export default function noCodeComponents({ docComponents }) {
   };
 
   const changeComponent = async index => {
-    const { data } = await getComponentASTApi(docComponents[index]);
     let json = {};
-    await postComponentsCreatedApi({
-      title: docComponents[index].title,
+    await postComponentsCreated({
+      name: dataSource[index].name,
       file: `${process.env.dirname}/uni-components/`,
       json: json,
     });
-    console.log('====================================');
-    console.log(data);
-    console.log('====================================');
-    setAstTemplate(data);
+    ref.current &&
+      ref.current.changeVal(defaultAdapter(configAdapter(dataSource[index].props ?? [])));
     setCurrentComponent(index);
   };
-  const editComponent = ({ key }) => {};
 
   const handleFormSave = useMemo(() => {
     const saveData = async (data: any) => {
-      await postComponentsCreatedApi({
-        title: docComponents[currentComponent].title,
+      await postComponentsCreated({
+        title: dataSource[currentComponent].title,
         file: `${process.env.dirname}/uni-components/`,
         json: data,
       });
@@ -99,15 +100,30 @@ export default function noCodeComponents({ docComponents }) {
       console.log(id);
     };
   }, []);
-  const ref = useRef<HTMLDivElement>(null);
+  const editComponent = ({ key, domEvent }) => {
+    domEvent.stopPropagation();
+    domEvent.preventDefault();
+    switch (key) {
+      case '0':
+        break;
 
-  const menu = (
-    <Menu onClick={editComponent}>
-      <Menu.Item key='0'>修改名称</Menu.Item>
-      <Menu.Item key='1'>添加封面</Menu.Item>
-      <Menu.Item key='2'>删除组件</Menu.Item>
-    </Menu>
-  );
+      default:
+        break;
+    }
+  };
+
+  // const menu = (
+  //   <Menu inlineCollapsed={false} onClick={editComponent}>
+  //     <Menu.Item key='0'>添加收藏</Menu.Item>
+  //     <Menu.Item key='1'>添加封面</Menu.Item>
+  //     <Menu.Item key='2'>删除组件</Menu.Item>
+  //   </Menu>
+  // );
+  const collection = async (item, e) => {
+    e.stopPropagation();
+    const { data } = await postCollectionComponents({ data: item });
+    console.log(data);
+  };
 
   return (
     <div className='overflow-hidden'>
@@ -137,7 +153,7 @@ export default function noCodeComponents({ docComponents }) {
                 textAlign: 'center',
               }}
               title={item.title}
-              icon={<IconFont style={{ fontSize: '36px' }} type={item.icon} />}
+              icon={<Icon style={{ fontSize: '36px' }} type={item.icon} />}
             >
               <div style={{ marginLeft: '-10px', width: '80px' }}>{item.title}</div>
             </Menu.Item>
@@ -145,7 +161,7 @@ export default function noCodeComponents({ docComponents }) {
         </Menu>
         <div style={{ width: '400px' }}>
           <Drawer
-            title={title}
+            title={moduleList[Number(currentLeft)].title}
             width={400}
             style={{ top: '65px', left: '80px' }}
             placement='left'
@@ -156,47 +172,52 @@ export default function noCodeComponents({ docComponents }) {
             visible={visibleLeft}
             key='left'
           >
-            {currentLeft === '0' && (
-              <List
-                grid={{ gutter: 16, column: 2 }}
-                dataSource={docComponents}
-                renderItem={(item: docComponentsInterface, index: number) => (
-                  <List.Item
-                    className='shadow-md'
-                    onClick={() => {
-                      changeComponent(index);
-                    }}
+            <List
+              grid={{ gutter: 16, column: 2 }}
+              dataSource={dataSource}
+              renderItem={(item: docComponentsInterface, index: number) => (
+                <List.Item
+                  className='shadow-md'
+                  onClick={() => {
+                    changeComponent(index);
+                  }}
+                >
+                  <Card
+                    extra={
+                      <>
+                        <Icon
+                          onClick={e => collection(item, e)}
+                          style={{ fontSize: '24px' }}
+                          type={item.isCollection === 1 ? 'icon-shoucang1' : 'icon-shoucang'}
+                        />
+                        {/* <Dropdown overlay={menu} trigger={['click']}>
+                            <Icon
+                              onClick={e => e.stopPropagation()}
+                              style={{ fontSize: '24px' }}
+                              type='icon-more'
+                            />
+                          </Dropdown> */}
+                      </>
+                    }
+                    hoverable
+                    type='inner'
+                    headStyle={
+                      currentComponent === index
+                        ? { background: 'linear-gradient(to right, #00F5A0, #00D9F5)' }
+                        : {}
+                    }
+                    bodyStyle={
+                      currentComponent === index
+                        ? { background: 'linear-gradient(to right, #00F5A0, #00D9F5)' }
+                        : {}
+                    }
+                    title={item.title}
                   >
-                    <Card
-                      extra={
-                        <Dropdown overlay={menu}>
-                          <IconFont
-                            onClick={e => e.stopPropagation()}
-                            style={{ fontSize: '24px' }}
-                            type='icon-more'
-                          />
-                        </Dropdown>
-                      }
-                      hoverable
-                      type='inner'
-                      headStyle={
-                        currentComponent === index
-                          ? { background: 'linear-gradient(to right, #00F5A0, #00D9F5)' }
-                          : {}
-                      }
-                      bodyStyle={
-                        currentComponent === index
-                          ? { background: 'linear-gradient(to right, #00F5A0, #00D9F5)' }
-                          : {}
-                      }
-                      title={item.title}
-                    >
-                      {currentComponent}
-                    </Card>
-                  </List.Item>
-                )}
-              />
-            )}
+                    {currentComponent}
+                  </Card>
+                </List.Item>
+              )}
+            />
             <div style={{ height: '50px' }} />
           </Drawer>
         </div>
@@ -236,8 +257,8 @@ export default function noCodeComponents({ docComponents }) {
           >
             {currentRight === '0' && (
               <FormRender
-                config={astTemplate.props ?? []}
-                uid={astTemplate.exportName}
+                config={configAdapter(dataSource[currentComponent].props ?? [])}
+                uid={dataSource[currentComponent].title}
                 defaultValue={{}}
                 onSave={handleFormSave}
                 onDel={handleDel}
@@ -258,11 +279,26 @@ export async function getStaticProps() {
   // const read = promisify(readFile);
 
   const cwd = 'uni-components/node_modules/uctui';
-  const docComponents = glob.sync('components/uct-*/*.vue', { cwd }).map(f => {
+  const _docComponents = glob.sync('components/uct-*/*.vue', { cwd }).map(f => {
     const titleReg: RegExpExecArray | null = /\/uct-(.+)\/(.+).vue$/g.exec(f);
-    const title = titleReg ? titleReg[2] : null;
-    return { title, file: cwd + '/' + f };
+    const title = titleReg ? titleReg[1] : null;
+    const name = titleReg ? titleReg[2] : null;
+    return { name, title, file: cwd + '/' + f };
   });
 
-  return { props: { docComponents } };
+  const { data: _myCollection } = await getCollectionComponents();
+  const docComponents = await Promise.all(
+    _docComponents.map(async item => {
+      const { data } = await getComponentAST(item);
+      return Object.assign(item, data);
+    }),
+  );
+
+  const myCollection = await Promise.all(
+    _myCollection.map(async item => {
+      const { data } = await getComponentAST(item);
+      return Object.assign(item, data);
+    }),
+  );
+  return { props: { docComponents, myCollection } };
 }

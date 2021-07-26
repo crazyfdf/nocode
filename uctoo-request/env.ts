@@ -4,6 +4,7 @@ export interface RequestConfig extends AxiosRequestConfig {
   method?: Method;
   baseURL?: string;
   headers?: any;
+  isPending?: boolean;
   pending?: {
     [x: string]: any;
   };
@@ -17,8 +18,9 @@ export const apiConfig: RequestConfig = {
   url: '',
   // 配置请求头信息
   headers: {
-    'content-type': 'application/json;charset=UTF-8',
+    'Content-Type': 'application/json;charset=UTF-8',
   },
+  isPending: false,
   pending: {},
   showLoading: () => {},
   hideLoading: () => {},

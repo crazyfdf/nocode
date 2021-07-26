@@ -2,7 +2,7 @@ const { app, BrowserWindow } = require('electron');
 const isDev = require('electron-is-dev');
 const Store = require('electron-store');
 // const menuTemp = require('./src/temp/menuTemp');
-const setIpc = require('./ipc/index.ts');
+const setIpc = require('./ipc/index.js');
 
 Store.initRenderer();
 

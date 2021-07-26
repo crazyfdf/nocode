@@ -1,6 +1,7 @@
 export interface IUploadConfigType {
   key: string;
   name: string;
+  value: any;
   type: 'Upload';
   isCrop?: boolean;
   cropRate?: number;
@@ -16,6 +17,7 @@ export type TUploadDefaultType = Array<{
 export interface ITextConfigType {
   key: string;
   name: string;
+  value: any;
   type: 'Text';
 }
 export type TTextDefaultType = string;
@@ -23,6 +25,7 @@ export type TTextDefaultType = string;
 export interface ITextAreaConfigType {
   key: string;
   name: string;
+  value: any;
   type: 'TextArea';
 }
 export type TTextAreaDefaultType = string;
@@ -30,6 +33,7 @@ export type TTextAreaDefaultType = string;
 export interface INumberConfigType {
   key: string;
   name: string;
+  value: any;
   type: 'Number';
   range?: [number, number];
   step?: number;
@@ -40,6 +44,7 @@ export type TNumberDefaultType = number;
 export interface IDataListConfigType {
   key: string;
   name: string;
+  value: any;
   type: 'DataList';
   cropRate?: number;
 }
@@ -59,6 +64,7 @@ export type TDataListDefaultType = Array<TDataListDefaultTypeItem>;
 export interface IColorConfigType {
   key: string;
   name: string;
+  value: any;
   type: 'Color';
 }
 
@@ -67,6 +73,7 @@ export type TColorDefaultType = string;
 export interface IRichTextConfigType {
   key: string;
   name: string;
+  value: any;
   type: 'RichText';
 }
 export type TRichTextDefaultType = string;
@@ -74,6 +81,7 @@ export type TRichTextDefaultType = string;
 export interface IMutiTextConfigType {
   key: string;
   name: string;
+  value: any;
   type: 'MutiText';
 }
 
@@ -82,6 +90,7 @@ export type TMutiTextDefaultType = Array<string>;
 export interface ISelectConfigType<KeyType> {
   key: string;
   name: string;
+  value: any;
   type: 'Select';
   range: Array<{
     key: KeyType;
@@ -93,6 +102,7 @@ export type TSelectDefaultType<KeyType> = KeyType;
 export interface IRadioConfigType<KeyType> {
   key: string;
   name: string;
+  value: any;
   type: 'Radio';
   range: Array<{
     key: KeyType;
@@ -104,6 +114,7 @@ export type TRadioDefaultType<KeyType> = KeyType;
 export interface ISwitchConfigType {
   key: string;
   name: string;
+  value: any;
   type: 'Switch';
 }
 export type TSwitchDefaultType = boolean;
@@ -111,6 +122,7 @@ export type TSwitchDefaultType = boolean;
 export interface ICardPickerConfigType<T> {
   key: string;
   name: string;
+  value: any;
   type: 'CardPicker';
   icons: Array<T>;
 }
@@ -119,6 +131,7 @@ export type TCardPickerDefaultType<T> = T;
 export interface ITableConfigType {
   key: string;
   name: string;
+  value: any;
   type: 'Table';
 }
 export type TTableDefaultType = Array<{
@@ -129,6 +142,7 @@ export type TTableDefaultType = Array<{
 export interface IPosConfigType {
   key: string;
   name: string;
+  value: any;
   type: 'Pos';
   placeObj: {
     text: string;
@@ -143,6 +157,7 @@ export type TPosDefaultType = [TPosItem, TPosItem];
 export interface IFormItemsConfigType {
   key: string;
   name: string;
+  value: any;
   type: 'FormItems';
 }
 
@@ -153,6 +168,7 @@ export type baseFormOptionsType = {
 
 export type baseFormTextTpl = {
   id: string;
+  value: any;
   type: 'Text';
   label: string;
   placeholder: string;
@@ -160,13 +176,14 @@ export type baseFormTextTpl = {
 
 export type baseFormSwitchTpl = {
   id: string;
+  value: any;
   type: 'Switch';
   label: string;
-  placeholder: string;
 };
 
 export type baseFormNumberTpl = {
   id: string;
+  value: any;
   type: 'Number';
   label: string;
   placeholder: string;
@@ -174,6 +191,7 @@ export type baseFormNumberTpl = {
 
 export type baseFormTextAreaTpl = {
   id: string;
+  value: any;
   type: 'Textarea';
   label: string;
   placeholder: string;
@@ -181,6 +199,7 @@ export type baseFormTextAreaTpl = {
 
 export type baseFormRadioTpl = {
   id: string;
+  value: any;
   type: 'Radio';
   label: string;
   options: baseFormOptionsType[];
@@ -188,6 +207,7 @@ export type baseFormRadioTpl = {
 
 export type baseFormCheckboxTpl = {
   id: string;
+  value: any;
   type: 'Checkbox';
   label: string;
   options: baseFormOptionsType[];
@@ -195,6 +215,7 @@ export type baseFormCheckboxTpl = {
 
 export type baseFormSelectTpl = {
   id: string;
+  value: any;
   type: 'Select';
   label: string;
   options: baseFormOptionsType[];
@@ -202,6 +223,7 @@ export type baseFormSelectTpl = {
 
 export type baseFormDateTpl = {
   id: string;
+  value: any;
   type: 'Date';
   label: string;
   placeholder: string;

@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useLayoutEffect, useState } from 'react';
+import { RefObject, useEffect, useState } from 'react';
 import { RGBColor } from 'react-color';
 
 // 生成uuid
@@ -60,7 +60,7 @@ export function useGetRect() {
 
 export function useGetScrollBarWidth(ref: RefObject<HTMLElement>) {
   const [width, setWidth] = useState(0);
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (ref.current) {
       const diff = ref.current.offsetWidth - ref.current.clientWidth;
       setWidth(diff);
@@ -97,35 +97,34 @@ export function unParams(params = '?a=1&b=2&c=3') {
   return obj;
 }
 
-export function throttle(fn: Function, delay: number) {
-  let flag = true;
+export const throttle = (fn: Function, time: number = 500, isImmediate: boolean = true) => {
+  let flag: boolean = isImmediate;
   return (...args: any) => {
     if (flag) {
       flag = false;
       fn(...args);
       setTimeout(() => {
         flag = true;
-      }, delay);
+      }, time);
+    }
+    if (!isImmediate) {
+      isImmediate = true;
+      setTimeout(() => {
+        flag = true;
+      }, time);
     }
   };
-}
+};
 
-export const debounce = (fn, time = 500, isImmediate = true) => {
-  let timer: any = null;
+export const debounce = (fn: Function, time: number = 500, isImmediate: boolean = true) => {
+  let oldTime: number = isImmediate ? 0 : new Date().getTime();
   return (...args: any) => {
-    if (timer !== null) clearTimeout(timer);
-    if (isImmediate) {
-      if (!timer) {
-        typeof fn === 'function' && fn(...args);
-      }
-      timer = setTimeout(() => {
-        timer = null;
-      }, time);
-    } else {
-      timer = setTimeout(() => {
-        typeof fn === 'function' && fn(...args);
-      }, time);
+    let newTime = new Date().getTime();
+    let timeOut = newTime - oldTime;
+    if (timeOut >= time) {
+      fn(...args);
     }
+    oldTime = newTime;
   };
 };
 export function formatTime(fmt: string, dateObj: any): string {

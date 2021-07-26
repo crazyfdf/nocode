@@ -69,8 +69,8 @@ module.exports = plop => {
     prompts: [
       {
         type: 'input',
-        name: 'title',
-        default: 'title',
+        name: 'name',
+        default: 'name',
       },
       {
         type: 'input',
@@ -83,7 +83,7 @@ module.exports = plop => {
         type: 'modify',
         path: `{{file}}src/pages/index/index.vue`,
         pattern: /<uct-(.*)/gi,
-        template: '<{{title}} class="mt100" v-bind="item"></{{title}}>',
+        template: '<{{name}} class="mt100" v-bind="item"></{{name}}>',
       },
     ],
   });

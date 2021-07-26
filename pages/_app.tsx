@@ -2,8 +2,7 @@ import '../styles/globals.css';
 import 'antd/dist/antd.min.css';
 import Header from '@/components/Header/Header';
 import { Provider } from 'react-redux';
-import WithRedux from '@/components/hoc';
-import App from 'next/app';
+import { useStore } from '@/store/store';
 import { useRouter } from 'next/dist/client/router';
 
 const navigation = [
@@ -12,8 +11,9 @@ const navigation = [
   { title: '论坛', href: '#' },
   { title: '我的', href: '/user' },
 ];
-function MyApp({ Component, pageProps, ReduxStore }) {
+export default function MyApp({ Component, pageProps }) {
   const router = useRouter();
+  const store = useStore(pageProps.initialReduxState);
   // useEffect(() => {
   //   const { registerMicroApps, start } = require('qiankun');
   //   registerMicroApps([
@@ -30,7 +30,7 @@ function MyApp({ Component, pageProps, ReduxStore }) {
   // }, []);
   return (
     <div className='flex flex-col h-screen'>
-      <Provider store={ReduxStore}>
+      <Provider store={store}>
         {navigation.findIndex(item => item.href === router.pathname) !== -1 && (
           <Header navigation={navigation} />
         )}
@@ -39,17 +39,3 @@ function MyApp({ Component, pageProps, ReduxStore }) {
     </div>
   );
 }
-MyApp.getInitialProps = async appContext => {
-  const appProps = await App.getInitialProps(appContext);
-
-  /* 获取store并初始化 */
-  const store = appContext.ReduxStore;
-  store.subscribe(() => {
-    console.log('store change');
-  });
-  store.dispatch({ type: 'add' });
-
-  return { ...appProps };
-};
-// 使用WithRedux
-export default WithRedux(MyApp);

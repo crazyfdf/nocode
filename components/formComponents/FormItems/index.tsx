@@ -1,12 +1,11 @@
 import { baseFormUnion, TFormItemsDefaultType } from '@/types/types';
 import { uuid } from '@/utils/tool';
 import { PlusOutlined, MinusCircleFilled, EditFilled } from '@ant-design/icons';
-import { Button, Form, Tooltip } from 'antd';
+import { Button, Tooltip } from 'antd';
 import React, { RefObject, useCallback, useEffect, useState, memo } from 'react';
 import BasePopoverForm from '@/components/FormComponents/FormItems/BasePopoverForm';
 import EditorModal from '@/components/FormComponents/FormItems/EditorModal';
 import BaseForm from '@/components/FormComponents/FormItems/BaseForm';
-import { Store } from 'antd/lib/form/interface';
 
 const formTpl: TFormItemsDefaultType = [
   {
@@ -14,18 +13,20 @@ const formTpl: TFormItemsDefaultType = [
     type: 'Text',
     label: 'string',
     placeholder: 'string属性默认值',
+    value: '',
   },
   {
     id: '',
     type: 'Number',
     label: 'number',
     placeholder: 'number属性默认值',
+    value: '',
   },
   {
     id: '',
     type: 'Switch',
     label: 'boolean',
-    placeholder: 'boolean属性默认值',
+    value: '',
   },
   {
     id: '',
@@ -35,6 +36,7 @@ const formTpl: TFormItemsDefaultType = [
       { label: '选项一', value: '1' },
       { label: '选项二', value: '2' },
     ],
+    value: '',
   },
   {
     id: '',
@@ -45,42 +47,35 @@ const formTpl: TFormItemsDefaultType = [
       { label: '选项二', value: '2' },
       { label: '选项三', value: '3' },
     ],
+    value: '',
   },
   {
     id: '',
     type: 'Date',
     label: 'date',
     placeholder: 'date属性默认值',
+    value: '',
   },
 ];
-const formItemLayout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 16 },
-};
 interface FormItemsProps {
   formList?: TFormItemsDefaultType;
-  onChange?: (v: any) => void;
+  onChange?: any;
   data: any;
-  rightPanelRef: RefObject<HTMLDivElement>;
+  rightPanelRef: RefObject<{ changeVal }>;
 }
 function EditableFormItems(props: FormItemsProps) {
-  const { formList, data, onChange, rightPanelRef } = props;
+  const { formList: list, data: formData, onChange, rightPanelRef } = props;
   console.log('====================================');
-  console.log(formList, data);
+  console.log(list, formData);
   console.log('====================================');
-  const [formData, setFormData] = useState<TFormItemsDefaultType>(formList || []);
+  const [formList, setFormList] = useState<TFormItemsDefaultType>(list || []);
   const [visible, setVisible] = useState(false);
   const [curItem, setCurItem] = useState<baseFormUnion>();
   const [force, setForce] = useState<{ force: Function }>({
     force: () => {},
   });
   const handleAddItem = (item: baseFormUnion) => {
-    // let tpl = formTpl.find(v => v.type === item.type);
-    // let newData = [...formData, { ...tpl!, id: uuid(6, 10) }];
-    // setFormData(newData);
     handleEditItem(item);
-    // onChange && onChange(newData);
-    // force.force();
   };
 
   const handleEditItem = (item: baseFormUnion) => {
@@ -89,14 +84,16 @@ function EditableFormItems(props: FormItemsProps) {
   };
 
   const handleDelItem = (item: baseFormUnion) => {
-    let newData = formData.filter(v => v.id !== item.id);
-    setFormData(newData);
-    onChange && onChange(newData);
+    let newData = formList.filter(v => v.id !== item.id);
+    setFormList(newData);
+    onChange({
+      [formData.id]: formList.map(item => ({ [item.id]: item.value })),
+    });
   };
 
   const handleSaveItem = (data: baseFormUnion) => {
     let add = true;
-    let newData = formData.map(v => {
+    let newData = formList.map(v => {
       if (v.id === data.id) {
         add = false;
         return data;
@@ -105,11 +102,15 @@ function EditableFormItems(props: FormItemsProps) {
       }
     });
     if (add) {
-      setFormData([...newData, data]);
-      onChange && onChange([...newData, data]);
+      setFormList([...newData, data]);
+      onChange({
+        [formData.id]: [
+          ...formList.map(item => ({ [item.id]: item.value })),
+          { [data.id]: data.value },
+        ],
+      });
     } else {
-      setFormData(newData);
-      onChange && onChange(newData);
+      setFormList(newData);
     }
     setVisible(false);
   };
@@ -120,49 +121,55 @@ function EditableFormItems(props: FormItemsProps) {
     console.log(v);
     setForce({ force: v });
   }, []);
-  useEffect(() => {
-    let listener: (e: Event) => void;
-    if (rightPanelRef.current) {
-      listener = () => {
-        force.force();
-      };
-      rightPanelRef.current.addEventListener('scroll', listener);
-    }
-    return () => {
-      if (rightPanelRef.current) {
-        rightPanelRef.current.removeEventListener('scroll', listener);
+  // useEffect(() => {
+  //   let listener: (e: Event) => void;
+  //   console.log('====================================');
+  //   console.log(rightPanelRef);
+  //   console.log('====================================');
+  //   if (rightPanelRef.current) {
+  //     listener = () => {
+  //       force.force();
+  //     };
+  //     rightPanelRef.current.addEventListener('scroll', listener);
+  //   }
+  //   return () => {
+  //     if (rightPanelRef.current) {
+  //       rightPanelRef.current.removeEventListener('scroll', listener);
+  //     }
+  //   };
+  // }, [force, rightPanelRef]);
+  // const [form] = Form.useForm();
+  const handleChange = data => {
+    formList.forEach((item, index) => {
+      if (item.id === data.id) {
+        formList[index].value = data.value;
       }
-    };
-  }, [force, rightPanelRef]);
-  const [form] = Form.useForm();
-  const handlechange = () => {
-    onFinish(form.getFieldsValue());
+    });
+
+    onChange &&
+      onChange({
+        [formData.id]: formList.map(item => ({ [item.id]: item.value })),
+      });
   };
-  const onFinish = (values: Store) => {
-    onChange && onChange(values);
-  };
+
   return (
     <div>
-      <Form
-        form={form}
-        name={data.id}
-        layout='horizontal'
-        {...formItemLayout}
-        onFinish={onFinish}
-        initialValues={formData}
-        onValuesChange={handlechange}
-      >
-        {formData.map((item: baseFormUnion) => {
-          let FormItem = BaseForm[item.type];
-          return (
-            <div className='flex justify-between items-center mb-4' key={uuid(6, 10)}>
-              <MinusCircleFilled onClick={() => handleDelItem(item)} />
-              <FormItem {...item} />
-              <EditFilled onClick={() => handleEditItem(item)} />
+      {formList.map((item: baseFormUnion) => {
+        let FormItem = BaseForm[item.type];
+        return (
+          <div className='flex justify-between items-center mb-4' key={uuid(6, 10)}>
+            <MinusCircleFilled onClick={() => handleDelItem(item)} />
+            <div className='flex mx-1 flex-1 items-center'>
+              {item.id}：
+              <FormItem
+                {...item}
+                onChange={(id, e) => handleChange({ ...item, value: e.target.value })}
+              />
             </div>
-          );
-        })}
-      </Form>
+            <EditFilled onClick={() => handleEditItem(item)} />
+          </div>
+        );
+      })}
       <Tooltip
         placement='leftBottom'
         title={
@@ -175,7 +182,7 @@ function EditableFormItems(props: FormItemsProps) {
                   className='flex flex-col mb-1'
                   onClick={() => handleAddItem(item)}
                 >
-                  <FormItem {...item} />
+                  <FormItem {...item} onChange={onChange} />
                 </div>
               );
             })}

@@ -198,7 +198,7 @@ export default class Edit extends React.Component {
       },
     },
   }) {
-    super(props);
+    super();
     this.state = {
       image: props.defaultImage.c,
       pixSize: 20,
