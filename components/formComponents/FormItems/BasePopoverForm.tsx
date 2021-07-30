@@ -10,6 +10,7 @@ import {
   baseFormTextTpl,
   baseFormUnionType,
   baseFormSwitchTpl,
+  baseFormColorTpl,
 } from '@/types/types';
 
 // 维护表单控件， 提高form渲染性能
@@ -22,15 +23,15 @@ const BaseForm: TBaseForm = {
   Text: (props: baseFormTextTpl & { onChange: (v: string | undefined) => void }) => {
     const { label, onChange } = props;
     return (
-      <Button
-        style={{
-          color: '#fff',
-          backgroundColor: '#4a4a4a',
-          borderRadius: '2px',
-          lineHeight: '0px',
-        }}
-        onChange={() => onChange}
-      >
+      <Button style={{ color: '#fff', backgroundColor: '#4a4a4a' }} onChange={() => onChange}>
+        {label}
+      </Button>
+    );
+  },
+  Color: (props: baseFormColorTpl & { onChange: (v: string | undefined) => void }) => {
+    const { label, onChange } = props;
+    return (
+      <Button style={{ color: '#fff', backgroundColor: '#4a4a4a' }} onChange={() => onChange}>
         {label}
       </Button>
     );

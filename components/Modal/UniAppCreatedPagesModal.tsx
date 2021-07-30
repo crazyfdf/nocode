@@ -1,6 +1,6 @@
 import { Select, Modal, Form, Input, Button } from 'antd';
-import { postApp, postPage } from '@/request/api';
-import { useEffect, useState, useImperativeHandle, forwardRef } from 'react';
+import { postPage } from '@/request/api';
+import { useState, useImperativeHandle, forwardRef } from 'react';
 
 const { Option } = Select;
 
@@ -28,7 +28,7 @@ const tailFormItemLayout = {
   },
 };
 function UniAppCreatedPagesModal(props, ref) {
-  const { changeData } = props;
+  const { changeData, app } = props;
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalLoading, setIsModalLoading] = useState(false);
   const [filePath, setFilePath] = useState('');
@@ -43,7 +43,7 @@ function UniAppCreatedPagesModal(props, ref) {
     // await postComponentDocs({
     //   data: values,
     // });
-    const { data } = await postPage({ data: values });
+    const data = await postPage({ page: values, app });
     changeData(data);
   };
   const handleCancel = () => {
@@ -54,6 +54,7 @@ function UniAppCreatedPagesModal(props, ref) {
     console.log('Received values of form: ', values);
 
     await handleOk(values);
+    form.resetFields();
 
     setIsModalVisible(false);
     setIsModalLoading(false);

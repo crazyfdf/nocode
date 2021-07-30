@@ -1,12 +1,4 @@
-import React, {
-  useMemo,
-  memo,
-  ReactNode,
-  useContext,
-  CSSProperties,
-  useState,
-  useImperativeHandle,
-} from 'react';
+import { memo, ReactNode, useState } from 'react';
 import { List, Card, Tooltip } from 'antd';
 
 interface docComponentsInterface {
@@ -18,20 +10,15 @@ interface docComponentsInterface {
 
 interface SourceBoxProps {
   dataSource: any;
-  header: ReactNode;
+  header?: ReactNode;
+  change?: (index: number) => void;
 }
 const SourceBox = (props: SourceBoxProps) => {
-  const { dataSource, header } = props;
+  const { dataSource, header, change } = props;
   const [current, setCurrent] = useState(0); // 当前位置
-  // const [dataSource, setDataSource] = useState([]); // 当前列表数据
-  // useImperativeHandle(ref, () => ({
-  //   changeVal: newVal => {
-  //     setDataSource(newVal);
-  //   },
-  // }));
   const changeComponent = async index => {
-    let json = {};
     setCurrent(index);
+    change && change(index);
   };
   return (
     <List
@@ -49,17 +36,11 @@ const SourceBox = (props: SourceBoxProps) => {
               extra={header}
               hoverable
               type='inner'
-              headStyle={
-                current === index
-                  ? { background: 'linear-gradient(to right, #ECE9E6, #FFFFFF' }
-                  : {}
-              }
-              bodyStyle={
-                current === index
-                  ? { background: 'linear-gradient(to right, #ECE9E6, #FFFFFF' }
-                  : {}
+              className={
+                current === index ? 'border-solid border-4 border-light-blue-500 box-border' : ''
               }
               title={item.title}
+              bordered={false}
             >
               <div className='truncate h-10'>{item.description || ''}</div>
             </Card>

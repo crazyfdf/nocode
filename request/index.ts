@@ -1,7 +1,7 @@
 import api from 'uctoo-request';
 
 const request = api.create({
-  baseURL: process.env.baseURL,
+  baseURL: `${process.env.baseURL}/api`,
 });
 
 export default (() => {

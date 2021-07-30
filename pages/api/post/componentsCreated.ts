@@ -27,17 +27,17 @@ const escape = (data: Object) => {
 };
 export default function (req, res) {
   const { file, json, name } = req.body.data;
-  const plop = `cd /D ${process.env.dirname}/generator-docs && yarn plop component ${name} ${escape(
-    json,
-  )} ${file}`;
+  // const plop = `cd /D ${process.env.dirname}/generator-docs && yarn plop component ${name} ${escape(
+  //   json,
+  // )} ${file}`;
 
-  exec(plop, (err, stdout, stderr) => {
-    if (err) {
-      console.log(stderr);
-    } else {
-      console.log(plop);
-    }
-  });
+  // exec(plop, (err, stdout, stderr) => {
+  //   if (err) {
+  //     console.log(stderr);
+  //   } else {
+  //     console.log(plop);
+  //   }
+  // });
 
   res.status(200).json({ msg: 'success' });
 }

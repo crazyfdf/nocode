@@ -1,16 +1,16 @@
 import HeaderNocode from '@/components/Header/Header-nocode';
 import { Menu, Drawer, Tabs } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Icon from '@/components/Icon/Icon';
 import SourceBox from '@/components/SourceBox/SourceBox';
-import {
-  getApp,
-  getCollectionComponents,
-  getComponentAST,
-  getPage,
-  getUniPagesConfig,
-} from '@/request/api';
+import { getApp, getCollectionComponents, getComponentAST } from '@/request/api';
 import PagesBox from '@/components/SourceBox/PagesBox';
+import FormRender from '@/components/Renderer/FormRender';
+import { debounce } from '@/utils/tool';
+import { patchUniPagesConfig, patchUniAppsConfig } from '@/CMSRequest/api';
+import uniAppPage from '@/public/json/uniAppPage';
+import uniAppApp from '@/public/json/uniAppApp';
+import { configAdapter } from '@/components/Renderer/FormRenderAdapter';
 
 const { TabPane } = Tabs;
 
@@ -24,33 +24,97 @@ const navigation: object[] = [
   { title: '打开VSCode', icon: '', handler: 'user' },
 ];
 const moduleList = [
-  { key: 0, title: '页面', icon: 'icon-shouye' },
-  { key: 1, title: '组件', icon: 'icon-guanlizujian' },
-  { key: 2, title: '模板', icon: 'icon-APPmoban' },
-  { key: 3, title: '应用', icon: 'icon-yingyong' },
+  { key: 0, title: '组件', icon: 'icon-guanlizujian' },
+  { key: 1, title: '页面', icon: 'icon-shouye' },
+  { key: 2, title: '应用', icon: 'icon-yingyong' },
+  { key: 3, title: '模板', icon: 'icon-APPmoban' },
 ];
 
-export default function noCodeApp({ myCollection, app, page }) {
-  const [visibleRight, setVisibleRight] = useState(true);
-  const [currentRight, setCurrentRight] = useState('0');
-
-  const showDrawerRight = () => {
-    setVisibleRight(true);
-  };
-
-  const onCloseRight = () => {
-    setVisibleRight(false);
-  };
-
-  const handleClick = e => {
+export default function noCodeApp({ myCollection, appInit, apps }) {
+  const { pageId: pages = [] } = appInit;
+  const [currentRight, setCurrentRight] = useState('0'); // 当前右侧下标
+  const [app, setApp] = useState(appInit); // 当前app
+  const [page, setPage] = useState(pages && pages[0]); // 当前页面
+  const [component, setComponent] = useState(myCollection && myCollection[0]); // 当前组件
+  const ref = useRef(null);
+  const changeRight = e => {
     setCurrentRight(e.key);
   };
-
-  const changePage = async (index: number) => {
-    console.log(page[index]);
-    const res = await getUniPagesConfig({ id: page[index].name });
-    console.log(res);
+  const changeLeft = key => {
+    changeRight({ key: `${key}` });
   };
+
+  const changePage = useMemo(
+    () => index => {
+      app.pageId && setPage(app.pageId[index]);
+    },
+    [app],
+  );
+  const changeApp = useMemo(
+    () => index => {
+      setApp(apps[index]);
+    },
+    [],
+  );
+  const changeComponent = useMemo(
+    () => index => {
+      setComponent(myCollection[index]);
+    },
+    [],
+  );
+
+  const componentConfigSave = useMemo(() => {
+    const saveData = async (data: any) => {
+      //   const style = JSON.stringify({ ...JSON.parse(page.uniPagesConfigId.style), ...data });
+      //   await patchUniPagesConfig(page.uniPagesConfigId._id, {
+      //     style,
+      //   });
+      //   page.uniPagesConfigId.style = style;
+      //   setPage(page);
+      console.log(data);
+    };
+    // return debounce(saveData, 1000, false);
+    return saveData;
+  }, [page]);
+
+  const componentConfigDel = useMemo(() => {
+    return (id: any) => {
+      console.log(id);
+    };
+  }, []);
+
+  const pageConfigSave = useMemo(() => {
+    const saveData = async (data: any) => {
+      const style = JSON.stringify({ ...JSON.parse(page.uniPagesConfigId.style), ...data });
+      await patchUniPagesConfig(page.uniPagesConfigId._id, {
+        style,
+      });
+      page.uniPagesConfigId.style = style;
+      setPage(page);
+    };
+    return debounce(saveData, 1000, false);
+  }, [page]);
+
+  const pageConfigDel = useMemo(() => {
+    return (id: any) => {
+      console.log(id);
+    };
+  }, []);
+
+  const appConfigSave = useMemo(() => {
+    const saveData = async (data: any) => {
+      await patchUniAppsConfig(app.uctuiConfigId._id, {
+        style: JSON.stringify({ ...JSON.parse(app.uctuiConfigId.uctuiConfig), ...data }),
+      });
+    };
+    return debounce(saveData, 1000, false);
+  }, [app]);
+
+  const appConfigDel = useMemo(() => {
+    return (id: any) => {
+      console.log(id);
+    };
+  }, []);
 
   return (
     <div className='overflow-hidden'>
@@ -61,6 +125,7 @@ export default function noCodeApp({ myCollection, app, page }) {
             type='line'
             tabBarStyle={{ backgroundColor: '#fafafa' }}
             className='h-full shadow-xl'
+            onChange={changeLeft}
             key='left'
             tabPosition='left'
           >
@@ -74,7 +139,7 @@ export default function noCodeApp({ myCollection, app, page }) {
               }
               key={moduleList[0].key}
             >
-              <PagesBox data={page} changePage={changePage} />
+              <SourceBox dataSource={myCollection} change={changeComponent} />
             </TabPane>
             <TabPane
               className='p-4'
@@ -86,7 +151,7 @@ export default function noCodeApp({ myCollection, app, page }) {
               }
               key={moduleList[1].key}
             >
-              <SourceBox header={{}} dataSource={myCollection} />
+              <PagesBox data={app.pageId} changePage={changePage} app={app} />
             </TabPane>
             <TabPane
               className='p-4'
@@ -98,7 +163,7 @@ export default function noCodeApp({ myCollection, app, page }) {
               }
               key={moduleList[2].key}
             >
-              <p>2</p>
+              <SourceBox dataSource={apps} change={changeApp} />
             </TabPane>
             <TabPane
               className='p-4'
@@ -110,9 +175,10 @@ export default function noCodeApp({ myCollection, app, page }) {
               }
               key={moduleList[3].key}
             >
-              <SourceBox header={{}} dataSource={app} />
+              <p>3</p>
             </TabPane>
           </Tabs>
+          <div style={{ height: '50px' }} />
         </div>
         <div className='iframe'>
           <iframe
@@ -125,10 +191,10 @@ export default function noCodeApp({ myCollection, app, page }) {
         <div style={{ width: '340px' }}>
           <Drawer
             title={
-              <Menu onClick={handleClick} selectedKeys={[currentRight]} mode='horizontal'>
-                <Menu.Item key='component'>组件编辑</Menu.Item>
-                <Menu.Item key='page'>页面编辑</Menu.Item>
-                <Menu.Item key='application'>应用编辑</Menu.Item>
+              <Menu onClick={changeRight} selectedKeys={[currentRight]} mode='horizontal'>
+                <Menu.Item key='0'>组件编辑</Menu.Item>
+                <Menu.Item key='1'>页面编辑</Menu.Item>
+                <Menu.Item key='2'>应用编辑</Menu.Item>
               </Menu>
             }
             width={340}
@@ -137,12 +203,38 @@ export default function noCodeApp({ myCollection, app, page }) {
             maskClosable={false}
             closable={false}
             mask={false}
-            visible={visibleRight}
+            visible={true}
             key='right'
           >
-            {currentRight === 'component' && <p>component</p>}
-            {currentRight === 'page' && <p>page</p>}
-            {currentRight === 'application' && <p>application</p>}
+            {currentRight === '0' && (
+              <FormRender
+                config={configAdapter(component.props ?? [])}
+                uid={component.title}
+                onSave={componentConfigSave}
+                onDel={componentConfigDel}
+                rightPanelRef={ref}
+              />
+            )}
+            {currentRight === '1' && page && (
+              <FormRender
+                config={uniAppPage}
+                defaultValue={JSON.parse(page.uniPagesConfigId.style)}
+                onSave={pageConfigSave}
+                onDel={pageConfigDel}
+                uid={page._id}
+                rightPanelRef={ref}
+              />
+            )}
+            {currentRight === '2' && (
+              <FormRender
+                config={uniAppApp}
+                onSave={appConfigSave}
+                onDel={appConfigDel}
+                uid={app._id}
+                rightPanelRef={ref}
+              />
+            )}
+            <div style={{ height: '50px' }} />
           </Drawer>
         </div>
       </div>
@@ -161,8 +253,17 @@ export async function getServerSideProps(context) {
     }),
   );
 
-  const { data: app } = await getApp(context.query);
-  const { data: page } = await getPage(context.query || {});
+  const { data: apps } = await getApp({});
+  console.log('====================================');
+  console.log(apps);
+  console.log('====================================');
+  let appInit;
+  if (Object.entries(context.query).length) {
+    const { data } = await getApp(context.query);
+    appInit = data;
+  } else {
+    appInit = apps[0] || [];
+  }
 
-  return { props: { myCollection, app, page } };
+  return { props: { myCollection, appInit, apps } };
 }

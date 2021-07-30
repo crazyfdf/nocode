@@ -8,58 +8,88 @@ import {
   baseFormTextTpl,
   baseFormSwitchTpl,
   baseFormUnionType,
+  baseFormColorTpl,
 } from '@/types/types';
 import { uuid } from '@/utils/tool';
-import { Checkbox, DatePicker, Form, Input, Radio, Select, Switch } from 'antd';
-import { memo } from 'react';
+import { DatePicker, Input, Select } from 'antd';
+import Switch from '@/components/FormComponents/Switch';
+import Color from '@/components/FormComponents/Color';
+import Checkbox from '@/components/FormComponents/Checkbox';
 // 维护表单控件， 提高form渲染性能
 
 type TBaseForm = {
   [key in baseFormUnionType]: any;
 };
-const compare = (preProps, nextProps) => {
-  return true;
-};
 
 const BaseForm: TBaseForm = {
-  Text: memo((props: baseFormTextTpl & { onChange }) => {
-    const { id, placeholder, onChange } = props;
-    return <Input placeholder={placeholder} onChange={() => onChange(id, event)} />;
-  }, compare),
-  Textarea: (props: baseFormTextAreaTpl & { onChange }) => {
-    const { id, placeholder, onChange } = props;
-    return <Input.TextArea placeholder={placeholder} onChange={() => onChange(id, event)} />;
-  },
-  Number: (props: baseFormNumberTpl & { onChange }) => {
-    const { id, placeholder, onChange } = props;
-    return <Input type='number' placeholder={placeholder} onChange={() => onChange(id, event)} />;
-  },
-  Switch: (props: baseFormSwitchTpl & { onChange }) => {
-    const { id, onChange } = props;
-    return <Switch onChange={() => onChange(id, event)} />;
-  },
-  Radio: (props: baseFormRadioTpl & { onChange }) => {
-    const { id, options, onChange } = props;
+  Text: (props: baseFormTextTpl & { onChange }) => {
+    const { id, placeholder, value, onChange } = props;
     return (
-      <Radio.Group onChange={() => onChange(id, event)}>
-        {options.map((v: any) => (
-          <Radio value={v.value} key={uuid(6, 10)}>
-            {v.label}
-          </Radio>
-        ))}
-      </Radio.Group>
+      <Input placeholder={placeholder} onChange={() => onChange(id, event)} defaultValue={value} />
     );
   },
+  Color: (props: baseFormColorTpl & { onChange }) => {
+    const { id, placeholder, value, onChange } = props;
+    return <Color onChange={value => onChange(id, { target: { value } })} value={value} />;
+  },
+  Textarea: (props: baseFormTextAreaTpl & { onChange }) => {
+    const { id, placeholder, value, onChange } = props;
+    return (
+      <Input.TextArea
+        placeholder={placeholder}
+        onChange={() => onChange(id, event)}
+        defaultValue={value}
+      />
+    );
+  },
+  Number: (props: baseFormNumberTpl & { onChange }) => {
+    const { id, placeholder, value, onChange } = props;
+    return (
+      <Input
+        type='number'
+        placeholder={placeholder}
+        onChange={() => onChange(id, event)}
+        defaultValue={value}
+      />
+    );
+  },
+  Switch: (props: baseFormSwitchTpl & { onChange }) => {
+    const { id, onChange, value } = props;
+    return <Switch id={id} value={value} onChange={value => onChange(id, { target: { value } })} />;
+  },
+  Radio: (props: baseFormRadioTpl & { onChange }) => {
+    const { id, options, value, onChange } = props;
+    return options.map((v: any) => (
+      <div key={uuid(6, 10)} className='flex items-center'>
+        <label className='ml-3 block text-sm font-medium text-gray-700'>{v.label}</label>
+        <input
+          type='radio'
+          name={id}
+          value={value}
+          className='focus:ring-indigo-500 h-4 w-4 ml-1 text-indigo-600 border-gray-300'
+          onChange={() => onChange(id, event)}
+        />
+      </div>
+    ));
+  },
   Checkbox: (props: baseFormCheckboxTpl & { onChange }) => {
-    const { label, options, id, onChange } = props;
-    return <Checkbox.Group options={options} onChange={() => onChange(id, event)} />;
+    const { id, options, value, onChange } = props;
+    return (
+      <Checkbox
+        options={options}
+        value={value}
+        onChange={value => onChange(id, { target: { value } })}
+      />
+    );
   },
   Date: (props: baseFormDateTpl & { onChange }) => {
-    const { label, id, placeholder, onChange } = props;
-    return <DatePicker placeholder={placeholder} onChange={() => onChange(id, event)} />;
+    const { value, id, placeholder, onChange } = props;
+    return (
+      <DatePicker placeholder={placeholder} onChange={() => onChange(id, event)} value={value} />
+    );
   },
   Select: (props: baseFormSelectTpl & { onChange }) => {
-    const { label, id, options, onChange } = props;
+    const { id, options, onChange } = props;
     return (
       <Select placeholder='请选择' onChange={() => onChange(id, event)}>
         {options.map((v: any) => {

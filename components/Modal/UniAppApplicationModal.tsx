@@ -76,13 +76,13 @@ function UniAppApplicationModal(props, ref) {
         },
       });
 
-      subWin.loadURL(`${process.env.baseURL}/no-code/components`);
+      subWin.loadURL(`${process.env.baseURL}/no-code/app?id=${res.id}`);
 
       subWin.on('close', () => {
         subWin = null;
       });
     } else {
-      window.open(`${process.env.baseURL}/no-code/components`);
+      window.open(`${process.env.baseURL}/no-code/app?id=${res.id}`);
     }
   };
   const handleCancel = () => {
@@ -93,7 +93,7 @@ function UniAppApplicationModal(props, ref) {
     console.log('Received values of form: ', values);
 
     await handleOk(values);
-
+    form.resetFields();
     setIsModalVisible(false);
     setIsModalLoading(false);
   };
@@ -137,7 +137,7 @@ function UniAppApplicationModal(props, ref) {
         <Form.Item
           name='file'
           label='项目路径'
-          rules={[{ required: true, message: '项目路径不能为空', whitespace: true }]}
+          rules={[{ message: '项目路径不能为空', whitespace: true }]}
         >
           <Button onClick={selectFile}>选择项目文件夹</Button>
           <Input value={filePath} placeholder='请选择项目文件夹' />

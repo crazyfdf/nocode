@@ -1,8 +1,8 @@
-import React, { FC, memo, useEffect } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { Form, Select, Input, Modal, Button, InputNumber } from 'antd';
 import { baseFormOptionsType } from '@/types/types';
 import { uuid } from '@/utils/tool';
-// import Color from '../Color';
+import Color from '@/components/FormComponents/Color';
 
 const { Option } = Select;
 
@@ -11,33 +11,31 @@ const formItemLayout = {
   wrapperCol: { span: 14 },
 };
 
-interface EditorModalProps {
-  item: any;
-  onSave: (data: any) => void;
-  onCancel: () => void;
-  visible: boolean;
-}
+const EditorModal = (props, ref) => {
+  const { item, onSave } = props;
+  const [visible, setVisible] = useState(false);
+  const [form] = Form.useForm();
 
-const EditorModal: FC<EditorModalProps> = props => {
-  const { item, onSave, visible, onCancel } = props;
-
+  useImperativeHandle(ref, () => ({
+    changeVal: newVal => {
+      setVisible(newVal);
+    },
+  }));
   const onFinish = (values: any) => {
     onSave && onSave(values);
   };
-
+  const onCancel = () => {
+    setVisible(false);
+  };
   const handleOk = () => {
     form.validateFields().then(values => {
       onSave && onSave(values);
+      setVisible(false);
     });
   };
-
-  const [form] = Form.useForm();
-
   useEffect(() => {
-    if (form && item && visible) {
-      form.resetFields();
-    }
-  }, [form, item, visible]);
+    form.resetFields();
+  }, [visible]);
 
   return (
     <>
@@ -46,7 +44,7 @@ const EditorModal: FC<EditorModalProps> = props => {
           title='设置props属性'
           footer={
             <div>
-              <Button type='primary' onClick={() => handleOk()}>
+              <Button type='primary' onClick={handleOk}>
                 确定
               </Button>
             </div>
@@ -67,41 +65,47 @@ const EditorModal: FC<EditorModalProps> = props => {
             <Form.Item label='类型' name='type' hidden>
               <Input />
             </Form.Item>
-
             <Form.Item
               label='字段名'
               name='id'
-              tooltip='请输入props内的字段名!'
+              tooltip='name'
               rules={[{ required: true, message: '请输入props内的字段名!' }]}
             >
               <Input />
             </Form.Item>
-
             {!!item.label && (
-              <Form.Item label='字段名说明' name='label'>
+              <Form.Item label='字段名说明' name='label' tooltip='label'>
                 <Input />
               </Form.Item>
             )}
-            {!!item.fontSize && (
-              <Form.Item
-                label='字体大小'
-                name='fontSize'
-                rules={[{ required: true, message: '请输入字体大小!' }]}
-              >
-                <InputNumber min={12} max={30} defaultValue={14} />
+            {['Text', 'Textarea'].includes(item.type) && (
+              <Form.Item label='字段默认值' name='value' tooltip='value'>
+                <Input />
               </Form.Item>
             )}
-            {/* {!!item.color && (
+            {item.type === 'Color' && (
               <Form.Item
-                label="文字颜色"
-                name="color"
-                rules={[{ required: true, message: '请输入文字颜色!' }]}
+                label='颜色默认值'
+                name='value'
+                tooltip='value'
+                rules={[{ required: true, message: '请选择颜色默认值!' }]}
               >
                 <Color />
               </Form.Item>
-            )} */}
+            )}
+
+            {item.type === 'Number' && (
+              <Form.Item
+                label='数字默认值'
+                name='value'
+                tooltip='value'
+                rules={[{ required: true, message: '请输入字段默认值!' }]}
+              >
+                <InputNumber />
+              </Form.Item>
+            )}
             {!!item.placeholder && (
-              <Form.Item label='提示文本' name='placeholder'>
+              <Form.Item label='提示文本' name='placeholder' tooltip='placeholder'>
                 <Input placeholder='请输入提示文本' />
               </Form.Item>
             )}
@@ -133,4 +137,4 @@ const EditorModal: FC<EditorModalProps> = props => {
   );
 };
 
-export default memo(EditorModal);
+export default forwardRef(EditorModal);

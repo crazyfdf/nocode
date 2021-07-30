@@ -32,7 +32,7 @@ function uuid(len: number, radix: number) {
 }
 
 // 将rgba字符串对象转化为rgba对象
-function rgba2Obj(rgba = '') {
+function rgba2Obj(rgba = 'rgba(255,255,255)') {
   let reg = /rgba\((\d+),(\d+),(\d+),(\d+)\)/g;
   let rgbaObj: RGBColor = { r: 0, g: 0, b: 0, a: 0 };
 
@@ -42,8 +42,37 @@ function rgba2Obj(rgba = '') {
   });
   return rgbaObj;
 }
+// 将rgb颜色转成hex
+function colorRGB2Hex(color) {
+  var rgb = color.split(',');
+  var r = parseInt(rgb[0].split('(')[1], 10);
+  var g = parseInt(rgb[1], 10);
+  var b = parseInt(rgb[2].split(')')[0], 10);
 
-export { uuid, rgba2Obj };
+  var hex = '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  return hex;
+}
+// 将hex颜色转成rgb
+function hexToRgba(hex, opacity) {
+  var RGBA =
+    'rgba(' +
+    parseInt('0x' + hex.slice(1, 3), 10) +
+    ',' +
+    parseInt('0x' + hex.slice(3, 5), 10) +
+    ',' +
+    parseInt('0x' + hex.slice(5, 7), 10) +
+    ',' +
+    opacity +
+    ')';
+  return {
+    red: parseInt('0x' + hex.slice(1, 3), 10),
+    green: parseInt('0x' + hex.slice(3, 5), 10),
+    blue: parseInt('0x' + hex.slice(5, 7), 10),
+    rgba: RGBA,
+  };
+}
+
+export { uuid, rgba2Obj, colorRGB2Hex, hexToRgba };
 
 export const isDev = process.env.NODE_ENV === 'development';
 

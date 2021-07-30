@@ -174,6 +174,14 @@ export type baseFormTextTpl = {
   placeholder: string;
 };
 
+export type baseFormColorTpl = {
+  id: string;
+  value: any;
+  type: 'Color';
+  label: string;
+  placeholder: string;
+};
+
 export type baseFormSwitchTpl = {
   id: string;
   value: any;
@@ -232,6 +240,7 @@ export type baseFormDateTpl = {
 export type baseFormUnion =
   | baseFormSwitchTpl
   | baseFormTextTpl
+  | baseFormColorTpl
   | baseFormNumberTpl
   | baseFormTextAreaTpl
   | baseFormRadioTpl
@@ -241,6 +250,7 @@ export type baseFormUnion =
 export type baseFormUnionType =
   | baseFormSwitchTpl['type']
   | baseFormTextTpl['type']
+  | baseFormColorTpl['type']
   | baseFormNumberTpl['type']
   | baseFormTextAreaTpl['type']
   | baseFormRadioTpl['type']

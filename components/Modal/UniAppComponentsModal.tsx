@@ -89,6 +89,7 @@ function UniAppComponentsModal(props, ref) {
     console.log('Received values of form: ', values);
 
     await handleOk(values);
+    form.resetFields();
 
     setIsModalVisible(false);
     setIsModalLoading(false);

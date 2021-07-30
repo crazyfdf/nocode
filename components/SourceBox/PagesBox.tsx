@@ -1,6 +1,6 @@
 import Button from 'antd/lib/button';
 import List from 'antd/lib/list';
-import { useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import Icon from '@/components/Icon/Icon';
 import UniAppCreatedPagesModal from '@/components/Modal/UniAppCreatedPagesModal';
 import ListQueueAnim from '@/components/Animation/ListQueueAnim';
@@ -16,7 +16,8 @@ interface DataInterFace {
 
 interface PropsInterFace {
   data: DataInterFace[];
-  changePage: (v: number) => void;
+  app: any;
+  changePage: (index: number) => void;
 }
 const typeIcon = {
   list: 'icon-wuxuliebiao',
@@ -24,8 +25,8 @@ const typeIcon = {
   details: 'icon-xiangqing2',
 };
 
-export default function PagesBox(props: PropsInterFace) {
-  const { data, changePage } = props;
+function PagesBox(props: PropsInterFace) {
+  const { data = [], changePage, app } = props;
   const [items, setItems] = useState(data);
   const [current, setCurrent] = useState(0);
   const uniPagesModal = useRef({
@@ -52,14 +53,17 @@ export default function PagesBox(props: PropsInterFace) {
   );
   const changeCurrent = index => {
     setCurrent(index);
-    changePage(index);
+    changePage && changePage(index);
   };
+  useEffect(() => {
+    changeCurrent(0);
+  }, [app]);
 
   return (
     <>
       <List
         grid={{ gutter: 10, column: 1 }}
-        dataSource={items}
+        dataSource={data}
         pagination={{
           onChange: page => {
             console.log(page);
@@ -103,7 +107,11 @@ export default function PagesBox(props: PropsInterFace) {
           </List.Item>
         )}
       />
-      <UniAppCreatedPagesModal ref={uniPagesModal} changeData={changeData} />
+      <UniAppCreatedPagesModal ref={uniPagesModal} changeData={changeData} app={app} />
     </>
   );
 }
+const compare = (preProps, nextProps) => {
+  return preProps.app._id === nextProps.app._id;
+};
+export default memo(PagesBox, compare);

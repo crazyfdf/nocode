@@ -2,10 +2,10 @@ const path = require('path');
 // const glob=require('glob')
 // const PurifyCssPlugin =require('purifycss-webpack')
 module.exports = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   env: {
     dirname: path.resolve(),
-    baseURL: 'http://localhost:3000/api',
+    baseURL: 'http://localhost:3000',
     baasBaseURL: 'https://cloudcms.uctoo.com/api/v1.0',
     iconPath: '//at.alicdn.com/t/font_2649131_tpmmr9k6729.js',
   },

@@ -2,10 +2,12 @@
   "name": "generator-docs",
   "version": "0.1.0",
   "license": "MIT",
+  "scripts": {
+    "dev": "yarn plop"
+  },
   "dependencies": {
     "shelljs": "^0.8.4",
-    "yeoman-generator": "^4.0.1",
-    "plop": "plop"
+    "yeoman-generator": "^4.0.1"
   },
   "devDependencies": {
     "plop": "^2.7.4"

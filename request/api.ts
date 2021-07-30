@@ -1,5 +1,6 @@
 import api from '@/request/index';
 import { ComponentDoc } from '@/types/component';
+import { CMSPostResult } from '@/types/cmsType';
 
 // 获取组件ast文档信息
 export function getComponentAST(data) {
@@ -32,7 +33,7 @@ export function deleteCollectionComponents(data) {
 }
 
 // 新建app
-export function postApp(data) {
+export function postApp(data): Promise<CMSPostResult> {
   return api.post('/post/app', { data });
 }
 
@@ -54,6 +55,11 @@ export function getPage(data) {
 // 获取页面配置
 export function getUniPagesConfig(data) {
   return api.get('/get/uniPagesConfig', { data });
+}
+
+// 获取页面配置
+export function postRun(data) {
+  return api.post('/post/run', { data });
 }
 
 export default api;

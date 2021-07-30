@@ -98,7 +98,7 @@ module.exports = {
     // 强制把变量的使用限制在其定义的作用域范围内
     'block-scoped-var': 0,
     // 限制圈复杂度，也就是类似if else能连续接多少个
-    complexity: [2, 9],
+    complexity: [0, 9],
     // 要求 return 语句要么总是指定返回的值，要么不指定
     'consistent-return': 0,
     // 强制所有控制语句使用一致的括号风格
@@ -114,7 +114,7 @@ module.exports = {
     // false 使用保留字做属性名时, 只能使用[]方式取属性 e.g [2, {"allowKeywords": false}]
     // allowPattern: 当属性名匹配提供的正则表达式时，允许使用[]方式取值,否则只能用.号取值 e.g [2, {"allowPattern": "^[a-z]+(_[a-z]+)+$"}]
     'dot-notation': [
-      1,
+      0,
       {
         allowKeywords: false,
       },
@@ -608,6 +608,7 @@ module.exports = {
     'react/require-default-props': 0,
     'react/jsx-boolean-value': 0,
     'react/jsx-one-expression-per-line': 0,
+    'jsx-a11y/label-has-associated-control': 0,
     'react/jsx-filename-extension': [
       1,
       {

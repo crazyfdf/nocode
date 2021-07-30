@@ -9,9 +9,11 @@ import {
   postComponentsCreated,
   postCollectionComponents,
   getCollectionComponents,
+  postRun,
 } from '@/request/api';
 import FormRender from '@/components/Renderer/FormRender';
 import { debounce } from '@/utils/tool';
+import FormItems from '@/components/FormComponents/FormItems';
 
 interface docComponentsInterface {
   title?: string;
@@ -20,43 +22,38 @@ interface docComponentsInterface {
   file: string;
 }
 
-const navigation: object[] = [
-  { title: '模板库', icon: '', handler: 'user' },
-  { title: '预览', icon: '', handler: '' },
-  { title: '发布', icon: '', handler: 'user' },
-  { title: '打开VSCode', icon: '', handler: 'user' },
-  { title: '生成组件文档', icon: '', handler: 'user' },
-];
 const moduleList = [
   { key: '0', title: 'uct组件', icon: 'icon-guanlizujian' },
   { key: '1', title: '我的组件', icon: 'icon-guanlizujian' },
 ];
 
 export default function noCodeComponents({ docComponents, myCollection }) {
-  const [visibleLeft, setVisibleLeft] = useState(true); // 是否显示左抽屉
-  const [visibleRight, setVisibleRight] = useState(true); // 是否显示右抽屉
   const [currentLeft, setCurrentLeft] = useState('1'); // 当前左侧栏下标
   const [currentComponent, setCurrentComponent] = useState(0); // 当前组件
-  const [currentRight, setCurrentRight] = useState('0'); // 当前右侧栏下标
   const [dataSource, setDataSource] = useState(docComponents); // 当前左侧列表数据
+  const [src, setSrc] = useState('http://localhost:3306/#');
   const ref: RefObject<{ changeVal }> = useRef(null);
 
-  // const [astTemplate, setAstTemplate] = useState(docComponents[]); // 组件ast语法树
-  const showDrawerLeft = () => {
-    setVisibleLeft(true);
-  };
-
-  const onCloseLeft = () => {
-    setVisibleLeft(false);
-  };
-
-  const onCloseRight = () => {
-    setVisibleRight(false);
-  };
+  const navigation: object[] = [
+    { title: '模板库', icon: '', handler: 'user' },
+    {
+      title: '预览',
+      icon: '',
+      handler: async () => {
+        await postRun({ path: `${process.env.dirname}/uni-components/`, type: 'h5' });
+        // FIXME:无法知道项目什么时候在运行，先用setTimeout代替
+        setTimeout(() => {
+          setSrc('http://localhost:3306/#/');
+        }, 5000);
+      },
+    },
+    { title: '发布', icon: '', handler: 'user' },
+    { title: '生成组件文档', icon: '', handler: 'user' },
+  ];
 
   const changeModule = item => {
-    visibleLeft || showDrawerLeft();
     setCurrentLeft(item.key);
+    setCurrentComponent(0);
     switch (item.key) {
       case '0':
         setDataSource(docComponents);
@@ -67,10 +64,6 @@ export default function noCodeComponents({ docComponents, myCollection }) {
       default:
         break;
     }
-  };
-
-  const handleClick = e => {
-    setCurrentRight(e.key);
   };
 
   const changeComponent = async index => {
@@ -112,13 +105,6 @@ export default function noCodeComponents({ docComponents, myCollection }) {
     }
   };
 
-  // const menu = (
-  //   <Menu inlineCollapsed={false} onClick={editComponent}>
-  //     <Menu.Item key='0'>添加收藏</Menu.Item>
-  //     <Menu.Item key='1'>添加封面</Menu.Item>
-  //     <Menu.Item key='2'>删除组件</Menu.Item>
-  //   </Menu>
-  // );
   const collection = async (item, e) => {
     e.stopPropagation();
     const { data } = await postCollectionComponents({ data: item });
@@ -152,7 +138,6 @@ export default function noCodeComponents({ docComponents, myCollection }) {
                 flexDirection: 'column',
                 textAlign: 'center',
               }}
-              title={item.title}
               icon={<Icon style={{ fontSize: '36px' }} type={item.icon} />}
             >
               <div style={{ marginLeft: '-10px', width: '80px' }}>{item.title}</div>
@@ -161,15 +146,13 @@ export default function noCodeComponents({ docComponents, myCollection }) {
         </Menu>
         <div style={{ width: '400px' }}>
           <Drawer
-            title={moduleList[Number(currentLeft)].title}
             width={400}
             style={{ top: '65px', left: '80px' }}
             placement='left'
-            onClose={onCloseLeft}
             maskClosable={false}
             closable={false}
             mask={false}
-            visible={visibleLeft}
+            visible={true}
             key='left'
           >
             <List
@@ -184,20 +167,11 @@ export default function noCodeComponents({ docComponents, myCollection }) {
                 >
                   <Card
                     extra={
-                      <>
-                        <Icon
-                          onClick={e => collection(item, e)}
-                          style={{ fontSize: '24px' }}
-                          type={item.isCollection === 1 ? 'icon-shoucang1' : 'icon-shoucang'}
-                        />
-                        {/* <Dropdown overlay={menu} trigger={['click']}>
-                            <Icon
-                              onClick={e => e.stopPropagation()}
-                              style={{ fontSize: '24px' }}
-                              type='icon-more'
-                            />
-                          </Dropdown> */}
-                      </>
+                      <Icon
+                        onClick={e => collection(item, e)}
+                        style={{ fontSize: '24px' }}
+                        type={item.isCollection === 1 ? 'icon-shoucang1' : 'icon-shoucang'}
+                      />
                     }
                     hoverable
                     type='inner'
@@ -232,41 +206,40 @@ export default function noCodeComponents({ docComponents, myCollection }) {
           }}
         >
           <iframe
+            name='iframe'
             title='uni-app'
             scrolling='auto'
-            src='http://localhost:8080/#/'
+            src={src}
             style={{ height: '100%', width: '100%', borderRadius: '30px' }}
           />
         </div>
         <div style={{ width: '480px' }}>
           <Drawer
-            title={
-              <Menu onClick={handleClick} selectedKeys={[currentRight]} mode='horizontal'>
-                <Menu.Item key='0'>组件属性</Menu.Item>
-              </Menu>
-            }
             width={480}
             style={{ top: '65px' }}
             placement='right'
             maskClosable={false}
             closable={false}
-            onClose={onCloseRight}
             mask={false}
-            visible={visibleRight}
+            visible={true}
             key='right'
           >
-            {currentRight === '0' && (
-              <FormRender
-                config={configAdapter(dataSource[currentComponent].props ?? [])}
-                uid={dataSource[currentComponent].title}
-                defaultValue={{}}
-                onSave={handleFormSave}
-                onDel={handleDel}
-                rightPanelRef={ref}
-              />
-            )}
-            {currentRight === '1' && <p>page</p>}
-            {currentRight === '2' && <p>application</p>}
+            <FormRender
+              edit={true}
+              config={configAdapter(dataSource[currentComponent].props ?? [])}
+              uid={dataSource[currentComponent].title}
+              defaultValue={{}}
+              onSave={handleFormSave}
+              onDel={handleDel}
+              rightPanelRef={ref}
+            />
+            {/* <FormItems
+              edit={true}
+              formList={configAdapter(dataSource[currentComponent].props)}
+              data={dataSource[currentComponent].props}
+              rightPanelRef={ref}
+              onChange={handleFormSave}
+            /> */}
             <div style={{ height: '50px' }} />
           </Drawer>
         </div>
@@ -276,8 +249,6 @@ export default function noCodeComponents({ docComponents, myCollection }) {
 }
 
 export async function getStaticProps() {
-  // const read = promisify(readFile);
-
   const cwd = 'uni-components/node_modules/uctui';
   const _docComponents = glob.sync('components/uct-*/*.vue', { cwd }).map(f => {
     const titleReg: RegExpExecArray | null = /\/uct-(.+)\/(.+).vue$/g.exec(f);

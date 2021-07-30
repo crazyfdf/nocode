@@ -1,26 +1,18 @@
-import React, { memo, RefObject, useEffect, useImperativeHandle, useState } from 'react';
+import React, { memo, RefObject, useEffect } from 'react';
 import { Form, Select, InputNumber, Input, Switch, Radio } from 'antd';
 import { Store } from 'antd/lib/form/interface';
 import { formListAdapter } from '@/components/Renderer/FormRenderAdapter';
 import FormItems from '@/components/FormComponents/FormItems';
 import { uuid } from '@/utils/tool';
+import Color from '@/components/FormComponents/Color';
 // TODO:丰富组件类型
 // import Upload from '../../components/FormComponents/Upload';
 // import DataList from '../../components/FormComponents/DataList';
 // import MutiText from '../../components/FormComponents/MutiText';
-// import Color from '../../components/FormComponents/Color';
 // import CardPicker from '../../components/FormComponents/CardPicker';
 // import Table from '../../components/FormComponents/Table';
 // import Pos from '../../components/FormComponents/Pos';
 // import RichText from '../../components/FormComponents/XEditor';
-const normFile = (e: any) => {
-  console.log('Upload event:', e);
-  if (Array.isArray(e)) {
-    // 待修改
-    return e;
-  }
-  return e && e.fileList;
-};
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -34,22 +26,31 @@ interface FormEditorProps {
   uid: string;
   onSave: Function;
   onDel: Function;
-  defaultValue: { [id: string]: any };
+  defaultValue?: { [id: string]: any };
   config: Array<any>;
+  edit?: boolean;
   rightPanelRef: RefObject<{ changeVal }>;
+}
+function Adapter(config) {
+  const data = {};
+  config.forEach(item => {
+    data[item.id] = item.value;
+  });
+  return data;
 }
 
 const FormEditor = (props: FormEditorProps) => {
-  const { config, defaultValue, onSave, uid, rightPanelRef } = props;
-  const [fromDefaultValue, setFromDefaultValue] = useState(defaultValue);
+  const {
+    config = [],
+    defaultValue = Adapter(config),
+    onSave,
+    uid,
+    rightPanelRef,
+    edit = false,
+  } = props;
   const onFinish = (values: Store) => {
     onSave && onSave(values);
   };
-  useImperativeHandle(rightPanelRef, () => ({
-    changeVal: newVal => {
-      setFromDefaultValue(newVal);
-    },
-  }));
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -57,8 +58,7 @@ const FormEditor = (props: FormEditorProps) => {
       form.resetFields();
     };
   }, [uid, form]);
-
-  const handlechange = changedValues => {
+  const handleChange = changedValues => {
     console.log('====================================');
     console.log(changedValues);
     console.log('====================================');
@@ -72,8 +72,8 @@ const FormEditor = (props: FormEditorProps) => {
       layout='horizontal'
       {...formItemLayout}
       onFinish={onFinish}
-      initialValues={fromDefaultValue}
-      onValuesChange={handlechange}
+      initialValues={defaultValue}
+      onValuesChange={handleChange}
     >
       {config.map(item => {
         return (
@@ -131,17 +131,33 @@ const FormEditor = (props: FormEditorProps) => {
               </Form.Item>
             )}
             {item.type === 'FormItems' && (
-              <>
-                <div>
-                  {item.id}：{item.label}
-                </div>
+              <div className='my-2'>
+                <div className='text-base text-black font-bold my-2'>{item.label}</div>
                 <FormItems
+                  edit={edit}
                   formList={formListAdapter(item)}
                   data={item}
                   rightPanelRef={rightPanelRef}
-                  onChange={handlechange}
+                  onChange={handleChange}
                 />
-              </>
+              </div>
+            )}
+            {item.type === 'Color' && (
+              <Form.Item tooltip={item.id} label={item.label} name={item.id}>
+                <Color />
+              </Form.Item>
+            )}
+            {item.type === 'Object' && item.children && (
+              <div className='mt-2'>
+                <div className='text-base text-black font-bold'>{item.label}</div>
+                <FormItems
+                  edit={edit}
+                  formList={item.children}
+                  data={item}
+                  rightPanelRef={rightPanelRef}
+                  onChange={handleChange}
+                />
+              </div>
             )}
             {/* {item.type === 'MutiText' && (
               <Form.Item tooltip={item.id} label={item.label} name={item.id}>
@@ -151,11 +167,6 @@ const FormEditor = (props: FormEditorProps) => {
             {item.type === 'DataList' && (
               <Form.Item tooltip={item.id} label={item.label} name={item.id}>
                 <DataList cropRate={item.cropRate} />
-              </Form.Item>
-            )}
-            {item.type === 'Color' && (
-              <Form.Item tooltip={item.id} label={item.label} name={item.id}>
-                <Color />
               </Form.Item>
             )}
             {item.type === 'Upload' && (
