@@ -34,12 +34,13 @@ const EditorModal = (props, ref) => {
     });
   };
   useEffect(() => {
-    form.resetFields();
+    // 关联form前不能使用form下的方法，需要等到组件挂载完成
+    item && form.resetFields();
   }, [visible]);
 
   return (
     <>
-      {!!item && (
+      {item && (
         <Modal
           title='设置props属性'
           footer={
@@ -73,7 +74,7 @@ const EditorModal = (props, ref) => {
             >
               <Input />
             </Form.Item>
-            {!!item.label && (
+            {item.label && (
               <Form.Item label='字段名说明' name='label' tooltip='label'>
                 <Input />
               </Form.Item>
@@ -104,12 +105,12 @@ const EditorModal = (props, ref) => {
                 <InputNumber />
               </Form.Item>
             )}
-            {!!item.placeholder && (
+            {item.placeholder && (
               <Form.Item label='提示文本' name='placeholder' tooltip='placeholder'>
                 <Input placeholder='请输入提示文本' />
               </Form.Item>
             )}
-            {!!item.options && (
+            {item.options && (
               <Form.Item
                 label='选项源'
                 name='options'

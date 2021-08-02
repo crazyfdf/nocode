@@ -144,56 +144,45 @@ export default function noCodeComponents({ docComponents, myCollection }) {
             </Menu.Item>
           ))}
         </Menu>
-        <div style={{ width: '400px' }}>
-          <Drawer
-            width={400}
-            style={{ top: '65px', left: '80px' }}
-            placement='left'
-            maskClosable={false}
-            closable={false}
-            mask={false}
-            visible={true}
-            key='left'
-          >
-            <List
-              grid={{ gutter: 16, column: 2 }}
-              dataSource={dataSource}
-              renderItem={(item: docComponentsInterface, index: number) => (
-                <List.Item
-                  className='shadow-md'
-                  onClick={() => {
-                    changeComponent(index);
-                  }}
+        <div style={{ width: '400px' }} className='h-screen shadow overflow-auto px-4 py-5'>
+          <List
+            grid={{ gutter: 16, column: 2 }}
+            dataSource={dataSource}
+            renderItem={(item: docComponentsInterface, index: number) => (
+              <List.Item
+                className='shadow-md'
+                onClick={() => {
+                  changeComponent(index);
+                }}
+              >
+                <Card
+                  extra={
+                    <Icon
+                      onClick={e => collection(item, e)}
+                      style={{ fontSize: '24px' }}
+                      type={item.isCollection === 1 ? 'icon-shoucang1' : 'icon-shoucang'}
+                    />
+                  }
+                  hoverable
+                  type='inner'
+                  headStyle={
+                    currentComponent === index
+                      ? { background: 'linear-gradient(to right, #00F5A0, #00D9F5)' }
+                      : {}
+                  }
+                  bodyStyle={
+                    currentComponent === index
+                      ? { background: 'linear-gradient(to right, #00F5A0, #00D9F5)' }
+                      : {}
+                  }
+                  title={item.title}
                 >
-                  <Card
-                    extra={
-                      <Icon
-                        onClick={e => collection(item, e)}
-                        style={{ fontSize: '24px' }}
-                        type={item.isCollection === 1 ? 'icon-shoucang1' : 'icon-shoucang'}
-                      />
-                    }
-                    hoverable
-                    type='inner'
-                    headStyle={
-                      currentComponent === index
-                        ? { background: 'linear-gradient(to right, #00F5A0, #00D9F5)' }
-                        : {}
-                    }
-                    bodyStyle={
-                      currentComponent === index
-                        ? { background: 'linear-gradient(to right, #00F5A0, #00D9F5)' }
-                        : {}
-                    }
-                    title={item.title}
-                  >
-                    {currentComponent}
-                  </Card>
-                </List.Item>
-              )}
-            />
-            <div style={{ height: '50px' }} />
-          </Drawer>
+                  {currentComponent}
+                </Card>
+              </List.Item>
+            )}
+          />
+          <div style={{ height: '50px' }} />
         </div>
         <div
           style={{
@@ -213,35 +202,24 @@ export default function noCodeComponents({ docComponents, myCollection }) {
             style={{ height: '100%', width: '100%', borderRadius: '30px' }}
           />
         </div>
-        <div style={{ width: '480px' }}>
-          <Drawer
-            width={480}
-            style={{ top: '65px' }}
-            placement='right'
-            maskClosable={false}
-            closable={false}
-            mask={false}
-            visible={true}
-            key='right'
-          >
-            <FormRender
-              edit={true}
-              config={configAdapter(dataSource[currentComponent].props ?? [])}
-              uid={dataSource[currentComponent].title}
-              defaultValue={{}}
-              onSave={handleFormSave}
-              onDel={handleDel}
-              rightPanelRef={ref}
-            />
-            {/* <FormItems
+        <div style={{ width: '480px' }} className='h-screen shadow overflow-auto px-4 py-5'>
+          <FormRender
+            edit={true}
+            config={configAdapter(dataSource[currentComponent].props ?? [])}
+            uid={dataSource[currentComponent].title}
+            defaultValue={{}}
+            onSave={handleFormSave}
+            onDel={handleDel}
+            rightPanelRef={ref}
+          />
+          {/* <FormItems
               edit={true}
               formList={configAdapter(dataSource[currentComponent].props)}
               data={dataSource[currentComponent].props}
               rightPanelRef={ref}
               onChange={handleFormSave}
             /> */}
-            <div style={{ height: '50px' }} />
-          </Drawer>
+          <div style={{ height: '50px' }} />
         </div>
       </div>
     </div>

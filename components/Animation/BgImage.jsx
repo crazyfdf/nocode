@@ -116,7 +116,7 @@ class Point extends React.PureComponent {
         <TweenOne
           animation={animation}
           style={{
-            backgroundColor,
+            backgroundColor: backgroundColor,
           }}
           className={`${this.props.className}-child`}
         />

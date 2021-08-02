@@ -1,5 +1,5 @@
 import HeaderNocode from '@/components/Header/Header-nocode';
-import { Menu, Drawer, Tabs } from 'antd';
+import { Tabs } from 'antd';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Icon from '@/components/Icon/Icon';
 import SourceBox from '@/components/SourceBox/SourceBox';
@@ -188,54 +188,36 @@ export default function noCodeApp({ myCollection, appInit, apps }) {
             style={{ height: '100%', width: '100%', borderRadius: '30px' }}
           />
         </div>
-        <div style={{ width: '340px' }}>
-          <Drawer
-            title={
-              <Menu onClick={changeRight} selectedKeys={[currentRight]} mode='horizontal'>
-                <Menu.Item key='0'>组件编辑</Menu.Item>
-                <Menu.Item key='1'>页面编辑</Menu.Item>
-                <Menu.Item key='2'>应用编辑</Menu.Item>
-              </Menu>
-            }
-            width={340}
-            style={{ top: '65px' }}
-            placement='right'
-            maskClosable={false}
-            closable={false}
-            mask={false}
-            visible={true}
-            key='right'
-          >
-            {currentRight === '0' && (
-              <FormRender
-                config={configAdapter(component.props ?? [])}
-                uid={component.title}
-                onSave={componentConfigSave}
-                onDel={componentConfigDel}
-                rightPanelRef={ref}
-              />
-            )}
-            {currentRight === '1' && page && (
-              <FormRender
-                config={uniAppPage}
-                defaultValue={JSON.parse(page.uniPagesConfigId.style)}
-                onSave={pageConfigSave}
-                onDel={pageConfigDel}
-                uid={page._id}
-                rightPanelRef={ref}
-              />
-            )}
-            {currentRight === '2' && (
-              <FormRender
-                config={uniAppApp}
-                onSave={appConfigSave}
-                onDel={appConfigDel}
-                uid={app._id}
-                rightPanelRef={ref}
-              />
-            )}
-            <div style={{ height: '50px' }} />
-          </Drawer>
+        <div style={{ width: '340px' }} className='h-screen shadow overflow-auto px-4 py-5'>
+          {currentRight === '0' && (
+            <FormRender
+              config={configAdapter(component.props ?? [])}
+              uid={component.title}
+              onSave={componentConfigSave}
+              onDel={componentConfigDel}
+              rightPanelRef={ref}
+            />
+          )}
+          {currentRight === '1' && page && (
+            <FormRender
+              config={uniAppPage}
+              defaultValue={JSON.parse(page.uniPagesConfigId.style)}
+              onSave={pageConfigSave}
+              onDel={pageConfigDel}
+              uid={page._id}
+              rightPanelRef={ref}
+            />
+          )}
+          {currentRight === '2' && (
+            <FormRender
+              config={uniAppApp}
+              onSave={appConfigSave}
+              onDel={appConfigDel}
+              uid={app._id}
+              rightPanelRef={ref}
+            />
+          )}
+          <div style={{ height: '50px' }} />
         </div>
       </div>
     </div>

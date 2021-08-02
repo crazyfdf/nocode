@@ -1,4 +1,4 @@
-import { Select, Modal, Form, Input, Button } from 'antd';
+import { Select, Modal, Form, Input, Button, Row, Col } from 'antd';
 import { postComponentDocs } from '@/request/api';
 import { useEffect, useState, useImperativeHandle, forwardRef } from 'react';
 
@@ -137,13 +137,17 @@ function UniAppComponentsModal(props, ref) {
           <Input.TextArea placeholder='请输入应用描述' />
         </Form.Item>
 
-        <Form.Item
-          name='file'
-          label='项目路径'
-          rules={[{ required: true, message: '项目路径不能为空', whitespace: true }]}
-        >
-          <Button onClick={selectFile}>选择项目文件夹</Button>
-          <Input value={filePath} placeholder='请选择项目文件夹' />
+        <Form.Item label='项目路径'>
+          <Row gutter={8}>
+            <Col span={15}>
+              <Form.Item name='file' rules={[{ message: '项目路径不能为空', whitespace: true }]}>
+                <Input value={filePath} placeholder='请选择项目文件夹' />
+              </Form.Item>
+            </Col>
+            <Col span={9}>
+              <Button onClick={selectFile}>选择项目文件夹</Button>
+            </Col>
+          </Row>
         </Form.Item>
 
         {/* <Form.Item

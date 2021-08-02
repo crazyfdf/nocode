@@ -1,6 +1,6 @@
 import { baseFormUnion, TFormItemsDefaultType } from '@/types/types';
 import { uuid } from '@/utils/tool';
-import { PlusOutlined, MinusCircleFilled, EditFilled } from '@ant-design/icons';
+import { MinusCircleFilled, EditFilled } from '@ant-design/icons';
 import { Button, Tooltip } from 'antd';
 import React, { RefObject, useState, memo, useRef } from 'react';
 import BasePopoverForm from '@/components/FormComponents/FormItems/BasePopoverForm';
@@ -131,10 +131,9 @@ function EditableFormItems(props: FormItemsProps) {
       {formList.map((item: baseFormUnion) => {
         let FormItem = BaseForm[item.type];
         return (
-          <div>
+          <div key={uuid(6, 10)}>
             <label className='font-medium'>{item.label}</label>
-
-            <div className='flex justify-between items-center mb-4' key={uuid(6, 10)}>
+            <div className='flex justify-between items-center mb-4'>
               {edit && <MinusCircleFilled onClick={() => handleDelItem(item)} />}
               <div className='flex mx-4 flex-1 items-center'>
                 {item.id}：
@@ -167,11 +166,7 @@ function EditableFormItems(props: FormItemsProps) {
           </>
         }
       >
-        {edit && (
-          <Button style={{ width: '100%' }} block icon={<PlusOutlined />}>
-            添加
-          </Button>
-        )}
+        {edit && <Button style={{ width: '100%' }}>添加</Button>}
       </Tooltip>
       <EditorModal item={curItem} onSave={handleSaveItem} ref={ref} />
     </div>
