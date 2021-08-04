@@ -6,7 +6,7 @@ import glob from 'globby';
 import Icon from '@/components/Icon/Icon';
 import {
   getComponentAST,
-  postComponentsCreated,
+  postcomponentsCreate,
   postCollectionComponents,
   getCollectionComponents,
   postRun,
@@ -68,7 +68,7 @@ export default function noCodeComponents({ docComponents, myCollection }) {
 
   const changeComponent = async index => {
     let json = {};
-    await postComponentsCreated({
+    await postcomponentsCreate({
       name: dataSource[index].name,
       file: `${process.env.dirname}/uni-components/`,
       json: json,
@@ -80,7 +80,7 @@ export default function noCodeComponents({ docComponents, myCollection }) {
 
   const handleFormSave = useMemo(() => {
     const saveData = async (data: any) => {
-      await postComponentsCreated({
+      await postcomponentsCreate({
         title: dataSource[currentComponent].title,
         file: `${process.env.dirname}/uni-components/`,
         json: data,
@@ -202,7 +202,7 @@ export default function noCodeComponents({ docComponents, myCollection }) {
             style={{ height: '100%', width: '100%', borderRadius: '30px' }}
           />
         </div>
-        <div style={{ width: '480px' }} className='h-screen shadow overflow-auto px-4 py-5'>
+        <div style={{ width: '480px' }} className='h-screen shadow-xl overflow-auto px-4 py-5'>
           <FormRender
             edit={true}
             config={configAdapter(dataSource[currentComponent].props ?? [])}

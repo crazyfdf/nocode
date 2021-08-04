@@ -53,6 +53,7 @@ function UniAppComponentsModal(props, ref) {
   };
 
   const handleOk = async values => {
+    values.file = `${values.file}/${values.name}`;
     await postComponentDocs({
       data: values,
     });

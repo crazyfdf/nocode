@@ -40,9 +40,6 @@ function UniAppCreatedPagesModal(props, ref) {
   }));
 
   const handleOk = async values => {
-    // await postComponentDocs({
-    //   data: values,
-    // });
     const data = await postPage({ page: values, app });
     changeData(data);
   };

@@ -1,8 +1,19 @@
 import { patchUniAppsConfig } from '@/CMSRequest/api';
 
+const fs = require('fs');
+
 export default async (req, res) => {
-  const { data } = req.body;
-  const appsConfig = await patchUniAppsConfig(data.id, data.values);
-  console.log(appsConfig);
+  let { id, file, uctuiConfig } = req.body.data;
+  console.log(`${file}/src`, fs.existsSync(`${file}/src`));
+
+  if (fs.existsSync(`${file}/src`)) {
+    file = `${file}/src`;
+  }
+  fs.writeFileSync(`${file}/common/config.json`, JSON.stringify(uctuiConfig, null, 2), {
+    flag: 'w+',
+    encoding: 'utf-8',
+  });
+  const appsConfig = await patchUniAppsConfig(id, { uctuiConfig });
+
   res.status(201).json(appsConfig);
 };

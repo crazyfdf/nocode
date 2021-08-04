@@ -13,8 +13,8 @@ export function postComponentDocs(data) {
 }
 
 // 创建组件库案例
-export function postComponentsCreated(data) {
-  return api.post('/post/componentsCreated', { data });
+export function postcomponentsCreate(data) {
+  return api.post('/post/componentsCreate', { data });
 }
 
 // 获取收藏组件
@@ -40,6 +40,11 @@ export function postApp(data): Promise<CMSPostResult> {
 // 获取app
 export function getApp(data) {
   return api.get('/get/app', { data });
+}
+
+// 修改app配置
+export function patchUniAppsConfig(data) {
+  return api.patch('/patch/uniAppsConfig', { data });
 }
 
 // 新建页面

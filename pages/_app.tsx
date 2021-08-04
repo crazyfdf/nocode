@@ -7,7 +7,7 @@ import { useRouter } from 'next/dist/client/router';
 
 const navigation = [
   { title: '插件市场', href: '/' },
-  { title: '创作中心', href: '/created' },
+  { title: '创作中心', href: '/create' },
   { title: '论坛', href: '#' },
   { title: '我的', href: '/user' },
 ];

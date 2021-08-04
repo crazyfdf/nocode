@@ -126,36 +126,32 @@ export function unParams(params = '?a=1&b=2&c=3') {
   return obj;
 }
 
+// 防抖
+export const debounce = (fn: Function, time: number = 500, isImmediate: boolean = true) => {
+  let timer: undefined | number;
+  return function (...args: any) {
+    let init = isImmediate && !timer;
+    clearTimeout(timer);
+    timer = window.setTimeout(() => {
+      timer = undefined;
+      !isImmediate && fn.apply(this, args);
+    }, time);
+    init && fn.apply(this, args);
+  };
+};
+// 节流
 export const throttle = (fn: Function, time: number = 500, isImmediate: boolean = true) => {
-  let flag: boolean = isImmediate;
-  return (...args: any) => {
-    if (flag) {
-      flag = false;
-      fn(...args);
-      setTimeout(() => {
-        flag = true;
-      }, time);
-    }
-    if (!isImmediate) {
-      isImmediate = true;
-      setTimeout(() => {
-        flag = true;
-      }, time);
+  let oldTime: number = isImmediate ? 0 : new Date().getTime();
+  return function (...args: any) {
+    let newTime = new Date().getTime();
+    let timeOut = newTime - oldTime;
+    if (timeOut >= time) {
+      oldTime = newTime;
+      fn.apply(this, args);
     }
   };
 };
 
-export const debounce = (fn: Function, time: number = 500, isImmediate: boolean = true) => {
-  let oldTime: number = isImmediate ? 0 : new Date().getTime();
-  return (...args: any) => {
-    let newTime = new Date().getTime();
-    let timeOut = newTime - oldTime;
-    if (timeOut >= time) {
-      fn(...args);
-    }
-    oldTime = newTime;
-  };
-};
 export function formatTime(fmt: string, dateObj: any): string {
   const date = dateObj || new Date();
   const o: any = {

@@ -1,7 +1,7 @@
 export default [
   {
     id: 'version',
-    value: '0.01',
+    value: '0.0.1',
     type: 'Text',
     label: 'noCode版本',
   },

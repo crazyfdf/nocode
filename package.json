@@ -11,7 +11,7 @@
     "start": "next start",
     "commit": "git-cz",
     "lint": "yarn lint:eslint && yarn lint:css",
-    "lint:eslint": "eslint --ext js,jsx,ts,tsx .",
+    "lint:eslint": "eslint --ext ts,tsx .",
     "lint:css": "stylelint **/*.{ts,tsx}",
     "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
     "tsc:client": "tsc --noEmit -p tsconfig.json",
@@ -90,7 +90,7 @@
     }
   },
   "lint-staged": {
-    "*.{tsx,ts,js,jsx}": [
+    "*.{tsx,ts}": [
       "stylelint",
       "prettier --write",
       "eslint --fix"

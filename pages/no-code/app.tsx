@@ -3,13 +3,18 @@ import { Tabs } from 'antd';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Icon from '@/components/Icon/Icon';
 import SourceBox from '@/components/SourceBox/SourceBox';
-import { getApp, getCollectionComponents, getComponentAST } from '@/request/api';
+import {
+  getApp,
+  getCollectionComponents,
+  patchUniAppsConfig,
+  getComponentAST,
+} from '@/request/api';
 import PagesBox from '@/components/SourceBox/PagesBox';
 import FormRender from '@/components/Renderer/FormRender';
 import { debounce } from '@/utils/tool';
-import { patchUniPagesConfig, patchUniAppsConfig } from '@/CMSRequest/api';
-import uniAppPage from '@/public/json/uniAppPage';
-import uniAppApp from '@/public/json/uniAppApp';
+import { patchUniPagesConfig } from '@/CMSRequest/api';
+import uniAppPage from '@/public/app/uniAppPage';
+import uniAppApp from '@/public/app/uniAppApp';
 import { configAdapter } from '@/components/Renderer/FormRenderAdapter';
 
 const { TabPane } = Tabs;
@@ -17,7 +22,7 @@ const { TabPane } = Tabs;
 const navigation: object[] = [
   { title: '模板库', icon: '', handler: 'user' },
   { title: '撤销', icon: '', handler: '' },
-  { title: '重做', icon: '', handler: 'created' },
+  { title: '重做', icon: '', handler: 'create' },
   { title: '预览', icon: '', handler: '' },
   { title: '发布', icon: '', handler: 'user' },
   { title: '保存', icon: '', handler: 'user' },
@@ -31,9 +36,17 @@ const moduleList = [
 ];
 
 export default function noCodeApp({ myCollection, appInit, apps }) {
+  console.log('====================================');
+  console.log(apps);
+  console.log('====================================');
   const { pageId: pages = [] } = appInit;
   const [currentRight, setCurrentRight] = useState('0'); // 当前右侧下标
   const [app, setApp] = useState(appInit); // 当前app
+  const appConfig = app.uctuiConfigId.uctuiConfig;
+  uniAppApp.forEach((item, index) => {
+    uniAppApp[index].value = appConfig[item.id];
+  });
+
   const [page, setPage] = useState(pages && pages[0]); // 当前页面
   const [component, setComponent] = useState(myCollection && myCollection[0]); // 当前组件
   const ref = useRef(null);
@@ -92,7 +105,7 @@ export default function noCodeApp({ myCollection, appInit, apps }) {
       page.uniPagesConfigId.style = style;
       setPage(page);
     };
-    return debounce(saveData, 1000, false);
+    return debounce(saveData, 5000, false);
   }, [page]);
 
   const pageConfigDel = useMemo(() => {
@@ -103,8 +116,10 @@ export default function noCodeApp({ myCollection, appInit, apps }) {
 
   const appConfigSave = useMemo(() => {
     const saveData = async (data: any) => {
-      await patchUniAppsConfig(app.uctuiConfigId._id, {
-        style: JSON.stringify({ ...JSON.parse(app.uctuiConfigId.uctuiConfig), ...data }),
+      await patchUniAppsConfig({
+        id: app.uctuiConfigId._id,
+        file: app.file,
+        uctuiConfig: { ...app.uctuiConfigId.uctuiConfig, ...data },
       });
     };
     return debounce(saveData, 1000, false);
@@ -188,7 +203,7 @@ export default function noCodeApp({ myCollection, appInit, apps }) {
             style={{ height: '100%', width: '100%', borderRadius: '30px' }}
           />
         </div>
-        <div style={{ width: '340px' }} className='h-screen shadow overflow-auto px-4 py-5'>
+        <div style={{ width: '400px' }} className='h-screen shadow-xl overflow-auto px-4 py-5'>
           {currentRight === '0' && (
             <FormRender
               config={configAdapter(component.props ?? [])}
@@ -225,7 +240,6 @@ export default function noCodeApp({ myCollection, appInit, apps }) {
 }
 
 export async function getServerSideProps(context) {
-  // const read = promisify(readFile);
   const { data: _myCollection } = await getCollectionComponents();
 
   const myCollection = await Promise.all(
@@ -236,9 +250,7 @@ export async function getServerSideProps(context) {
   );
 
   const { data: apps } = await getApp({});
-  console.log('====================================');
-  console.log(apps);
-  console.log('====================================');
+
   let appInit;
   if (Object.entries(context.query).length) {
     const { data } = await getApp(context.query);

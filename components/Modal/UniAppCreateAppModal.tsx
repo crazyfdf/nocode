@@ -51,9 +51,6 @@ function UniAppApplicationModal(props, ref) {
   };
 
   const handleOk = async values => {
-    // await postComponentDocs({
-    //   data: values,
-    // });
     const res = await postApp(values);
     console.log('====================================');
     console.log(res);

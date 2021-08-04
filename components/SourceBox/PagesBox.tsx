@@ -2,7 +2,7 @@ import Button from 'antd/lib/button';
 import List from 'antd/lib/list';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import Icon from '@/components/Icon/Icon';
-import UniAppCreatedPagesModal from '@/components/Modal/UniAppCreatedPagesModal';
+import UniAppCreatePagesModal from '@/components/Modal/UniAppCreatePagesModal';
 import ListQueueAnim from '@/components/Animation/ListQueueAnim';
 
 interface DataInterFace {
@@ -107,7 +107,7 @@ function PagesBox(props: PropsInterFace) {
           </List.Item>
         )}
       />
-      <UniAppCreatedPagesModal ref={uniPagesModal} changeData={changeData} app={app} />
+      <UniAppCreatePagesModal ref={uniPagesModal} changeData={changeData} app={app} />
     </>
   );
 }
