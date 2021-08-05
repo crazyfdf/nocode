@@ -30,19 +30,20 @@ class LogoGather extends React.Component {
     this.intervalTime = 9000;
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.dom = findDOMNode(this);
     this.createPointData();
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     ticker.clear(this.interval);
     this.interval = null;
   }
 
   onMouseEnter = () => {
     // !this.gather && this.updateTweenData();
-    if (!this.gather) {
+    if (!this.gather)
+    {
       this.updateTweenData();
     }
     this.componentWillUnmount();
@@ -50,18 +51,22 @@ class LogoGather extends React.Component {
 
   onMouseLeave = () => {
     // this.gather && this.updateTweenData();
-    if (this.gather) {
+    if (this.gather)
+    {
       this.updateTweenData();
     }
     this.interval = ticker.interval(this.updateTweenData, this.intervalTime);
   };
 
-  setDataToDom(data, w, h) {
+  setDataToDom (data, w, h) {
     this.pointArray = [];
     const number = this.props.pixSize;
-    for (let i = 0; i < w; i += number) {
-      for (let j = 0; j < h; j += number) {
-        if (data[(i + j * w) * 4 + 3] > 150) {
+    for (let i = 0; i < w; i += number)
+    {
+      for (let j = 0; j < h; j += number)
+      {
+        if (data[(i + j * w) * 4 + 3] > 150)
+        {
           this.pointArray.push({ x: i, y: j });
         }
       }
@@ -169,7 +174,7 @@ class LogoGather extends React.Component {
     this.gather = !this.gather;
   };
 
-  render() {
+  render () {
     return (
       <div className='logo-gather-demo-wrapper'>
         <canvas id='canvas' />
@@ -207,12 +212,12 @@ export default class Edit extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount () {
     enquireScreen(isMobile => {
       this.setState({ isMobile });
     });
   }
-  render() {
+  render () {
     return (
       <>
         <LogoGather
@@ -227,7 +232,7 @@ export default class Edit extends React.Component {
           overflow: hidden;
           z-index:0;
           position: absolute;
-          background: #019BF0;
+          background: #70a1ff;
           overflow: hidden;
         }
         

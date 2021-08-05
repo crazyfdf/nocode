@@ -8,9 +8,11 @@ class GridLayout {
     this.cellWidth = width / this.gridX;
     this.cellHeight = height / this.gridY;
     this.grid = [];
-    for (let i = 0; i < this.gridY; i += 1) {
+    for (let i = 0; i < this.gridY; i += 1)
+    {
       this.grid[i] = [];
-      for (let s = 0; s < this.gridX; s += 1) {
+      for (let s = 0; s < this.gridX; s += 1)
+      {
         this.grid[i][s] = [];
       }
     }
@@ -22,8 +24,10 @@ class GridLayout {
     const w2 = Math.ceil((e.x + e.radius) / this.cellWidth);
     const h1 = Math.floor((e.y - e.radius) / this.cellHeight);
     const h2 = Math.ceil((e.y + e.radius) / this.cellHeight);
-    for (let c = h1; c < h2; c += 1) {
-      for (let l = w1; l < w2; l += 1) {
+    for (let c = h1; c < h2; c += 1)
+    {
+      for (let l = w1; l < w2; l += 1)
+      {
         gridArray.push(this.grid[c][l]);
       }
     }
@@ -33,7 +37,8 @@ class GridLayout {
   hasCollisions = t => this.getCells(t).some(e => e.some(v => this.collides(t, v)));
 
   collides = (t, a) => {
-    if (t === a) {
+    if (t === a)
+    {
       return false;
     }
     const n = t.x - a.x;
@@ -54,18 +59,21 @@ const getPointPos = (width, height, length) => {
   const posArray = [];
   const num = 500;
   const radiusArray = [20, 35, 60];
-  for (let i = 0; i < length; i += 1) {
+  for (let i = 0; i < length; i += 1)
+  {
     let radius;
     let pos;
     let j = 0;
-    for (let j = 0; j < num; j += 1) {
+    for (let j = 0; j < num; j += 1)
+    {
       radius = radiusArray[Math.floor(Math.random() * radiusArray.length)];
       pos = {
         x: Math.random() * (width - radius * 2) + radius,
         y: Math.random() * (height - radius * 2) + radius,
         radius,
       };
-      if (!grid.hasCollisions(pos)) {
+      if (!grid.hasCollisions(pos))
+      {
         break;
       }
     }
@@ -78,8 +86,8 @@ const getPointPos = (width, height, length) => {
 const getDistance = (t, a) => Math.sqrt((t.x - a.x) * (t.x - a.x) + (t.y - a.y) * (t.y - a.y));
 
 class Point extends React.PureComponent {
-  render() {
-    const { tx, ty, x, y, opacity, backgroundColor, radius, ...props } = this.props;
+  render () {
+    const { tx, ty, x, y, opacity, radius, ...props } = this.props;
     let transform;
     let zIndex = 0;
     let animation = {
@@ -89,24 +97,28 @@ class Point extends React.PureComponent {
       yoyo: true,
       repeat: -1,
     };
-    if (tx && ty) {
-      if (tx !== x && ty !== y) {
+    if (tx && ty)
+    {
+      if (tx !== x && ty !== y)
+      {
         const distance = getDistance({ x, y }, { x: tx, y: ty });
         const g = Math.sqrt(2000000 / (0.1 * distance * distance));
         transform = `translate(${(g * (x - tx)) / distance}px, ${(g * (y - ty)) / distance}px)`;
-      } else if (tx === x && ty === y) {
+      } else if (tx === x && ty === y)
+      {
         transform = `scale(${80 / radius})`;
         animation = { y: 0, yoyo: false, repeat: 0, duration: 300 };
-        zIndex = 1;
       }
     }
+    const left = x - radius, top = y - radius, width = radius * 1.8, height = radius * 1.8
+
     return (
       <div
         style={{
-          left: x - radius,
-          top: y - radius,
-          width: radius * 1.8,
-          height: radius * 1.8,
+          left,
+          top,
+          width,
+          height,
           opacity,
           zIndex,
           transform,
@@ -116,9 +128,9 @@ class Point extends React.PureComponent {
         <TweenOne
           animation={animation}
           style={{
-            backgroundColor: backgroundColor,
+            backgroundColor: `rgb(${Math.round(Math.random() * 95 + 160)},255,255)`,
           }}
-          className={`${this.props.className}-child`}
+          className='linked-animate-demo-block-child'
         />
       </div>
     );
@@ -126,9 +138,7 @@ class Point extends React.PureComponent {
 }
 
 export default class LinkedAnimate extends React.Component {
-  static defaultProps = {
-    className: 'linked-animate-demo',
-  };
+
 
   num = 20; // 点的个数
 
@@ -138,7 +148,6 @@ export default class LinkedAnimate extends React.Component {
       data: getPointPos(1280, 600, this.num).map(item => ({
         ...item,
         opacity: Math.random() * 0.2 + 0.05,
-        backgroundColor: `rgb(${Math.round(Math.random() * 95 + 160)},255,255)`,
       })),
       tx: 0,
       ty: 0,
@@ -159,17 +168,20 @@ export default class LinkedAnimate extends React.Component {
         };
       })
       .reduce((a, b) => {
-        if (!a.distance || a.distance > b.distance) {
+        if (!a.distance || a.distance > b.distance)
+        {
           return b;
         }
         return a;
       });
-    if (pos.distance < 60) {
+    if (pos.distance < 60)
+    {
       this.setState({
         tx: pos.x,
         ty: pos.y,
       });
-    } else {
+    } else
+    {
       this.onMouseLeave();
     }
   };
@@ -181,48 +193,14 @@ export default class LinkedAnimate extends React.Component {
     });
   };
 
-  render() {
-    const { className } = this.props;
+  render () {
     const { data, tx, ty } = this.state;
+
     return (
       <>
-        <style>
-          {`.linked-animate-demo-wrapper {
-    background: #70a1ff;
-    width:100%;
-    height: 100%;
-    overflow: hidden;
-    z-index:0;
-    position: absolute;
-  }
-
-  .linked-animate-demo-box {
-    bottom: 0;
-    display: block;
-    height: 600px;
-    left: -100%;
-    margin: auto;
-    position: absolute;
-    right: -100%;
-    top: 0;
-    width: 1280px;
-  }
-
-  .linked-animate-demo-block {
-    position: absolute;
-    transition: transform 0.45s ease;
-  }
-
-  .linked-animate-demo-block-child {
-    border-radius: 100%;
-    height: 100%;
-    width: 100%;
-  }
-  `}
-        </style>
-        <div className={`${className}-wrapper`}>
+        <div className='linked-animate-demo-wrapper'>
           <div
-            className={`${className}-box`}
+            className='linked-animate-demo-box'
             ref={c => {
               this.box = c;
             }}
@@ -234,12 +212,47 @@ export default class LinkedAnimate extends React.Component {
                 {...item}
                 tx={tx}
                 ty={ty}
-                key={`s-${i.toString()}`}
-                className={`${className}-block`}
+                key={i}
+                className='linked-animate-demo-block'
               />
             ))}
           </div>
         </div>
+        <style>
+          {`
+            .linked-animate-demo-wrapper {
+              background: #70a1ff;
+              width:100%;
+              height: 100%;
+              overflow: hidden;
+              z-index:0;
+              position: absolute;
+            }
+
+            .linked-animate-demo-box {
+              bottom: 0;
+              display: block;
+              height: 600px;
+              left: -100%;
+              margin: auto;
+              position: absolute;
+              right: -100%;
+              top: 0;
+              width: 1280px;
+            }
+
+            .linked-animate-demo-block {
+              position: absolute;
+              transition: transform 0.45s ease;
+            }
+
+            .linked-animate-demo-block-child {
+              border-radius: 100%;
+              height: 100%;
+              width: 100%;
+            }
+          `}
+        </style>
       </>
     );
   }

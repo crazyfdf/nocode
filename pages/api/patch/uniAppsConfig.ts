@@ -4,7 +4,6 @@ const fs = require('fs');
 
 export default async (req, res) => {
   let { id, file, uctuiConfig } = req.body.data;
-  console.log(`${file}/src`, fs.existsSync(`${file}/src`));
 
   if (fs.existsSync(`${file}/src`)) {
     file = `${file}/src`;

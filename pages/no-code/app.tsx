@@ -6,15 +6,15 @@ import SourceBox from '@/components/SourceBox/SourceBox';
 import {
   getApp,
   getCollectionComponents,
-  patchUniAppsConfig,
   getComponentAST,
+  patchUniAppsConfig,
+  patchUniPagesConfig,
 } from '@/request/api';
 import PagesBox from '@/components/SourceBox/PagesBox';
 import FormRender from '@/components/Renderer/FormRender';
 import { debounce } from '@/utils/tool';
-import { patchUniPagesConfig } from '@/CMSRequest/api';
 import uniAppPage from '@/public/app/uniAppPage';
-import uniAppApp from '@/public/app/uniAppApp';
+import { uniAppAppConfig } from '@/public/app/uniAppApp';
 import { configAdapter } from '@/components/Renderer/FormRenderAdapter';
 
 const { TabPane } = Tabs;
@@ -30,21 +30,34 @@ const navigation: object[] = [
 ];
 const moduleList = [
   { key: 0, title: '组件', icon: 'icon-guanlizujian' },
-  { key: 1, title: '页面', icon: 'icon-shouye' },
-  { key: 2, title: '应用', icon: 'icon-yingyong' },
+  {
+    key: 1,
+    title: '页面',
+    icon: 'icon-shouye',
+    children: [
+      { key: 0, title: '页面配置' },
+      { key: 1, title: '组件配置' },
+    ],
+  },
+  {
+    key: 2,
+    title: '应用',
+    icon: 'icon-yingyong',
+    children: [
+      { key: 0, title: 'config配置' },
+      { key: 1, title: 'theme配置' },
+    ],
+  },
   { key: 3, title: '模板', icon: 'icon-APPmoban' },
 ];
 
 export default function noCodeApp({ myCollection, appInit, apps }) {
-  console.log('====================================');
-  console.log(apps);
-  console.log('====================================');
   const { pageId: pages = [] } = appInit;
   const [currentRight, setCurrentRight] = useState('0'); // 当前右侧下标
   const [app, setApp] = useState(appInit); // 当前app
   const appConfig = app.uctuiConfigId.uctuiConfig;
-  uniAppApp.forEach((item, index) => {
-    uniAppApp[index].value = appConfig[item.id];
+  uniAppAppConfig.forEach((item, index) => {
+    uniAppAppConfig[index].value = appConfig[item.id];
   });
 
   const [page, setPage] = useState(pages && pages[0]); // 当前页面
@@ -59,12 +72,14 @@ export default function noCodeApp({ myCollection, appInit, apps }) {
 
   const changePage = useMemo(
     () => index => {
+      console.log(page);
       app.pageId && setPage(app.pageId[index]);
     },
     [app],
   );
   const changeApp = useMemo(
     () => index => {
+      console.log(app);
       setApp(apps[index]);
     },
     [],
@@ -98,14 +113,18 @@ export default function noCodeApp({ myCollection, appInit, apps }) {
 
   const pageConfigSave = useMemo(() => {
     const saveData = async (data: any) => {
-      const style = JSON.stringify({ ...JSON.parse(page.uniPagesConfigId.style), ...data });
-      await patchUniPagesConfig(page.uniPagesConfigId._id, {
+      const style = { ...page.uniPagesConfigId.style, ...data };
+      await patchUniPagesConfig({
+        id: page.uniPagesConfigId._id,
+        file: app.file,
+        name: page.name,
+        type: page.type,
         style,
       });
       page.uniPagesConfigId.style = style;
       setPage(page);
     };
-    return debounce(saveData, 5000, false);
+    return debounce(saveData, 1000, false);
   }, [page]);
 
   const pageConfigDel = useMemo(() => {
@@ -144,54 +163,23 @@ export default function noCodeApp({ myCollection, appInit, apps }) {
             key='left'
             tabPosition='left'
           >
-            <TabPane
-              className='p-4'
-              tab={
-                <div className='flex flex-col justify-center'>
-                  <Icon style={{ fontSize: '36px', margin: 0 }} type={moduleList[0].icon} />
-                  <div>{moduleList[0].title}</div>
-                </div>
-              }
-              key={moduleList[0].key}
-            >
-              <SourceBox dataSource={myCollection} change={changeComponent} />
-            </TabPane>
-            <TabPane
-              className='p-4'
-              tab={
-                <div className='flex flex-col justify-center'>
-                  <Icon style={{ fontSize: '36px', margin: 0 }} type={moduleList[1].icon} />
-                  <div>{moduleList[1].title}</div>
-                </div>
-              }
-              key={moduleList[1].key}
-            >
-              <PagesBox data={app.pageId} changePage={changePage} app={app} />
-            </TabPane>
-            <TabPane
-              className='p-4'
-              tab={
-                <div className='flex flex-col justify-center'>
-                  <Icon style={{ fontSize: '36px', margin: 0 }} type={moduleList[2].icon} />
-                  <div>{moduleList[2].title}</div>
-                </div>
-              }
-              key={moduleList[2].key}
-            >
-              <SourceBox dataSource={apps} change={changeApp} />
-            </TabPane>
-            <TabPane
-              className='p-4'
-              tab={
-                <div className='flex flex-col justify-center'>
-                  <Icon style={{ fontSize: '36px', margin: 0 }} type={moduleList[3].icon} />
-                  <div>{moduleList[3].title}</div>
-                </div>
-              }
-              key={moduleList[3].key}
-            >
-              <p>3</p>
-            </TabPane>
+            {moduleList.map((item, index) => (
+              <TabPane
+                className='p-4'
+                tab={
+                  <div className='flex flex-col justify-center'>
+                    <Icon style={{ fontSize: '36px', margin: 0 }} type={item.icon} />
+                    <div>{item.title}</div>
+                  </div>
+                }
+                key={item.key}
+              >
+                {index === 0 && <SourceBox dataSource={myCollection} change={changeComponent} />}
+                {index === 1 && <PagesBox data={app.pageId} changePage={changePage} app={app} />}
+                {index === 2 && <SourceBox dataSource={apps} change={changeApp} />}
+                {index === 3 && <p>3</p>}
+              </TabPane>
+            ))}
           </Tabs>
           <div style={{ height: '50px' }} />
         </div>
@@ -214,23 +202,46 @@ export default function noCodeApp({ myCollection, appInit, apps }) {
             />
           )}
           {currentRight === '1' && page && (
-            <FormRender
-              config={uniAppPage}
-              defaultValue={JSON.parse(page.uniPagesConfigId.style)}
-              onSave={pageConfigSave}
-              onDel={pageConfigDel}
-              uid={page._id}
-              rightPanelRef={ref}
-            />
+            <Tabs defaultActiveKey='0'>
+              {moduleList[1].children!.map((item, index) => (
+                <TabPane key={item.key} tab={item.title}>
+                  {index === 0 && (
+                    <FormRender
+                      config={uniAppPage}
+                      defaultValue={page.uniPagesConfigId.style}
+                      onSave={pageConfigSave}
+                      onDel={pageConfigDel}
+                      uid={page._id}
+                      rightPanelRef={ref}
+                    />
+                  )}
+                  {index === 1 && (
+                    <FormRender
+                      config={configAdapter(component.props ?? [])}
+                      uid={component.title}
+                      onSave={componentConfigSave}
+                      onDel={componentConfigDel}
+                      rightPanelRef={ref}
+                    />
+                  )}
+                </TabPane>
+              ))}
+            </Tabs>
           )}
           {currentRight === '2' && (
-            <FormRender
-              config={uniAppApp}
-              onSave={appConfigSave}
-              onDel={appConfigDel}
-              uid={app._id}
-              rightPanelRef={ref}
-            />
+            <Tabs defaultActiveKey='0'>
+              {moduleList[2].children!.map((item, index) => (
+                <TabPane key={item.key} tab={item.title}>
+                  <FormRender
+                    config={uniAppAppConfig}
+                    onSave={appConfigSave}
+                    onDel={appConfigDel}
+                    uid={app._id}
+                    rightPanelRef={ref}
+                  />
+                </TabPane>
+              ))}
+            </Tabs>
           )}
           <div style={{ height: '50px' }} />
         </div>

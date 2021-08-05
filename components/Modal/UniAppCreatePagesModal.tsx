@@ -40,8 +40,12 @@ function UniAppCreatedPagesModal(props, ref) {
   }));
 
   const handleOk = async values => {
-    const data = await postPage({ page: values, app });
-    changeData(data);
+    try {
+      const data = await postPage({ page: values, app });
+      changeData(data);
+    } catch (error) {
+      setIsModalLoading(false);
+    }
   };
   const handleCancel = () => {
     setIsModalVisible(false);

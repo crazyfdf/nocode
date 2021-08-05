@@ -13,7 +13,7 @@ export function postComponentDocs(data) {
 }
 
 // 创建组件库案例
-export function postcomponentsCreate(data) {
+export function postComponentsCreate(data) {
   return api.post('/post/componentsCreate', { data });
 }
 
@@ -65,6 +65,10 @@ export function getUniPagesConfig(data) {
 // 获取页面配置
 export function postRun(data) {
   return api.post('/post/run', { data });
+}
+// 修改页面配置
+export function patchUniPagesConfig(data) {
+  return api.patch('/patch/uniPagesConfig', { data });
 }
 
 export default api;

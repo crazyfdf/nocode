@@ -1,23 +1,32 @@
 import { postPage, postUniPagesConfig, patchApp } from '@/CMSRequest/api';
+import { exec } from 'child_process';
 
 export default async (req, res) => {
   const { data } = req.body;
   const { page, app } = data;
-  page.path = `pages/${page.type}/${page.name}`;
+  const commend = `cd /D ${app.file} && uct-plop createPage ${page.name} ${page.type}`;
+  exec(commend, (err, stdout, stderr) => {
+    if (err) {
+      console.log(stderr);
+    } else {
+      console.log(`${page.name}页面创建成功`);
+    }
+  });
+  page.path = `pages/${page.type}/${page.name}/${page.name}`;
   page._updateTime = new Date().getTime();
   page._createTime = new Date().getTime();
-  const style = JSON.stringify({
+  const style = {
     navigationBarTitleText: page.title,
-  });
+  };
 
   const pageConfig = await postUniPagesConfig({
-    path: page.path,
     style,
     _updateTime: page._updateTime,
     _createTime: page._createTime,
   });
   const pageRes = await postPage({ ...page, uniPagesConfigId: pageConfig.id });
-  const pageId = [pageRes.id, ...app.pageId.map(item => item._id)];
+
+  const pageId = app.pageId ? [pageRes.id, ...app.pageId.map(item => item._id)] : [pageRes.id];
   patchApp(app._id, { pageId });
   res.status(201).json(page);
 };

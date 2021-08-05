@@ -6,7 +6,7 @@ import glob from 'globby';
 import Icon from '@/components/Icon/Icon';
 import {
   getComponentAST,
-  postcomponentsCreate,
+  postComponentsCreate,
   postCollectionComponents,
   getCollectionComponents,
   postRun,
@@ -68,7 +68,7 @@ export default function noCodeComponents({ docComponents, myCollection }) {
 
   const changeComponent = async index => {
     let json = {};
-    await postcomponentsCreate({
+    await postComponentsCreate({
       name: dataSource[index].name,
       file: `${process.env.dirname}/uni-components/`,
       json: json,
@@ -80,7 +80,7 @@ export default function noCodeComponents({ docComponents, myCollection }) {
 
   const handleFormSave = useMemo(() => {
     const saveData = async (data: any) => {
-      await postcomponentsCreate({
+      await postComponentsCreate({
         title: dataSource[currentComponent].title,
         file: `${process.env.dirname}/uni-components/`,
         json: data,

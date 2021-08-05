@@ -13,7 +13,6 @@ export default async (req, res) => {
     _updateTime: data._updateTime,
     _createTime: data._createTime,
   });
-  console.log(uctId);
 
   data.uctuiConfigId = uctId.id;
   // TODO:设置默认创建路径(user表的默认创建地址)
@@ -28,7 +27,6 @@ export default async (req, res) => {
   });
   // 创建完项目后将地址改成项目目录
   data.file = `${data.file}/${data.name}`;
-  console.log(data.file);
 
   const app = await postApp(data);
 

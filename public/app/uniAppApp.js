@@ -1,4 +1,4 @@
-export default [
+export const uniAppAppConfig = [
   {
     id: 'version',
     value: '0.0.1',
@@ -69,3 +69,5 @@ export default [
     label: '地图配置',
   },
 ];
+
+export const uniAppAppTheme = [];

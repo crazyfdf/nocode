@@ -13,6 +13,7 @@
     "lint": "yarn lint:eslint && yarn lint:css",
     "lint:eslint": "eslint --ext ts,tsx .",
     "lint:css": "stylelint **/*.{ts,tsx}",
+    "lint:fix": "eslint --fix --ext ts,tsx .",
     "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
     "tsc:client": "tsc --noEmit -p tsconfig.json",
     "bump-version": "standard-version --skip.commit --skip.tag"
