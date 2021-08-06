@@ -69,5 +69,3 @@ export const uniAppAppConfig = [
     label: '地图配置',
   },
 ];
-
-export const uniAppAppTheme = [];

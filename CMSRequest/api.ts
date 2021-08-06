@@ -5,6 +5,7 @@ import { CMSPostResult } from '@/types/cmsType';
 export function postApp(data): Promise<CMSPostResult> {
   return api.post('/app', { data });
 }
+
 // 获取app
 export function getApp(data) {
   if (data.id) {
@@ -22,33 +23,53 @@ export function patchApp(id, data) {
 export function postUniAppsConfig(data): Promise<CMSPostResult> {
   return api.post('/uniAppsConfig', { data });
 }
+
 // 修改app配置
 export function patchUniAppsConfig(id, data) {
   return api.patch(`/uniAppsConfig/${id}`, { data });
 }
 
-// 新建组件库
-export function postComponents(data): Promise<CMSPostResult> {
-  return api.post('/component', { data });
-}
 // 新建页面
 export function postPage(data): Promise<CMSPostResult> {
   return api.post('/page', { data });
 }
+
 // 获取页面
 export function getPage(data) {
   return api.get('/page', { data });
 }
+
 // 新建页面配置
 export function postUniPagesConfig(data): Promise<CMSPostResult> {
   return api.post('/uniPagesConfig', { data });
 }
+
 // 获取页面配置
 export function getUniPagesConfig(data) {
   return api.get('/uniPagesConfig/');
 }
+
 // 修改页面配置
 export function patchUniPagesConfig(id, data) {
   return api.patch(`/uniPagesConfig/${id}`, { data });
+}
+
+// 新建组件
+export function postComponent(data): Promise<CMSPostResult> {
+  return api.post('/component', { data });
+}
+
+// 获取组件
+export function getComponent(data) {
+  if (data.id) {
+    return api.get(`/app/${data.id}`);
+  } else {
+    return api.get('/app', { data });
+  }
+}
+
+// 修改组件
+export function patchComponent(id, data) {
+  return api.patch(`/component/${id}`, { data });
 }
 export default api;

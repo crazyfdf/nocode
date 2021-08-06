@@ -28,5 +28,14 @@ export default async (req, res) => {
 
   const pageId = app.pageId ? [pageRes.id, ...app.pageId.map(item => item._id)] : [pageRes.id];
   patchApp(app._id, { pageId });
-  res.status(201).json(page);
+  res.status(201).json({
+    ...page,
+    _id: pageRes.id,
+    uniPagesConfigId: {
+      _id: pageConfig.id,
+      style,
+      _createTime: page._createTime,
+      _updateTime: page._updateTime,
+    },
+  });
 };

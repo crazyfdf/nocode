@@ -71,4 +71,8 @@ export function patchUniPagesConfig(data) {
   return api.patch('/patch/uniPagesConfig', { data });
 }
 
+// 新建组件
+export function postComponent(data) {
+  return api.post('/post/component', { data });
+}
 export default api;

@@ -26,10 +26,17 @@ export default async (req, res) => {
       }
     }
     // 5 写入pages.json
-    fs.writeFile(`${file}/pages.json`, JSON.stringify(res, null, 2), {
-      flag: 'w+',
-      encoding: 'utf-8',
-    });
+    fs.writeFile(
+      `${file}/pages.json`,
+      JSON.stringify(res, null, 2),
+      {
+        flag: 'w+',
+        encoding: 'utf-8',
+      },
+      err => {
+        console.log(err);
+      },
+    );
   });
   const pagesConfig = await patchUniPagesConfig(id, style);
   console.log(pagesConfig);

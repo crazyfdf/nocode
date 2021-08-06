@@ -2,7 +2,7 @@ import Button from 'antd/lib/button';
 import List from 'antd/lib/list';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import Icon from '@/components/Icon/Icon';
-import UniAppCreatePagesModal from '@/components/Modal/UniAppCreatePagesModal';
+import UniAppCreatePageModal from '@/components/Modal/UniAppCreatePageModal';
 import ListQueueAnim from '@/components/Animation/ListQueueAnim';
 
 interface DataInterFace {
@@ -14,56 +14,52 @@ interface DataInterFace {
   type: string;
 }
 
-interface PropsInterFace {
-  data: DataInterFace[];
-  app: any;
-  changePage: (index: number) => void;
+interface ConfigInterFace {
+  key: number;
+  title: string;
+  icon: string;
+  typeIcon: object;
+  children: any[];
 }
-const typeIcon = {
-  list: 'icon-wuxuliebiao',
-  form: 'icon-dingdan',
-  details: 'icon-xiangqing2',
-};
 
-function PagesBox(props: PropsInterFace) {
-  const { data = [], changePage, app } = props;
-  const [items, setItems] = useState(data);
+interface PropsInterFace {
+  dataSource: DataInterFace[];
+  changeCurrent: (index: number) => void;
+  changeData: (values: any) => void;
+  remove: (values: any) => void;
+  config: ConfigInterFace;
+}
+
+function ListBox(props: PropsInterFace) {
+  const { dataSource = [], changeCurrent, changeData, config, remove } = props;
+  // const [items, setItems] = useState(data);
   const [current, setCurrent] = useState(0);
-  const uniPagesModal = useRef({
+  const uniModal = useRef({
     changeVal: v => {},
   });
 
   const onAdd = () => {
-    // items.unshift({ key: Date.now(), page: Date.now(), icon: 'icon--biaodanmoban' });
-    // let item = [...items];
-    // setItems(item);
-    uniPagesModal.current.changeVal(true);
+    uniModal.current.changeVal(true);
   };
   const onRemove = item => {
-    setItems(items.filter(v => v.name !== item.name));
+    remove && remove(item);
   };
 
-  const changeData = useMemo(
-    () => res => {
-      items.unshift(res);
-      let item = [...items];
-      setItems(item);
+  const _changeData = useMemo(
+    () => values => {
+      changeData && changeData(values);
     },
     [],
   );
-  const changeCurrent = index => {
+  const _changeCurrent = index => {
     setCurrent(index);
-    changePage && changePage(index);
+    changeCurrent && changeCurrent(index);
   };
-  useEffect(() => {
-    changeCurrent(0);
-  }, [app]);
-
   return (
     <>
       <List
         grid={{ gutter: 10, column: 1 }}
-        dataSource={data}
+        dataSource={dataSource}
         pagination={{
           onChange: page => {
             console.log(page);
@@ -73,14 +69,14 @@ function PagesBox(props: PropsInterFace) {
         header={
           <>
             <Button onClick={onAdd} type='primary'>
-              添加页面
+              {`添加${config.title}`}
             </Button>
           </>
         }
         renderItem={(item, index) => (
           <List.Item
             key={item.name}
-            onClick={() => changeCurrent(index)}
+            onClick={() => _changeCurrent(index)}
             className='rounded'
             style={
               current === index
@@ -91,7 +87,7 @@ function PagesBox(props: PropsInterFace) {
             <ListQueueAnim>
               <div key={item.name} className='flex justify-between items-center'>
                 <div className='flex items-center'>
-                  <Icon style={{ fontSize: '24px', margin: 0 }} type={typeIcon[item.type]} />
+                  <Icon style={{ fontSize: '24px', margin: 0 }} type={config.typeIcon[item.type]} />
                   <div className='ml-2'>
                     <div>{item.title}</div>
                     <div className='text-gray-500 text-sm'>{item.description}</div>
@@ -107,11 +103,9 @@ function PagesBox(props: PropsInterFace) {
           </List.Item>
         )}
       />
-      <UniAppCreatePagesModal ref={uniPagesModal} changeData={changeData} app={app} />
+      <UniAppCreatePageModal ref={uniModal} changeData={_changeData} />
     </>
   );
 }
-const compare = (preProps, nextProps) => {
-  return preProps.app._id === nextProps.app._id;
-};
-export default memo(PagesBox, compare);
+
+export default ListBox;

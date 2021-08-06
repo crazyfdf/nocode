@@ -1,0 +1,62 @@
+[
+  {
+    "key": 0,
+    "title": "组件",
+    "icon": "icon-guanlizujian",
+    "typeIcon": {
+      "list": "icon-wuxuliebiao",
+      "form": "icon-dingdan",
+      "details": "icon-xiangqing2"
+    }
+  },
+  {
+    "key": 1,
+    "title": "页面",
+    "icon": "icon-shouye",
+    "typeIcon": {
+      "list": "icon-wuxuliebiao",
+      "form": "icon-dingdan",
+      "details": "icon-xiangqing2"
+    },
+    "children": [
+      {
+        "key": 0,
+        "title": "页面配置"
+      },
+      {
+        "key": 1,
+        "title": "组件配置"
+      }
+    ]
+  },
+  {
+    "key": 2,
+    "title": "应用",
+    "icon": "icon-yingyong",
+    "typeIcon": {
+      "list": "icon-wuxuliebiao",
+      "form": "icon-dingdan",
+      "details": "icon-xiangqing2"
+    },
+    "children": [
+      {
+        "key": 0,
+        "title": "config配置"
+      },
+      {
+        "key": 1,
+        "title": "theme配置"
+      }
+    ]
+  },
+  {
+    "key": 3,
+    "title": "模板",
+    "icon": "icon-APPmoban",
+    "typeIcon": {
+      "list": "icon-wuxuliebiao",
+      "form": "icon-dingdan",
+      "details": "icon-xiangqing2"
+    }
+  }
+]

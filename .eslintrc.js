@@ -104,7 +104,7 @@ module.exports = {
     // 强制所有控制语句使用一致的括号风格
     curly: [0, 'multi'],
     // switch 语句强制 default 分支，也可添加 // no default 注释取消此次警告
-    'default-case': 2,
+    'default-case': 0,
     // 强制object.key 中 . 的位置，参数:
     // property，'.'号应与属性在同一行
     // object, '.' 号应与对象名在同一行
@@ -128,7 +128,7 @@ module.exports = {
     // 禁用 arguments.caller 或 arguments.callee
     'no-caller': 2,
     // 不允许在 case 子句中使用词法声明
-    'no-case-declarations': 2,
+    'no-case-declarations': 0,
     // 禁止除法操作符显式的出现在正则表达式开始的位置
     'no-div-regex': 2,
     // 禁止 if 语句中有 return 之后有 else

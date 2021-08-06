@@ -1,5 +1,5 @@
 import { Select, Modal, Form, Input, Button } from 'antd';
-import { postPage } from '@/request/api';
+import { postComponent } from '@/request/api';
 import { useState, useImperativeHandle, forwardRef } from 'react';
 
 const { Option } = Select;
@@ -27,11 +27,10 @@ const tailFormItemLayout = {
     },
   },
 };
-function UniAppCreatedPagesModal(props, ref) {
+function UniAppComponentModal(props, ref) {
   const { changeData, app } = props;
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalLoading, setIsModalLoading] = useState(false);
-  const [filePath, setFilePath] = useState('');
   const [form] = Form.useForm();
   useImperativeHandle(ref, () => ({
     changeVal: newVal => {
@@ -41,7 +40,7 @@ function UniAppCreatedPagesModal(props, ref) {
 
   const handleOk = async values => {
     try {
-      const data = await postPage({ page: values, app });
+      const data = await postComponent({ page: values, app });
       changeData(data);
     } catch (error) {
       setIsModalLoading(false);
@@ -62,7 +61,7 @@ function UniAppCreatedPagesModal(props, ref) {
   };
   return (
     <Modal
-      title='创建页面'
+      title='创建组件'
       visible={isModalVisible}
       onOk={handleOk}
       onCancel={handleCancel}
@@ -71,41 +70,42 @@ function UniAppCreatedPagesModal(props, ref) {
       <Form {...formItemLayout} form={form} name='app' onFinish={onFinish} scrollToFirstError>
         <Form.Item
           name='title'
-          label='页面名称'
+          label='组件名称'
           tooltip='不能超过20个字符'
           rules={[
-            { required: true, message: '请输入页面名称，不能超过20个字符', whitespace: true },
+            { required: true, message: '请输入组件名称，不能超过20个字符', whitespace: true },
           ]}
         >
-          <Input placeholder='请输入页面名称，不能超过20个字符' />
+          <Input placeholder='请输入组件名称，不能超过20个字符' />
         </Form.Item>
 
         <Form.Item
           name='name'
-          label='页面标识'
+          label='组件标识'
           tooltip='只能包含小写字母、数字、-或_'
           rules={[
             {
               required: true,
-              message: '请输入页面标识，不能超过20个字符，只能包含小写字母、数字、-或_',
+              message: '请输入组件标识，不能超过20个字符，只能包含小写字母、数字、-或_',
             },
           ]}
         >
-          <Input placeholder='请输入页面标识，不能超过20个字符，只能包含小写字母、数字、-或_' />
+          <Input placeholder='请输入组件标识，不能超过20个字符，只能包含小写字母、数字、-或_' />
         </Form.Item>
-        <Form.Item name='description' label='页面描述'>
-          <Input.TextArea placeholder='请输入页面描述' />
+        <Form.Item name='description' label='组件描述'>
+          <Input.TextArea placeholder='请输入组件描述' />
         </Form.Item>
 
         <Form.Item
           name='type'
-          label='页面类型'
-          rules={[{ required: true, message: '请选择页面类型!' }]}
+          label='组件类型'
+          rules={[{ required: true, message: '请选择组件类型!' }]}
         >
           <Select placeholder='select your gender'>
             <Option value='list'>列表</Option>
             <Option value='form'>表单</Option>
             <Option value='details'>详情</Option>
+            <Option value='other'>其他</Option>
           </Select>
         </Form.Item>
 
@@ -122,4 +122,4 @@ function UniAppCreatedPagesModal(props, ref) {
   );
 }
 
-export default forwardRef(UniAppCreatedPagesModal);
+export default forwardRef(UniAppComponentModal);

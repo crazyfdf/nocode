@@ -2,15 +2,15 @@ import HeaderNocode from '@/components/Header/Header-nocode';
 import { Tabs } from 'antd';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Icon from '@/components/Icon/Icon';
-import SourceBox from '@/components/SourceBox/SourceBox';
 import {
   getApp,
   getCollectionComponents,
   getComponentAST,
   patchUniAppsConfig,
   patchUniPagesConfig,
+  postPage,
 } from '@/request/api';
-import PagesBox from '@/components/SourceBox/PagesBox';
+import ListBox from '@/components/ListBox/ListBox';
 import FormRender from '@/components/Renderer/FormRender';
 import { debounce } from '@/utils/tool';
 import uniAppPage from '@/public/app/uniAppPage';
@@ -28,133 +28,140 @@ const navigation: object[] = [
   { title: '保存', icon: '', handler: 'user' },
   { title: '打开VSCode', icon: '', handler: 'user' },
 ];
-const moduleList = [
-  { key: 0, title: '组件', icon: 'icon-guanlizujian' },
-  {
-    key: 1,
-    title: '页面',
-    icon: 'icon-shouye',
-    children: [
-      { key: 0, title: '页面配置' },
-      { key: 1, title: '组件配置' },
-    ],
-  },
-  {
-    key: 2,
-    title: '应用',
-    icon: 'icon-yingyong',
-    children: [
-      { key: 0, title: 'config配置' },
-      { key: 1, title: 'theme配置' },
-    ],
-  },
-  { key: 3, title: '模板', icon: 'icon-APPmoban' },
-];
+const moduleList = require('./app.json');
 
 export default function noCodeApp({ myCollection, appInit, apps }) {
-  const { pageId: pages = [] } = appInit;
-  const [currentRight, setCurrentRight] = useState('0'); // 当前右侧下标
+  const [currentLeft, setCurrentLeft] = useState('0'); // 当前右侧下标
   const [app, setApp] = useState(appInit); // 当前app
+  // 初始化app配置
   const appConfig = app.uctuiConfigId.uctuiConfig;
   uniAppAppConfig.forEach((item, index) => {
     uniAppAppConfig[index].value = appConfig[item.id];
   });
+  console.log(app);
 
-  const [page, setPage] = useState(pages && pages[0]); // 当前页面
+  const [page, setPage] = useState(appInit.pageId && appInit.pageId[0]); // 当前页面
   const [component, setComponent] = useState(myCollection && myCollection[0]); // 当前组件
   const ref = useRef(null);
-  const changeRight = e => {
-    setCurrentRight(e.key);
-  };
+
   const changeLeft = key => {
-    changeRight({ key: `${key}` });
+    setCurrentLeft(`${key}`);
   };
 
-  const changePage = useMemo(
-    () => index => {
-      console.log(page);
-      app.pageId && setPage(app.pageId[index]);
-    },
-    [app],
-  );
-  const changeApp = useMemo(
-    () => index => {
-      console.log(app);
-      setApp(apps[index]);
-    },
-    [],
-  );
-  const changeComponent = useMemo(
-    () => index => {
-      setComponent(myCollection[index]);
-    },
-    [],
-  );
+  const changeData = async values => {
+    switch (currentLeft) {
+      // 添加组件
+      case '0':
+        break;
+      // 添加页面
+      case '1':
+        const page = await postPage({ page: values, app });
+        app.pageId ? app.pageId.unshift(page) : [page];
+        setApp({ ...app });
+        setPage(page);
+        break;
+      // 添加项目
+      case '2':
+        break;
+      // 添加模板
+      case '3':
+        break;
+    }
+  };
 
-  const componentConfigSave = useMemo(() => {
-    const saveData = async (data: any) => {
-      //   const style = JSON.stringify({ ...JSON.parse(page.uniPagesConfigId.style), ...data });
-      //   await patchUniPagesConfig(page.uniPagesConfigId._id, {
-      //     style,
-      //   });
-      //   page.uniPagesConfigId.style = style;
-      //   setPage(page);
-      console.log(data);
-    };
-    // return debounce(saveData, 1000, false);
-    return saveData;
-  }, [page]);
+  const changeCurrent = index => {
+    switch (currentLeft) {
+      // 切换组件
+      case '0':
+        setComponent(myCollection[index]);
+        break;
+      // 切换页面
+      case '1':
+        app.pageId && setPage(app.pageId[index]);
+        break;
+      // 切换项目
+      case '2':
+        setApp(apps[index]);
+        break;
+      // 切换模板
+      case '3':
+        break;
+    }
+  };
 
-  const componentConfigDel = useMemo(() => {
-    return (id: any) => {
-      console.log(id);
+  const remove = item => {
+    switch (currentLeft) {
+      // 删除组件
+      case '0':
+        break;
+      // 删除页面
+      case '1':
+        break;
+      // 删除项目
+      case '2':
+        break;
+      // 删除模板
+      case '3':
+        break;
+    }
+  };
+  const configSave = async (data: any) => {
+    const saveData = async () => {
+      switch (currentLeft) {
+        // 修改组件配置
+        case '0':
+          break;
+        // 修改页面配置
+        case '1':
+          const style = { ...page.uniPagesConfigId.style, ...data };
+          await patchUniPagesConfig({
+            id: page.uniPagesConfigId._id,
+            file: app.file,
+            name: page.name,
+            type: page.type,
+            style,
+          });
+          page.uniPagesConfigId.style = style;
+          setPage(page);
+          break;
+        // 修改项目配置
+        case '2':
+          await patchUniAppsConfig({
+            id: app.uctuiConfigId._id,
+            file: app.file,
+            uctuiConfig: { ...app.uctuiConfigId.uctuiConfig, ...data },
+          });
+          break;
+        // 修改模板配置
+        case '3':
+          break;
+      }
     };
-  }, []);
+    debounce(saveData, 1000, false);
+  };
 
-  const pageConfigSave = useMemo(() => {
-    const saveData = async (data: any) => {
-      const style = { ...page.uniPagesConfigId.style, ...data };
-      await patchUniPagesConfig({
-        id: page.uniPagesConfigId._id,
-        file: app.file,
-        name: page.name,
-        type: page.type,
-        style,
-      });
-      page.uniPagesConfigId.style = style;
-      setPage(page);
-    };
-    return debounce(saveData, 1000, false);
-  }, [page]);
-
-  const pageConfigDel = useMemo(() => {
-    return (id: any) => {
-      console.log(id);
-    };
-  }, []);
-
-  const appConfigSave = useMemo(() => {
-    const saveData = async (data: any) => {
-      await patchUniAppsConfig({
-        id: app.uctuiConfigId._id,
-        file: app.file,
-        uctuiConfig: { ...app.uctuiConfigId.uctuiConfig, ...data },
-      });
-    };
-    return debounce(saveData, 1000, false);
-  }, [app]);
-
-  const appConfigDel = useMemo(() => {
-    return (id: any) => {
-      console.log(id);
-    };
-  }, []);
+  const configDel = (id: any) => {
+    switch (currentLeft) {
+      // 删除项目配置
+      case '0':
+        break;
+      // 删除页面配置
+      case '1':
+        break;
+      // 删除组件配置
+      case '2':
+        break;
+      // 删除模板配置
+      case '3':
+        break;
+    }
+  };
 
   return (
     <div className='overflow-hidden'>
       <HeaderNocode navigation={navigation} />
       <div className='flex-auto flex justify-between'>
-        <div style={{ width: '400px' }}>
+        <div style={{ width: '400px', paddingBottom: '50px' }}>
           <Tabs
             type='line'
             tabBarStyle={{ backgroundColor: '#fafafa' }}
@@ -174,14 +181,18 @@ export default function noCodeApp({ myCollection, appInit, apps }) {
                 }
                 key={item.key}
               >
-                {index === 0 && <SourceBox dataSource={myCollection} change={changeComponent} />}
-                {index === 1 && <PagesBox data={app.pageId} changePage={changePage} app={app} />}
-                {index === 2 && <SourceBox dataSource={apps} change={changeApp} />}
-                {index === 3 && <p>3</p>}
+                <ListBox
+                  dataSource={
+                    index === 0 ? myCollection : index === 1 ? app.pageId : index === 2 ? apps : []
+                  }
+                  changeCurrent={changeCurrent}
+                  config={item}
+                  changeData={changeData}
+                  remove={remove}
+                />
               </TabPane>
             ))}
           </Tabs>
-          <div style={{ height: '50px' }} />
         </div>
         <div className='iframe'>
           <iframe
@@ -192,16 +203,16 @@ export default function noCodeApp({ myCollection, appInit, apps }) {
           />
         </div>
         <div style={{ width: '400px' }} className='h-screen shadow-xl overflow-auto px-4 py-5'>
-          {currentRight === '0' && (
+          {currentLeft === '0' && (
             <FormRender
               config={configAdapter(component.props ?? [])}
               uid={component.title}
-              onSave={componentConfigSave}
-              onDel={componentConfigDel}
+              onSave={configSave}
+              onDel={configDel}
               rightPanelRef={ref}
             />
           )}
-          {currentRight === '1' && page && (
+          {currentLeft === '1' && page && (
             <Tabs defaultActiveKey='0'>
               {moduleList[1].children!.map((item, index) => (
                 <TabPane key={item.key} tab={item.title}>
@@ -209,8 +220,8 @@ export default function noCodeApp({ myCollection, appInit, apps }) {
                     <FormRender
                       config={uniAppPage}
                       defaultValue={page.uniPagesConfigId.style}
-                      onSave={pageConfigSave}
-                      onDel={pageConfigDel}
+                      onSave={configSave}
+                      onDel={configDel}
                       uid={page._id}
                       rightPanelRef={ref}
                     />
@@ -219,8 +230,8 @@ export default function noCodeApp({ myCollection, appInit, apps }) {
                     <FormRender
                       config={configAdapter(component.props ?? [])}
                       uid={component.title}
-                      onSave={componentConfigSave}
-                      onDel={componentConfigDel}
+                      onSave={configSave}
+                      onDel={configDel}
                       rightPanelRef={ref}
                     />
                   )}
@@ -228,14 +239,14 @@ export default function noCodeApp({ myCollection, appInit, apps }) {
               ))}
             </Tabs>
           )}
-          {currentRight === '2' && (
+          {currentLeft === '2' && (
             <Tabs defaultActiveKey='0'>
               {moduleList[2].children!.map((item, index) => (
                 <TabPane key={item.key} tab={item.title}>
                   <FormRender
                     config={uniAppAppConfig}
-                    onSave={appConfigSave}
-                    onDel={appConfigDel}
+                    onSave={configSave}
+                    onDel={configDel}
                     uid={app._id}
                     rightPanelRef={ref}
                   />
