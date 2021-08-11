@@ -5,7 +5,6 @@ import Icon from '@/components/Icon/Icon';
 import { uuid } from '@/utils/tool';
 // Modal组件
 import UniAppComponentsModal from '@/components/Modal/UniAppComponentsModal';
-import UniAppApplicationModal from '@/components/Modal/UniAppCreateAppModal';
 
 // 背景效果
 import BgImage from '@/components/Animation/BgImage';
@@ -100,7 +99,6 @@ export default function create() {
           </Card>
         </QueueAnim>
       ))}
-      <UniAppApplicationModal ref={uniAppModal} />
       <UniAppComponentsModal ref={uniComponentsModal} />
     </div>
   );

@@ -2,7 +2,7 @@ import { baseFormUnion, TFormItemsDefaultType } from '@/types/types';
 import { uuid } from '@/utils/tool';
 import { MinusCircleFilled, EditFilled } from '@ant-design/icons';
 import { Button, Tooltip } from 'antd';
-import React, { RefObject, useState, memo, useRef } from 'react';
+import React, { RefObject, useState, memo, useRef, useEffect } from 'react';
 import BasePopoverForm from '@/components/FormComponents/FormItems/BasePopoverForm';
 import EditorModal from '@/components/FormComponents/FormItems/EditorModal';
 import BaseForm from '@/components/FormComponents/FormItems/BaseForm';
@@ -62,10 +62,9 @@ interface FormItemsProps {
   onChange?: any;
   data: any;
   edit?: Boolean;
-  rightPanelRef: RefObject<{ changeVal }>;
 }
 function EditableFormItems(props: FormItemsProps) {
-  const { formList: list, data: formData, onChange, rightPanelRef, edit = false } = props;
+  const { formList: list, data: formData, onChange, edit = false } = props;
   const [formList, setFormList] = useState<TFormItemsDefaultType>(list || []);
   const [curItem, setCurItem] = useState<baseFormUnion>();
   const ref = useRef({
@@ -89,6 +88,9 @@ function EditableFormItems(props: FormItemsProps) {
       [formData.id]: formList.map(item => ({ [item.id]: item.value })),
     });
   };
+  useEffect(() => {
+    setFormList(list || []);
+  }, [list]);
 
   const handleSaveItem = (data: baseFormUnion) => {
     let add = true;
@@ -102,14 +104,18 @@ function EditableFormItems(props: FormItemsProps) {
     });
     if (add) {
       setFormList([...newData, data]);
+    } else {
+      setFormList(newData);
+    }
+    if (edit) {
+      onChange([...newData, data]);
+    } else {
       onChange({
         [formData.id]: [
           ...formList.map(item => ({ [item.id]: item.value })),
           { [data.id]: data.value },
         ],
       });
-    } else {
-      setFormList(newData);
     }
   };
 
@@ -119,11 +125,14 @@ function EditableFormItems(props: FormItemsProps) {
         formList[index].value = data.value;
       }
     });
-
-    onChange &&
-      onChange({
-        [formData.id]: formList.map(item => ({ [item.id]: item.value })),
-      });
+    if (edit) {
+      onChange(formList);
+    } else {
+      onChange &&
+        onChange({
+          [formData.id]: formList.map(item => ({ [item.id]: item.value })),
+        });
+    }
   };
 
   return (
@@ -134,7 +143,7 @@ function EditableFormItems(props: FormItemsProps) {
           <div key={uuid(6, 10)}>
             <label className='font-medium'>{item.label}</label>
             <div className='flex justify-between items-center mb-4'>
-              {edit && <MinusCircleFilled onClick={() => handleDelItem(item)} />}
+              <MinusCircleFilled onClick={() => handleDelItem(item)} />
               <div className='flex mx-4 flex-1 items-center'>
                 {item.id}：
                 <FormItem
@@ -172,5 +181,4 @@ function EditableFormItems(props: FormItemsProps) {
     </div>
   );
 }
-
 export default EditableFormItems;

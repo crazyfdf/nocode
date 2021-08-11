@@ -1,4 +1,4 @@
-import { patchUniAppsConfig } from '@/CMSRequest/api';
+const { patchUniAppsConfig } = require('@/CMSRequest/api');
 
 const fs = require('fs');
 

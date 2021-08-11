@@ -1,4 +1,4 @@
-import { patchApp } from '@/CMSRequest/api';
+const { patchApp } = require('@/CMSRequest/api');
 
 export default async (req, res) => {
   const { data } = req.body;

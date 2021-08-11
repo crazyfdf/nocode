@@ -1,5 +1,39 @@
 import TweenOne from 'rc-tween-one';
 import React from 'react';
+import { injectGlobal } from '@emotion/css';
+injectGlobal`
+  .linked-animate-demo-wrapper {
+    background: #70a1ff;
+    width:100%;
+    height: 100%;
+    overflow: hidden;
+    z-index:0;
+    position: absolute;
+  }
+
+  .linked-animate-demo-box {
+    bottom: 0;
+    display: block;
+    height: 600px;
+    left: -100%;
+    margin: auto;
+    position: absolute;
+    right: -100%;
+    top: 0;
+    width: 1280px;
+  }
+
+  .linked-animate-demo-block {
+    position: absolute;
+    transition: transform 0.45s ease;
+  }
+
+  .linked-animate-demo-block-child {
+    border-radius: 100%;
+    height: 100%;
+    width: 100%;
+  }
+`
 
 class GridLayout {
   constructor(rect, width, height) {
@@ -197,63 +231,26 @@ export default class LinkedAnimate extends React.Component {
     const { data, tx, ty } = this.state;
 
     return (
-      <>
-        <div className='linked-animate-demo-wrapper'>
-          <div
-            className='linked-animate-demo-box'
-            ref={c => {
-              this.box = c;
-            }}
-            onMouseMove={this.onMouseMove}
-            onMouseLeave={this.onMouseLeave}
-          >
-            {data.map((item, i) => (
-              <Point
-                {...item}
-                tx={tx}
-                ty={ty}
-                key={i}
-                className='linked-animate-demo-block'
-              />
-            ))}
-          </div>
+      <div className='linked-animate-demo-wrapper'>
+        <div
+          className='linked-animate-demo-box'
+          ref={c => {
+            this.box = c;
+          }}
+          onMouseMove={this.onMouseMove}
+          onMouseLeave={this.onMouseLeave}
+        >
+          {data.map((item, i) => (
+            <Point
+              {...item}
+              tx={tx}
+              ty={ty}
+              key={i}
+              className='linked-animate-demo-block'
+            />
+          ))}
         </div>
-        <style>
-          {`
-            .linked-animate-demo-wrapper {
-              background: #70a1ff;
-              width:100%;
-              height: 100%;
-              overflow: hidden;
-              z-index:0;
-              position: absolute;
-            }
-
-            .linked-animate-demo-box {
-              bottom: 0;
-              display: block;
-              height: 600px;
-              left: -100%;
-              margin: auto;
-              position: absolute;
-              right: -100%;
-              top: 0;
-              width: 1280px;
-            }
-
-            .linked-animate-demo-block {
-              position: absolute;
-              transition: transform 0.45s ease;
-            }
-
-            .linked-animate-demo-block-child {
-              border-radius: 100%;
-              height: 100%;
-              width: 100%;
-            }
-          `}
-        </style>
-      </>
+      </div>
     );
   }
 }

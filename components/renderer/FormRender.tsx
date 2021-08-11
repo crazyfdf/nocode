@@ -137,7 +137,6 @@ const FormEditor = (props: FormEditorProps) => {
                   edit={edit}
                   formList={formListAdapter(item)}
                   data={item}
-                  rightPanelRef={rightPanelRef}
                   onChange={handleChange}
                 />
               </div>
@@ -154,7 +153,6 @@ const FormEditor = (props: FormEditorProps) => {
                   edit={edit}
                   formList={item.children}
                   data={item}
-                  rightPanelRef={rightPanelRef}
                   onChange={handleChange}
                 />
               </div>

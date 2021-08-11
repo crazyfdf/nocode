@@ -2,7 +2,7 @@ import Button from 'antd/lib/button';
 import List from 'antd/lib/list';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import Icon from '@/components/Icon/Icon';
-import UniAppCreatePageModal from '@/components/Modal/UniAppCreatePageModal';
+import UniAppModal from '@/components/Modal/UniAppModal';
 import ListQueueAnim from '@/components/Animation/ListQueueAnim';
 
 interface DataInterFace {
@@ -18,7 +18,7 @@ interface ConfigInterFace {
   key: number;
   title: string;
   icon: string;
-  typeIcon: object;
+  type: any[];
   children: any[];
 }
 
@@ -32,7 +32,6 @@ interface PropsInterFace {
 
 function ListBox(props: PropsInterFace) {
   const { dataSource = [], changeCurrent, changeData, config, remove } = props;
-  // const [items, setItems] = useState(data);
   const [current, setCurrent] = useState(0);
   const uniModal = useRef({
     changeVal: v => {},
@@ -41,19 +40,28 @@ function ListBox(props: PropsInterFace) {
   const onAdd = () => {
     uniModal.current.changeVal(true);
   };
-  const onRemove = item => {
+  const onRemove = (item, e) => {
+    e.stopPropagation();
     remove && remove(item);
   };
 
-  const _changeData = useMemo(
-    () => values => {
-      changeData && changeData(values);
-    },
-    [],
-  );
+  const _changeData = values => {
+    changeData && changeData(values);
+  };
+
   const _changeCurrent = index => {
     setCurrent(index);
     changeCurrent && changeCurrent(index);
+  };
+  const typeIcon = type => {
+    let res = 'icon-biaoqiankuozhan_shoucang-203';
+    for (let i = 0; i < config.type.length; i++) {
+      if (config.type[i].value === type) {
+        res = config.type[i].icon;
+        break;
+      }
+    }
+    return res;
   };
   return (
     <>
@@ -85,17 +93,18 @@ function ListBox(props: PropsInterFace) {
             }
           >
             <ListQueueAnim>
-              <div key={item.name} className='flex justify-between items-center'>
+              {/* key={item.name} */}
+              <div className='flex justify-between items-center'>
                 <div className='flex items-center'>
-                  <Icon style={{ fontSize: '24px', margin: 0 }} type={config.typeIcon[item.type]} />
+                  <Icon style={{ fontSize: '24px' }} type={typeIcon(item.type)} />
                   <div className='ml-2'>
                     <div>{item.title}</div>
                     <div className='text-gray-500 text-sm'>{item.description}</div>
                   </div>
                 </div>
                 <Icon
-                  style={{ fontSize: '30px', margin: 0 }}
-                  onClick={() => onRemove(item)}
+                  style={{ fontSize: '30px' }}
+                  onClick={e => onRemove(item, e)}
                   type='icon-lajitong1'
                 />
               </div>
@@ -103,7 +112,12 @@ function ListBox(props: PropsInterFace) {
           </List.Item>
         )}
       />
-      <UniAppCreatePageModal ref={uniModal} changeData={_changeData} />
+      <UniAppModal
+        ref={uniModal}
+        changeData={_changeData}
+        type={config.type}
+        title={config.title}
+      />
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { getPage } from '@/CMSRequest/api';
+const { getPage } = require('@/CMSRequest/api');
 
 export default async (req, res) => {
   const data = req.query;

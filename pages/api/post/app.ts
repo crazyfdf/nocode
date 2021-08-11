@@ -1,6 +1,6 @@
-import { postApp, postUniAppsConfig } from '@/CMSRequest/api';
 import { exec } from 'child_process';
 
+const { postApp, getApp, postUniAppsConfig } = require('@/CMSRequest/api');
 const uctuiConfig = require('@/public/app/uniAppApp.json');
 
 export default async (req, res) => {
@@ -28,7 +28,8 @@ export default async (req, res) => {
   // 创建完项目后将地址改成项目目录
   data.file = `${data.file}/${data.name}`;
 
-  const app = await postApp(data);
+  const appId = await postApp(data);
+  const { data: app } = await getApp({ id: appId.id });
 
   res.status(201).json(app);
 };

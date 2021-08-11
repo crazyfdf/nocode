@@ -1,0 +1,132 @@
+[
+  {
+    "title": "组件",
+    "icon": "icon-guanlizujian",
+    "type": [
+      {
+        "title": "列表",
+        "value": "scroll",
+        "icon": "icon-wuxuliebiao"
+      },
+      {
+        "title": "表单",
+        "value": "form",
+        "icon": "icon-dingdan"
+      },
+      {
+        "title": "详情",
+        "value": "details",
+        "icon": "icon-xiangqing2"
+      },
+      {
+        "title": "其他",
+        "value": "other",
+        "icon": "icon-biaoqiankuozhan_shoucang-203"
+      }
+    ]
+  },
+  {
+    "title": "页面",
+    "icon": "icon-shouye",
+    "type": [
+      {
+        "title": "列表",
+        "value": "list",
+        "icon": "icon-wuxuliebiao"
+      },
+      {
+        "title": "表单",
+        "value": "form",
+        "icon": "icon-dingdan"
+      },
+      {
+        "title": "详情",
+        "value": "details",
+        "icon": "icon-xiangqing2"
+      },
+      {
+        "title": "其他",
+        "value": "other",
+        "icon": "icon-biaoqiankuozhan_shoucang-203"
+      }
+    ],
+    "children": [
+      {
+        "title": "页面配置"
+      },
+      {
+        "title": "组件配置"
+      }
+    ]
+  },
+  {
+    "title": "应用",
+    "icon": "icon-yingyong",
+    "type": [
+      {
+        "title": "商城",
+        "value": "store",
+        "icon": "icon-wuxuliebiao"
+      },
+      {
+        "title": " 社交",
+        "value": "social",
+        "icon": "icon-dingdan"
+      },
+      {
+        "title": " 休闲",
+        "value": "leisure",
+        "icon": "icon-xiangqing2"
+      },
+      {
+        "title": " 生活",
+        "value": "live",
+        "icon": "icon-xiangqing2"
+      },
+      {
+        "title": "知识",
+        "value": "knowledge",
+        "icon": "icon-xiangqing2"
+      },
+      {
+        "title": "其他",
+        "value": "other",
+        "icon": "icon-biaoqiankuozhan_shoucang-203"
+      }
+    ],
+    "children": [
+      {
+        "title": "config配置"
+      },
+      {
+        "title": "theme配置"
+      }
+    ]
+  },
+  {
+    "title": "模板",
+    "icon": "icon-APPmoban",
+    "type": [
+      {
+        "title": "列表",
+        "value": "list",
+        "icon": "icon-wuxuliebiao"
+      },
+      {
+        "title": "表单",
+        "value": "form",
+        "icon": "icon-dingdan"
+      },
+      {
+        "title": "详情",
+        "value": "details",
+        "icon": "icon-xiangqing2"
+      },
+      {
+        "title": "其他",
+        "value": "other",
+        "icon": "icon-biaoqiankuozhan_shoucang-203"
+      }
+    ]
+  }
+]

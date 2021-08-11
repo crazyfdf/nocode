@@ -206,3 +206,24 @@ export const _gaw = (w: number) => {
 export const isType = (obj: any, type: string) => {
   return Object.prototype.toString.call(obj) === `[object ${type}]`;
 };
+
+const emptyType = {
+  Array: data => data.length === 0,
+  String: data => data === '',
+  Object: data => Object.keys(data).length === 0,
+  Undefined: data => data === undefined,
+  Null: data => data === null,
+};
+
+// 判断数据是否为空
+export const isNoEmpty = data => {
+  try {
+    const type = Object.prototype.toString.call(data).slice(8, -1);
+    if (emptyType[type]) {
+      return !emptyType[type](data);
+    }
+    return true;
+  } catch (error) {
+    return true;
+  }
+};

@@ -1,75 +1,70 @@
 import api from '@/CMSRequest/index';
-import { CMSPostResult } from '@/types/cmsType';
+import { CMSPostResult, CMSDeleteResult } from '@/types/cmsType';
 
-// 新建app
-export function postApp(data): Promise<CMSPostResult> {
-  return api.post('/app', { data });
-}
+module.exports = {
+  // 新建app
+  postApp: (data): Promise<CMSPostResult> => api.post('/app', { data }),
 
-// 获取app
-export function getApp(data) {
-  if (data.id) {
-    return api.get(`/app/${data.id}`);
-  } else {
-    return api.get('/app', { data });
-  }
-}
+  // 获取app
+  getApp: data => {
+    if (data.id) {
+      return api.get(`/app/${data.id}`);
+    } else {
+      return api.get('/app', { data });
+    }
+  },
 
-// 修改app
-export function patchApp(id, data) {
-  return api.patch(`/app/${id}`, { data });
-}
-// 新建app配置
-export function postUniAppsConfig(data): Promise<CMSPostResult> {
-  return api.post('/uniAppsConfig', { data });
-}
+  // 修改app
+  patchApp: (id, data) => api.patch(`/app/${id}`, { data }),
 
-// 修改app配置
-export function patchUniAppsConfig(id, data) {
-  return api.patch(`/uniAppsConfig/${id}`, { data });
-}
+  // 删除app
+  deleteApp: (id): Promise<CMSDeleteResult> => api.delete(`/app/${id}`),
 
-// 新建页面
-export function postPage(data): Promise<CMSPostResult> {
-  return api.post('/page', { data });
-}
+  // 新建app配置
+  postUniAppsConfig: (data): Promise<CMSPostResult> => api.post('/uniAppsConfig', { data }),
 
-// 获取页面
-export function getPage(data) {
-  return api.get('/page', { data });
-}
+  // 修改app配置
+  patchUniAppsConfig: (id, data) => api.patch(`/uniAppsConfig/${id}`, { data }),
 
-// 新建页面配置
-export function postUniPagesConfig(data): Promise<CMSPostResult> {
-  return api.post('/uniPagesConfig', { data });
-}
+  // 删除app配置
+  deleteUniAppsConfig: (id): Promise<CMSDeleteResult> => api.delete(`/uniAppsConfig/${id}`),
 
-// 获取页面配置
-export function getUniPagesConfig(data) {
-  return api.get('/uniPagesConfig/');
-}
+  // 新建页面
+  postPage: (data): Promise<CMSPostResult> => api.post('/page', { data }),
 
-// 修改页面配置
-export function patchUniPagesConfig(id, data) {
-  return api.patch(`/uniPagesConfig/${id}`, { data });
-}
+  // 获取页面
+  getPage: data => api.get('/page', { data }),
 
-// 新建组件
-export function postComponent(data): Promise<CMSPostResult> {
-  return api.post('/component', { data });
-}
+  // 删除页面
+  deletePage: (id): Promise<CMSDeleteResult> => api.delete(`/page/${id}`),
 
-// 获取组件
-export function getComponent(data) {
-  if (data.id) {
-    return api.get(`/app/${data.id}`);
-  } else {
-    return api.get('/app', { data });
-  }
-}
+  // 新建页面配置
+  postUniPagesConfig: (data): Promise<CMSPostResult> => api.post('/uniPagesConfig', { data }),
 
-// 修改组件
-export function patchComponent(id, data) {
-  return api.patch(`/component/${id}`, { data });
-}
-export default api;
+  // 获取页面配置
+  getUniPagesConfig: data => api.get('/uniPagesConfig/', { data }),
+
+  // 修改页面配置
+  patchUniPagesConfig: (id, data) => api.patch(`/uniPagesConfig/${id}`, { data }),
+
+  // 删除页面配置
+  deleteUniPagesConfig: (id): Promise<CMSDeleteResult> => api.delete(`/uniPagesConfig/${id}`),
+
+  // 新建组件
+  postComponent: (data): Promise<CMSPostResult> => api.post('/component', { data }),
+
+  // 获取组件
+  getComponent: data => {
+    if (data.id) {
+      return api.get(`/component/${data.id}`);
+    } else {
+      return api.get('/component', { data });
+    }
+  },
+
+  // 修改组件
+  patchComponent: (id, data) => api.patch(`/component/${id}`, { data }),
+
+  // 删除组件
+  deleteComponent: (id): Promise<CMSDeleteResult> => api.delete(`/component/${id}`),
+};

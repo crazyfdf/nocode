@@ -1,9 +1,12 @@
-import { postPage, postUniPagesConfig, patchApp } from '@/CMSRequest/api';
 import { exec } from 'child_process';
+
+const { postPage, postUniPagesConfig, patchApp } = require('@/CMSRequest/api');
 
 export default async (req, res) => {
   const { data } = req.body;
   const { page, app } = data;
+  console.log(app);
+
   const commend = `cd /D ${app.file} && uct-plop createPage ${page.name} ${page.type}`;
   exec(commend, (err, stdout, stderr) => {
     if (err) {

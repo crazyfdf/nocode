@@ -4,6 +4,41 @@ import { enquireScreen } from 'enquire-js';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { findDOMNode } from 'react-dom';
+import { injectGlobal } from '@emotion/css';
+injectGlobal`
+  .logo-gather-demo-wrapper {
+    width:100%;
+    height: 100%;
+    overflow: hidden;
+    z-index:0;
+    position: absolute;
+    background: #70a1ff;
+    overflow: hidden;
+  }
+
+  .logo-gather-demo-wrapper .point-wrapper {
+    position: absolute;
+  }
+
+  .logo-gather-demo-wrapper .point {
+    border-radius: 100%;
+  }
+
+  .logo-gather-demo-wrapper .right-side {
+    width: 300px;
+    height: 360px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+  }
+
+  .logo-gather-demo-wrapper .right-side * {
+    pointer-events: none;
+  }
+`
 
 class LogoGather extends React.Component {
   static propTypes = {
@@ -219,47 +254,11 @@ export default class Edit extends React.Component {
   }
   render () {
     return (
-      <>
-        <LogoGather
-          image={this.state.image}
-          pixSize={this.state.pixSize}
-          pointSizeMin={this.state.pointSize}
-        />
-        <style>{`
-        .logo-gather-demo-wrapper {
-          width:100%;
-          height: 100%;
-          overflow: hidden;
-          z-index:0;
-          position: absolute;
-          background: #70a1ff;
-          overflow: hidden;
-        }
-        
-        .logo-gather-demo-wrapper .point-wrapper {
-          position: absolute;
-        }
-        
-        .logo-gather-demo-wrapper .point {
-          border-radius: 100%;
-        }
-        
-        .logo-gather-demo-wrapper .right-side {
-          width: 300px;
-          height: 360px;
-          position: absolute;
-          right: 0;
-          top: 0;
-          bottom: 0;
-          left: 0;
-          margin: auto;
-        }
-        
-        .logo-gather-demo-wrapper .right-side * {
-          pointer-events: none;
-        }
-        `}</style>
-      </>
+      <LogoGather
+        image={this.state.image}
+        pixSize={this.state.pixSize}
+        pointSizeMin={this.state.pointSize}
+      />
     );
   }
 }

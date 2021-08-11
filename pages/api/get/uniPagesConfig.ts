@@ -1,4 +1,4 @@
-import { getUniPagesConfig } from '@/CMSRequest/api';
+const { getUniPagesConfig } = require('@/CMSRequest/api');
 
 export default async (req, res) => {
   const data = req.query;

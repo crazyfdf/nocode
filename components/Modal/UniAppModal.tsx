@@ -1,6 +1,7 @@
 import { Select, Modal, Form, Input, Button } from 'antd';
-import { postComponent } from '@/request/api';
 import { useState, useImperativeHandle, forwardRef } from 'react';
+import FilePath from '@/components/FormComponents/FilePath';
+import Icon from '@/components/Icon/Icon';
 
 const { Option } = Select;
 
@@ -27,8 +28,8 @@ const tailFormItemLayout = {
     },
   },
 };
-function UniAppComponentModal(props, ref) {
-  const { changeData, app } = props;
+function UniAppModal(props, ref) {
+  const { changeData, title, type } = props;
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalLoading, setIsModalLoading] = useState(false);
   const [form] = Form.useForm();
@@ -39,12 +40,7 @@ function UniAppComponentModal(props, ref) {
   }));
 
   const handleOk = async values => {
-    try {
-      const data = await postComponent({ page: values, app });
-      changeData(data);
-    } catch (error) {
-      setIsModalLoading(false);
-    }
+    changeData(values);
   };
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -61,7 +57,7 @@ function UniAppComponentModal(props, ref) {
   };
   return (
     <Modal
-      title='创建组件'
+      title={`创建${title}`}
       visible={isModalVisible}
       onOk={handleOk}
       onCancel={handleCancel}
@@ -70,45 +66,51 @@ function UniAppComponentModal(props, ref) {
       <Form {...formItemLayout} form={form} name='app' onFinish={onFinish} scrollToFirstError>
         <Form.Item
           name='title'
-          label='组件名称'
+          label={`${title}名称`}
           tooltip='不能超过20个字符'
           rules={[
-            { required: true, message: '请输入组件名称，不能超过20个字符', whitespace: true },
+            { required: true, message: `请输入${title}名称，不能超过20个字符`, whitespace: true },
           ]}
         >
-          <Input placeholder='请输入组件名称，不能超过20个字符' />
+          <Input placeholder={`请输入${title}名称，不能超过20个字符`} />
         </Form.Item>
 
         <Form.Item
           name='name'
-          label='组件标识'
+          label={`${title}标识`}
           tooltip='只能包含小写字母、数字、-或_'
           rules={[
             {
               required: true,
-              message: '请输入组件标识，不能超过20个字符，只能包含小写字母、数字、-或_',
+              message: `请输入${title}标识，不能超过20个字符，只能包含小写字母、数字、-或_`,
             },
           ]}
         >
-          <Input placeholder='请输入组件标识，不能超过20个字符，只能包含小写字母、数字、-或_' />
+          <Input
+            placeholder={`请输入${title}标识，不能超过20个字符，只能包含小写字母、数字、-或_`}
+          />
         </Form.Item>
-        <Form.Item name='description' label='组件描述'>
-          <Input.TextArea placeholder='请输入组件描述' />
+        <Form.Item name='description' label={`${title}描述`}>
+          <Input.TextArea placeholder={`请输入${title}描述`} />
         </Form.Item>
 
         <Form.Item
           name='type'
-          label='组件类型'
-          rules={[{ required: true, message: '请选择组件类型!' }]}
+          label={`${title}类型`}
+          rules={[{ required: true, message: `请选择${title}类型!` }]}
         >
-          <Select placeholder='select your gender'>
-            <Option value='list'>列表</Option>
-            <Option value='form'>表单</Option>
-            <Option value='details'>详情</Option>
-            <Option value='other'>其他</Option>
+          <Select placeholder={`请选择${title}类型!`}>
+            {type.map(item => (
+              <Option value={item.value} key={item.value}>
+                <div className='flex items-center'>
+                  <Icon type={item.icon} className='mr-1' />
+                  {item.title}
+                </div>
+              </Option>
+            ))}
           </Select>
         </Form.Item>
-
+        {title === '应用' && <FilePath form={form} title={title} />}
         <Form.Item {...tailFormItemLayout}>
           <Button className='mr-4' htmlType='reset' loading={isModalLoading} onClick={handleCancel}>
             取消
@@ -122,4 +124,4 @@ function UniAppComponentModal(props, ref) {
   );
 }
 
-export default forwardRef(UniAppComponentModal);
+export default forwardRef(UniAppModal);

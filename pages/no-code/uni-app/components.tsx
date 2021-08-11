@@ -4,16 +4,17 @@ import { RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { configAdapter, defaultAdapter } from '@/components/Renderer/FormRenderAdapter';
 import glob from 'globby';
 import Icon from '@/components/Icon/Icon';
-import {
+import FormRender from '@/components/Renderer/FormRender';
+import { debounce } from '@/utils/tool';
+import FormItems from '@/components/FormComponents/FormItems';
+
+const {
   getComponentAST,
   postComponentsCreate,
   postCollectionComponents,
   getCollectionComponents,
   postRun,
-} from '@/request/api';
-import FormRender from '@/components/Renderer/FormRender';
-import { debounce } from '@/utils/tool';
-import FormItems from '@/components/FormComponents/FormItems';
+} = require('@/request/api');
 
 interface docComponentsInterface {
   title?: string;

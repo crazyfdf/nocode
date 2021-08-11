@@ -1,6 +1,7 @@
 import { Select, Modal, Form, Input, Button, Row, Col } from 'antd';
-import { postComponentDocs } from '@/request/api';
 import { useEffect, useState, useImperativeHandle, forwardRef } from 'react';
+
+const { postComponentDocs } = require('@/request/api');
 
 const { Option } = Select;
 
