@@ -16,9 +16,15 @@ injectGlobal`
   .card-container > .ant-tabs-card > .ant-tabs-nav::before {
     display: none;
   }
+  .ant-tabs-content-holder{
+    overflow: auto;
+  }
 
   .card-container > .ant-tabs-card .ant-tabs-tab,
   [data-theme='compact'] .card-container > .ant-tabs-card .ant-tabs-tab {
+    display: flex;
+    justify-content: center;
+    padding:8px;
     background: transparent;
     border-color: transparent;
   }

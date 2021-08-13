@@ -1,9 +1,8 @@
-import Button from 'antd/lib/button';
-import List from 'antd/lib/list';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import Icon from '@/components/Icon/Icon';
 import UniAppModal from '@/components/Modal/UniAppModal';
 import ListQueueAnim from '@/components/Animation/ListQueueAnim';
+import { Tooltip, Button, List } from 'antd';
 
 interface DataInterFace {
   _id: string;
@@ -25,33 +24,40 @@ interface ConfigInterFace {
 interface PropsInterFace {
   dataSource: DataInterFace[];
   changeCurrent: (index: number) => void;
-  changeData: (values: any) => void;
+  add: (values: any) => void;
   remove: (values: any) => void;
+  collection: (values: any) => void;
   config: ConfigInterFace;
 }
 
 function ListBox(props: PropsInterFace) {
-  const { dataSource = [], changeCurrent, changeData, config, remove } = props;
+  const { dataSource = [], changeCurrent, add, config, remove, collection } = props;
   const [current, setCurrent] = useState(0);
+  console.log(dataSource);
+
+  const [page, setPage] = useState(1);
   const uniModal = useRef({
     changeVal: v => {},
   });
 
-  const onAdd = () => {
-    uniModal.current.changeVal(true);
+  // 添加
+  const _add = values => {
+    add && add(values);
   };
+  // 删除
   const onRemove = (item, e) => {
     e.stopPropagation();
-    remove && remove(item);
+    collection && collection(item);
   };
-
-  const _changeData = values => {
-    changeData && changeData(values);
+  // 收藏
+  const onCollection = (item, e) => {
+    e.stopPropagation();
+    collection && collection(item);
   };
 
   const _changeCurrent = index => {
-    setCurrent(index);
-    changeCurrent && changeCurrent(index);
+    setCurrent((page - 1) * 5 + index);
+    changeCurrent && changeCurrent((page - 1) * 5 + index);
   };
   const typeIcon = type => {
     let res = 'icon-biaoqiankuozhan_shoucang-203';
@@ -71,12 +77,13 @@ function ListBox(props: PropsInterFace) {
         pagination={{
           onChange: page => {
             console.log(page);
+            setPage(page);
           },
           pageSize: 5,
         }}
         header={
           <>
-            <Button onClick={onAdd} type='primary'>
+            <Button onClick={() => uniModal.current.changeVal(true)} type='primary'>
               {`添加${config.title}`}
             </Button>
           </>
@@ -87,37 +94,51 @@ function ListBox(props: PropsInterFace) {
             onClick={() => _changeCurrent(index)}
             className='rounded'
             style={
-              current === index
+              current === (page - 1) * 5 + index
                 ? { backgroundImage: 'linear-gradient(to left, #ff6e7f, #bfe9ff)', padding: '12px' }
                 : { padding: '12px' }
             }
           >
             <ListQueueAnim>
               {/* key={item.name} */}
-              <div className='flex justify-between items-center'>
-                <div className='flex items-center'>
-                  <Icon style={{ fontSize: '24px' }} type={typeIcon(item.type)} />
-                  <div className='ml-2'>
-                    <div>{item.title}</div>
-                    <div className='text-gray-500 text-sm'>{item.description}</div>
+              <div className='flex items-center'>
+                <Icon style={{ fontSize: '24px' }} type={typeIcon(item.type)} />
+                <div className='ml-2 flex-1'>
+                  <div className='flex justify-between mb-2'>
+                    <div className='flex-1'>{item.title}</div>
+                    <Tooltip
+                      placement='rightBottom'
+                      title={
+                        <>
+                          <Button
+                            style={{ display: 'flex', alignItems: 'center' }}
+                            onClick={e => onCollection(item, e)}
+                          >
+                            <Icon style={{ fontSize: '16px' }} type='icon-shoucang' />
+                            收藏
+                          </Button>
+
+                          <Button
+                            style={{ display: 'flex', alignItems: 'center' }}
+                            onClick={e => onRemove(item, e)}
+                          >
+                            <Icon style={{ fontSize: '16px' }} type='icon-lajitong1' />
+                            删除
+                          </Button>
+                        </>
+                      }
+                    >
+                      <Icon type='icon-more' style={{ fontSize: '22px' }} />
+                    </Tooltip>
                   </div>
+                  <div className='text-gray-500 text-sm'>{item.description}</div>
                 </div>
-                <Icon
-                  style={{ fontSize: '30px' }}
-                  onClick={e => onRemove(item, e)}
-                  type='icon-lajitong1'
-                />
               </div>
             </ListQueueAnim>
           </List.Item>
         )}
       />
-      <UniAppModal
-        ref={uniModal}
-        changeData={_changeData}
-        type={config.type}
-        title={config.title}
-      />
+      <UniAppModal ref={uniModal} add={_add} type={config.type} title={config.title} />
     </>
   );
 }

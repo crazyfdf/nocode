@@ -1,0 +1,74 @@
+[
+  {
+    "id": "height",
+    "label": "导航栏高度，单位px，非rpx",
+    "value": "''",
+    "type": "Text"
+  },
+  {
+    "id": "titleWidth",
+    "label": "标题的宽度，如果需要自定义右侧内容，且右侧内容很多时，可能需要减少这个宽度，单位rpx",
+    "value": "'500'",
+    "type": "Text"
+  },
+  {
+    "id": "titleColor",
+    "label": "标题的颜色",
+    "value": "'#606266'",
+    "type": "Text"
+  },
+  {
+    "id": "titleBold",
+    "label": "标题字体是否加粗",
+    "value": false,
+    "type": "Switch"
+  },
+  {
+    "id": "titleSize",
+    "label": "标题的字体大小",
+    "value": 32,
+    "type": "Text"
+  },
+  {
+    "id": "background",
+    "label": "对象形式，因为用户可能定义一个纯色，或者线性渐变的颜色",
+    "value": "'#ffffff'",
+    "type": "Text"
+  },
+  {
+    "id": "isFixed",
+    "label": "导航栏是否固定在顶部",
+    "value": true,
+    "type": "Switch"
+  },
+  {
+    "id": "immersive",
+    "label": "是否沉浸式，允许fixed定位后导航栏塌陷，仅fixed定位下生效",
+    "value": false,
+    "type": "Switch"
+  },
+  {
+    "id": "borderBottom",
+    "label": "是否显示导航栏的下边框",
+    "value": true,
+    "type": "Switch"
+  },
+  {
+    "id": "zIndex",
+    "label": "导航栏层级",
+    "value": "''",
+    "type": "Text"
+  },
+  {
+    "id": "customBack",
+    "label": "自定义返回逻辑",
+    "value": null,
+    "type": "Text"
+  },
+  {
+    "id": "custom",
+    "label": "是否自定义",
+    "value": false,
+    "type": "Switch"
+  }
+]

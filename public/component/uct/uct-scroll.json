@@ -1,9 +1,0 @@
-[
-  {
-    "type": "Text",
-    "id": "1",
-    "label": "string",
-    "value": "12",
-    "placeholder": "string属性默认值"
-  }
-]

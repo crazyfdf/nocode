@@ -9,12 +9,14 @@ import {
   baseFormSwitchTpl,
   baseFormUnionType,
   baseFormColorTpl,
+  baseFormCodeDataTpl,
 } from '@/types/types';
 import { uuid } from '@/utils/tool';
 import { DatePicker, Input, Select } from 'antd';
 import Switch from '@/components/FormComponents/Switch';
 import Color from '@/components/FormComponents/Color';
 import Checkbox from '@/components/FormComponents/Checkbox';
+import Ide from '@/components/Ide/Ide';
 // 维护表单控件， 提高form渲染性能
 
 type TBaseForm = {
@@ -23,17 +25,17 @@ type TBaseForm = {
 
 const BaseForm: TBaseForm = {
   Text: (props: baseFormTextTpl & { onChange }) => {
-    const { id, placeholder, value, onChange } = props;
+    const { id, placeholder = '', value, onChange } = props;
     return (
       <Input placeholder={placeholder} onChange={() => onChange(id, event)} defaultValue={value} />
     );
   },
   Color: (props: baseFormColorTpl & { onChange }) => {
-    const { id, placeholder, value, onChange } = props;
+    const { id, placeholder = '', value, onChange } = props;
     return <Color onChange={value => onChange(id, { target: { value } })} value={value} />;
   },
   Textarea: (props: baseFormTextAreaTpl & { onChange }) => {
-    const { id, placeholder, value, onChange } = props;
+    const { id, placeholder = '', value, onChange } = props;
     return (
       <Input.TextArea
         placeholder={placeholder}
@@ -43,7 +45,7 @@ const BaseForm: TBaseForm = {
     );
   },
   Number: (props: baseFormNumberTpl & { onChange }) => {
-    const { id, placeholder, value, onChange } = props;
+    const { id, placeholder = '', value, onChange } = props;
     return (
       <Input
         type='number'
@@ -83,7 +85,7 @@ const BaseForm: TBaseForm = {
     );
   },
   Date: (props: baseFormDateTpl & { onChange }) => {
-    const { value, id, placeholder, onChange } = props;
+    const { value, id, placeholder = '', onChange } = props;
     return (
       <DatePicker placeholder={placeholder} onChange={() => onChange(id, event)} value={value} />
     );
@@ -101,6 +103,10 @@ const BaseForm: TBaseForm = {
         })}
       </Select>
     );
+  },
+  CodeData: (props: baseFormCodeDataTpl & { onChange }) => {
+    const { id, placeholder = '', value, onChange } = props;
+    return <Ide defaultValue={value} onChange={value => onChange(id, { target: { value } })} />;
   },
 };
 

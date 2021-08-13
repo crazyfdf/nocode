@@ -27,7 +27,7 @@ export default async (req, res) => {
     _updateTime: page._updateTime,
     _createTime: page._createTime,
   });
-  const pageRes = await postPage({ ...page, uniPagesConfigId: pageConfig.id });
+  const pageRes = await postPage({ ...page, uniPagesConfigId: pageConfig.id, status: 0 });
 
   const pageId = app.pageId ? [pageRes.id, ...app.pageId.map(item => item._id)] : [pageRes.id];
   patchApp(app._id, { pageId });

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "text",
+    "label": "显示文本",
+    "value": "",
+    "type": "Text"
+  },
+  {
+    "id": "rotate",
+    "label": "是否启动加载",
+    "value": false,
+    "type": "Switch"
+  },
+  {
+    "id": "disabled",
+    "label": "是否禁用",
+    "value": false,
+    "type": "Switch"
+  },
+  {
+    "id": "time",
+    "label": "防抖及动画时间",
+    "value": 1000,
+    "type": "Number"
+  },
+  {
+    "id": "bgColor",
+    "label": "按钮背景颜色",
+    "value": "linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.6))",
+    "type": "Text"
+  },
+  {
+    "id": "fontColor",
+    "label": "按钮字体颜色",
+    "value": "#FFFFFF",
+    "type": "Text"
+  }
+]

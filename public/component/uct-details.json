@@ -1,0 +1,8 @@
+[
+  {
+    "id": "loading",
+    "label": "是否加载中状态",
+    "value": true,
+    "type": "Switch"
+  }
+]

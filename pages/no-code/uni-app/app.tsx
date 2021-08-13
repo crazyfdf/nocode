@@ -7,7 +7,7 @@ import FormRender from '@/components/Renderer/FormRender';
 import uniAppPage from '@/public/app/uniAppPage';
 import { uniAppAppConfig } from '@/public/app/uniAppApp';
 import { configAdapter } from '@/components/Renderer/FormRenderAdapter';
-import TabsCard from '@/components/TabsCard';
+import TabsCard from '@/components/TabsCard/TabCard';
 import { isNoEmpty, debounce } from '@/utils/tool';
 import FormItems from '@/components/FormComponents/FormItems';
 
@@ -17,7 +17,6 @@ const {
   getApp,
   getComponent,
   patchComponent,
-  getComponentAST,
   patchUniAppsConfig,
   patchUniPagesConfig,
   postPage,
@@ -25,7 +24,7 @@ const {
   deleteApp,
   deletePage,
   deleteComponent,
-  postComponent,
+  postComponents,
 } = require('@/request/api');
 
 const navigation: object[] = [
@@ -40,7 +39,7 @@ const navigation: object[] = [
 const moduleList = require('./app.json');
 
 export default function noCodeApp({ components, appInit, apps }) {
-  const [currentLeft, setCurrentLeft] = useState('组件'); // 当前左侧下标
+  const [currentLeft, setCurrentLeft] = useState('组件库'); // 当前左侧下标
   const [app, setApp] = useState(appInit); // 当前app
   // 初始化app配置
   if (isNoEmpty(app)) {
@@ -58,13 +57,15 @@ export default function noCodeApp({ components, appInit, apps }) {
     setCurrentLeft(key);
   };
 
-  const changeData = async values => {
+  const add = async values => {
     switch (currentLeft) {
-      // 添加组件
-      case '组件':
-        const _component = await postComponent({ component: values });
-        components.unshift(_component);
-        setComponent(_component);
+      // 添加组件库
+      case '组件库':
+        const _components = await postComponents({ components: values });
+        console.log(_components);
+
+        components = _components;
+        setComponent(_components[0]);
         changeCurrent(0);
         break;
       // 添加页面
@@ -77,13 +78,12 @@ export default function noCodeApp({ components, appInit, apps }) {
       // 添加项目
       case '应用':
         const _app = await postApp(values);
-        console.log(_app);
         apps.unshift(_app);
         setApp(_app);
         changeCurrent(0);
         break;
-      // 添加模板
-      case '模板':
+      // 添加页面模板
+      case '页面模板':
         break;
     }
   };
@@ -91,8 +91,8 @@ export default function noCodeApp({ components, appInit, apps }) {
   const changeCurrent = index => {
     switch (currentLeft) {
       // 切换组件
-      case '组件':
-        console.log(component);
+      case '组件库':
+        console.log(components[index]);
         setComponent(components[index]);
         break;
       // 切换页面
@@ -104,8 +104,8 @@ export default function noCodeApp({ components, appInit, apps }) {
         setApp(apps[index]);
         setPage(apps[index].pageId && apps[index].pageId[0]);
         break;
-      // 切换模板
-      case '模板':
+      // 切换页面模板
+      case '页面模板':
         break;
     }
   };
@@ -113,7 +113,7 @@ export default function noCodeApp({ components, appInit, apps }) {
   const remove = async item => {
     switch (currentLeft) {
       // 删除组件
-      case '组件':
+      case '组件库':
         await deleteComponent({ component: item });
         components.splice(
           components.findIndex(item1 => item1._id === item._id),
@@ -142,17 +142,19 @@ export default function noCodeApp({ components, appInit, apps }) {
         setApp(apps[0]);
         changeCurrent(0);
         break;
-      // 删除模板
-      case '模板':
+      // 删除页面模板
+      case '页面模板':
         break;
     }
   };
   const configSave = async (data: any) => {
     switch (currentLeft) {
       // 修改组件配置
-      case '组件':
+      case '组件库':
         console.log(data);
-        patchComponent({ component, config: data });
+        await patchComponent({ component, config: data });
+        component.config = data;
+        setComponent(component);
         break;
       // 修改页面配置
       case '页面':
@@ -175,27 +177,27 @@ export default function noCodeApp({ components, appInit, apps }) {
           uctuiConfig: { ...app.uctuiConfigId.uctuiConfig, ...data },
         });
         break;
-      // 修改模板配置
-      case '模板':
+      // 修改页面模板配置
+      case '页面模板':
         break;
     }
   };
 
-  const configDel = (id: any) => {
-    // switch (currentLeft) {
-    //   // 删除项目配置
-    //   case '组件':
-    //     break;
-    //   // 删除页面配置
-    //   case '页面':
-    //     break;
-    //   // 删除组件配置
-    //   case '应用':
-    //     break;
-    //   // 删除模板配置
-    //   case '模板':
-    //     break;
-    // }
+  const collection = (item: any) => {
+    switch (currentLeft) {
+      // 收藏组件
+      case '组件库':
+        break;
+      // 收藏页面
+      case '页面':
+        break;
+      // 收藏组件
+      case '应用':
+        break;
+      // 收藏页面模板
+      case '页面模板':
+        break;
+    }
   };
 
   return (
@@ -218,9 +220,10 @@ export default function noCodeApp({ components, appInit, apps }) {
                 dataSource={
                   index === 0 ? components : index === 1 ? app.pageId : index === 2 ? apps : []
                 }
+                collection={collection}
                 changeCurrent={changeCurrent}
                 config={item}
-                changeData={changeData}
+                add={add}
                 remove={remove}
               />
             </TabPane>
@@ -230,18 +233,12 @@ export default function noCodeApp({ components, appInit, apps }) {
           <iframe
             title='uni-app'
             scrolling='auto'
-            src='localhost:8080'
             style={{ height: '100%', width: '100%', borderRadius: '30px' }}
           />
         </div>
         <div style={{ width: '400px' }} className='shadow-xl px-4 py-5 overflow-auto'>
-          {currentLeft === '组件' && isNoEmpty(component) && (
-            <FormItems
-              edit={true}
-              formList={component.config}
-              data={component.config}
-              onChange={configSave}
-            />
+          {currentLeft === '组件库' && isNoEmpty(component) && (
+            <FormItems edit={true} formList={component.config} onChange={configSave} />
           )}
           {currentLeft === '页面' && isNoEmpty(page) && (
             <Tabs defaultActiveKey='页面配置'>
@@ -254,7 +251,6 @@ export default function noCodeApp({ components, appInit, apps }) {
                         isNoEmpty(page.uniPagesConfigId) ? page.uniPagesConfigId.style : {}
                       }
                       onSave={configSave}
-                      onDel={configDel}
                       uid={page._id}
                       rightPanelRef={ref}
                     />
@@ -266,7 +262,6 @@ export default function noCodeApp({ components, appInit, apps }) {
                           config={configAdapter(component.props ?? [])}
                           uid={component.title}
                           onSave={configSave}
-                          onDel={configDel}
                           rightPanelRef={ref}
                         />
                       </Panel>
@@ -283,7 +278,6 @@ export default function noCodeApp({ components, appInit, apps }) {
                   <FormRender
                     config={uniAppAppConfig}
                     onSave={configSave}
-                    onDel={configDel}
                     uid={app._id}
                     rightPanelRef={ref}
                   />

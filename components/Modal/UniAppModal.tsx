@@ -29,7 +29,7 @@ const tailFormItemLayout = {
   },
 };
 function UniAppModal(props, ref) {
-  const { changeData, title, type } = props;
+  const { add, title, type } = props;
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalLoading, setIsModalLoading] = useState(false);
   const [form] = Form.useForm();
@@ -40,7 +40,7 @@ function UniAppModal(props, ref) {
   }));
 
   const handleOk = async values => {
-    changeData(values);
+    add(values);
   };
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -57,7 +57,7 @@ function UniAppModal(props, ref) {
   };
   return (
     <Modal
-      title={`创建${title}`}
+      title={`添加${title}`}
       visible={isModalVisible}
       onOk={handleOk}
       onCancel={handleCancel}
@@ -116,7 +116,7 @@ function UniAppModal(props, ref) {
             取消
           </Button>
           <Button type='primary' htmlType='submit' loading={isModalLoading}>
-            创建
+            添加
           </Button>
         </Form.Item>
       </Form>

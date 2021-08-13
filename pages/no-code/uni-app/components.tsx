@@ -228,11 +228,12 @@ export default function noCodeComponents({ docComponents, myCollection }) {
 }
 
 export async function getStaticProps() {
-  const cwd = 'uni-components/node_modules/uctui';
-  const _docComponents = glob.sync('components/uct-*/*.vue', { cwd }).map(f => {
-    const titleReg: RegExpExecArray | null = /\/uct-(.+)\/(.+).vue$/g.exec(f);
-    const title = titleReg ? titleReg[1] : null;
-    const name = titleReg ? titleReg[2] : null;
+  const cwd = 'uni-components/node_modules/uctui/components';
+  const componentName = 'uct';
+
+  const _docComponents = glob.sync(`${componentName}-*/${componentName}-*.vue`, { cwd }).map(f => {
+    const title = f ? f.split('/')[0] : null;
+    const name = title ? title.slice(componentName.length + 1) : null;
     return { name, title, file: cwd + '/' + f };
   });
 
@@ -243,6 +244,7 @@ export async function getStaticProps() {
       return Object.assign(item, data);
     }),
   );
+  console.log(docComponents[1].props);
 
   const myCollection = await Promise.all(
     _myCollection.map(async item => {

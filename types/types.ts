@@ -168,15 +168,23 @@ export type baseFormOptionsType = {
 
 export type baseFormTextTpl = {
   id: string;
-  value: any;
+  value: string;
   type: 'Text';
+  label: string;
+  placeholder: string;
+};
+
+export type baseFormCodeDataTpl = {
+  id: string;
+  value: any;
+  type: 'CodeData';
   label: string;
   placeholder: string;
 };
 
 export type baseFormColorTpl = {
   id: string;
-  value: any;
+  value: string;
   type: 'Color';
   label: string;
   placeholder: string;
@@ -184,7 +192,7 @@ export type baseFormColorTpl = {
 
 export type baseFormSwitchTpl = {
   id: string;
-  value: any;
+  value: boolean;
   type: 'Switch';
   label: string;
 };
@@ -199,7 +207,7 @@ export type baseFormNumberTpl = {
 
 export type baseFormTextAreaTpl = {
   id: string;
-  value: any;
+  value: string;
   type: 'Textarea';
   label: string;
   placeholder: string;
@@ -246,7 +254,8 @@ export type baseFormUnion =
   | baseFormRadioTpl
   | baseFormCheckboxTpl
   | baseFormSelectTpl
-  | baseFormDateTpl;
+  | baseFormDateTpl
+  | baseFormCodeDataTpl;
 export type baseFormUnionType =
   | baseFormSwitchTpl['type']
   | baseFormTextTpl['type']
@@ -256,6 +265,7 @@ export type baseFormUnionType =
   | baseFormRadioTpl['type']
   | baseFormCheckboxTpl['type']
   | baseFormSelectTpl['type']
-  | baseFormDateTpl['type'];
+  | baseFormDateTpl['type']
+  | baseFormCodeDataTpl['type'];
 
 export type TFormItemsDefaultType = Array<baseFormUnion>;

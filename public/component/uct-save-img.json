@@ -1,0 +1,14 @@
+[
+  {
+    "id": "url",
+    "label": "图片地址",
+    "value": "",
+    "type": "Text"
+  },
+  {
+    "id": "lazyLoad",
+    "label": "是否开启图片懒加载",
+    "value": true,
+    "type": "Switch"
+  }
+]

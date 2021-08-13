@@ -105,6 +105,17 @@ const EditorModal = (props, ref) => {
                 <InputNumber />
               </Form.Item>
             )}
+
+            {item.type === 'CodeData' && (
+              <Form.Item
+                label='数据源'
+                name='value'
+                tooltip='value'
+                rules={[{ required: true, message: '请输入字段默认值!' }]}
+              >
+                <Input.TextArea />
+              </Form.Item>
+            )}
             {item.placeholder && (
               <Form.Item label='提示文本' name='placeholder' tooltip='placeholder'>
                 <Input placeholder='请输入提示文本' />

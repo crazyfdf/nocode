@@ -56,20 +56,29 @@ const formTpl: TFormItemsDefaultType = [
     placeholder: 'date属性默认值',
     value: '',
   },
+  {
+    id: '',
+    type: 'CodeData',
+    label: 'number',
+    placeholder: 'number属性默认值',
+    value: '',
+  },
 ];
 interface FormItemsProps {
   formList?: TFormItemsDefaultType;
   onChange?: any;
-  data: any;
+  data?: any;
   edit?: Boolean;
 }
 function EditableFormItems(props: FormItemsProps) {
-  const { formList: list, data: formData, onChange, edit = false } = props;
+  const { formList: list, data: formData = {}, onChange, edit = false } = props;
   const [formList, setFormList] = useState<TFormItemsDefaultType>(list || []);
   const [curItem, setCurItem] = useState<baseFormUnion>();
   const ref = useRef({
     changeVal: v => {},
   });
+
+  console.log(formList);
 
   const handleAddItem = (item: baseFormUnion) => {
     setCurItem(item);
@@ -141,11 +150,12 @@ function EditableFormItems(props: FormItemsProps) {
         let FormItem = BaseForm[item.type];
         return (
           <div key={uuid(6, 10)}>
-            <label className='font-medium'>{item.label}</label>
-            <div className='flex justify-between items-center mb-4'>
+            <Tooltip title={item.id}>
+              <label className='font-medium'>{item.label}</label>
+            </Tooltip>
+            <div className='flex justify-between items-center mt-2 mb-4'>
               <MinusCircleFilled onClick={() => handleDelItem(item)} />
               <div className='flex mx-4 flex-1 items-center'>
-                {item.id}：
                 <FormItem
                   {...item}
                   onChange={(id, e) => handleChange({ ...item, value: e.target.value })}

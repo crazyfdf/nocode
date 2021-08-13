@@ -27,7 +27,7 @@ export default async (req, res) => {
   });
   // 创建完项目后将地址改成项目目录
   data.file = `${data.file}/${data.name}`;
-
+  data.status = 0;
   const appId = await postApp(data);
   const { data: app } = await getApp({ id: appId.id });
 

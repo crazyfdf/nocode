@@ -3,7 +3,7 @@ const { deleteComponent } = require('@/CMSRequest/api');
 
 export default async function (req, res) {
   const { component } = req.body.data;
-  const commend = `cd /D public/component/uct && uct-plop componentConfig ${component.name} remove`;
+  const commend = `cd /D public/component && uct-plop componentConfig ${component.title} remove`;
   exec(commend, (err, stdout, stderr) => {
     if (err) {
       console.log(stderr);

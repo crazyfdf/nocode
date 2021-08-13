@@ -82,3 +82,24 @@ export const formListAdapter = data => {
 
   return defaultRes;
 };
+
+export const typeAdapter = type => {
+  switch (true) {
+    case /boolean/i.test(type):
+      type = 'Switch';
+      break;
+    case type === ['string'].includes(type):
+      type = 'Text';
+      break;
+    case type === 'number':
+      type = 'Number';
+      break;
+    case ['object', 'array'].includes(type):
+      type = 'CodeData';
+      break;
+    default:
+      type = 'Text';
+      break;
+  }
+  return type;
+};

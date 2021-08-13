@@ -131,6 +131,7 @@ class Point extends React.PureComponent {
       yoyo: true,
       repeat: -1,
     };
+
     if (tx && ty)
     {
       if (tx !== x && ty !== y)
@@ -185,9 +186,12 @@ export default class LinkedAnimate extends React.Component {
       })),
       tx: 0,
       ty: 0,
+      loading: false
     };
   }
-
+  componentDidMount () {
+    this.setState({ loading: true })
+  }
   onMouseMove = e => {
     const cX = e.clientX;
     const cY = e.clientY;
@@ -231,7 +235,7 @@ export default class LinkedAnimate extends React.Component {
     const { data, tx, ty } = this.state;
 
     return (
-      <div className='linked-animate-demo-wrapper'>
+      this.state.loading ? (<div className='linked-animate-demo-wrapper'>
         <div
           className='linked-animate-demo-box'
           ref={c => {
@@ -250,7 +254,7 @@ export default class LinkedAnimate extends React.Component {
             />
           ))}
         </div>
-      </div>
+      </div>) : (<div />)
     );
   }
 }

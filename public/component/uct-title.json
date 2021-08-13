@@ -1,0 +1,14 @@
+[
+  {
+    "id": "titleStyle",
+    "label": "title的自定义样式",
+    "value": "{}",
+    "type": "CodeData"
+  },
+  {
+    "id": "item",
+    "label": "文字标题配置",
+    "value": "{}",
+    "type": "CodeData"
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "id": "tabIndex",
+    "label": "列表当前下标,为false时表示单独使用子列表组件",
+    "value": false,
+    "type": "Switch"
+  },
+  {
+    "id": "tabsHeight",
+    "label": "列表栏高度，单位rpx",
+    "value": 0,
+    "type": "Number"
+  },
+  {
+    "id": "nav",
+    "label": "页面是否有自定义的navbar",
+    "value": false,
+    "type": "Switch"
+  },
+  {
+    "id": "fixed",
+    "label": "是否通过fixed固定scroll的高度, 默认false",
+    "value": true,
+    "type": "Switch"
+  },
+  {
+    "id": "index",
+    "label": "列表下标",
+    "value": 0,
+    "type": "Number"
+  },
+  {
+    "id": "api",
+    "label": "接口数据内容所在位置",
+    "value": "'result.data'",
+    "type": "Text"
+  },
+  {
+    "id": "more",
+    "label": "接口请求参数，为false时表示不请求接口，默认{}",
+    "value": "function() {\r\n    return {};\r\n}",
+    "type": "Switch"
+  },
+  {
+    "id": "url",
+    "label": "接口url",
+    "value": "''",
+    "type": "Text"
+  },
+  {
+    "id": "top",
+    "label": "列表离顶部距离",
+    "value": 20,
+    "type": "Text"
+  },
+  {
+    "id": "bottom",
+    "label": "列表离底部距离",
+    "value": 20,
+    "type": "Number"
+  },
+  {
+    "id": "downOption",
+    "label": "列表下拉配置",
+    "value": "{\r\n    auto: false, // 不自动加载\r\n}",
+    "type": "CodeData"
+  },
+  {
+    "id": "upOption",
+    "label": "列表上拉配置",
+    "value": "{\r\n    auto: false, // 不自动加载\r\n    empty: {\r\n        tip: '~ 空空如也 ~', // 提示\r\n    },\r\n}",
+    "type": "CodeData"
+  }
+]

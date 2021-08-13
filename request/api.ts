@@ -54,6 +54,9 @@ module.exports = {
   // 新建组件
   postComponent: data => api.post('/post/component', { data }),
 
+  // 添加组件库
+  postComponents: data => api.post('/post/components', { data }),
+
   // 获取组件
   getComponent: data => api.get('/get/component', { data }),
 

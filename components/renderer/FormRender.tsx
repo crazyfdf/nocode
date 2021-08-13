@@ -25,7 +25,6 @@ const formItemLayout = {
 interface FormEditorProps {
   uid: string;
   onSave: Function;
-  onDel: Function;
   defaultValue?: { [id: string]: any };
   config: Array<any>;
   edit?: boolean;
