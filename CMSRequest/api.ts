@@ -67,4 +67,19 @@ module.exports = {
 
   // 删除组件
   deleteComponent: (id): Promise<CMSDeleteResult> => api.delete(`/component/${id}`),
+
+  // 收藏组件
+  postCollectionComponent: id => api.patch(`/component/${id}`, { data: { status: 1 } }),
+
+  // 取消收藏组件
+  deleteCollectionComponent: id => api.patch(`/component/${id}`, { data: { status: 0 } }),
+
+  // 获取组件模板
+  getComponentTemplate: data => api.post('/component/find?', data),
+
+  // 获取页面模板
+  getPageTemplate: data => api.post('/page/find?', data),
+
+  // 获取应用模板
+  getAppTemplate: data => api.post('/app/find?', data),
 };

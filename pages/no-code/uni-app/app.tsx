@@ -10,12 +10,15 @@ import { configAdapter } from '@/components/Renderer/FormRenderAdapter';
 import TabsCard from '@/components/TabsCard/TabCard';
 import { isNoEmpty, debounce } from '@/utils/tool';
 import FormItems from '@/components/FormComponents/FormItems';
+import TemplateListBox from '@/components/ListBox/TemplateListBox';
+import UniAppModal from '@/components/Modal/UniAppModal';
 
 const { TabPane } = Tabs;
 const { Panel } = Collapse;
 const {
   getApp,
   getComponent,
+  getTemplate,
   patchComponent,
   patchUniAppsConfig,
   patchUniPagesConfig,
@@ -25,20 +28,25 @@ const {
   deletePage,
   deleteComponent,
   postComponents,
+  postCollectionComponent,
+  deleteCollectionComponent,
+  postComponentInput,
 } = require('@/request/api');
 
-const navigation: object[] = [
-  { title: '模板库', icon: '', handler: 'user' },
-  { title: '撤销', icon: '', handler: '' },
-  { title: '重做', icon: '', handler: 'create' },
-  { title: '预览', icon: '', handler: '' },
-  { title: '发布', icon: '', handler: 'user' },
-  { title: '保存', icon: '', handler: 'user' },
-  { title: '打开VSCode', icon: '', handler: 'user' },
-];
 const moduleList = require('./app.json');
 
-export default function noCodeApp({ components, appInit, apps }) {
+export default function noCodeApp({ components, appInit, apps, templates }) {
+  // 添加的模态框
+  const uniModal = useRef({
+    changeVal: v => {},
+  });
+  const navigation: object[] = [
+    { title: '添加', icon: '', handler: () => uniModal.current.changeVal(true) },
+    { title: '发布', icon: '', handler: 'user' },
+    { title: '预览', icon: '', handler: '' },
+    { title: '保存', icon: '', handler: 'user' },
+    { title: '打开VSCode', icon: '', handler: 'user' },
+  ];
   const [currentLeft, setCurrentLeft] = useState('组件库'); // 当前左侧下标
   const [app, setApp] = useState(appInit); // 当前app
   // 初始化app配置
@@ -49,114 +57,124 @@ export default function noCodeApp({ components, appInit, apps }) {
       uniAppAppConfig[index].value = appConfig[item.id];
     });
   }
-  const [page, setPage] = useState(isNoEmpty(appInit.pageId) ? appInit.pageId[0] : {}); // 当前页面
   const [component, setComponent] = useState(isNoEmpty(components) ? components[0] : {}); // 当前组件
+  const [page, setPage] = useState(isNoEmpty(appInit.pageId) ? appInit.pageId[0] : {}); // 当前页面
+  const [componentTemplate, setComponentTemplate] = useState(
+    isNoEmpty(templates[0]) ? templates[0][0] : {},
+  ); // 当前组件模板
+  const [pageTemplate, setPageTemplate] = useState(isNoEmpty(templates[1]) ? templates[1][0] : {}); // 当前页面模板
+  const [appTemplate, setAppTemplate] = useState(isNoEmpty(templates[2]) ? templates[2][0] : {}); // 当前应用模板
   const ref = useRef(null);
+  // 左侧列表数据源
+  const dataSource = title => {
+    switch (title) {
+      case '组件库':
+        return components;
+      case '页面':
+        return app.pageId;
+      case '应用':
+        return apps;
+      case '组件模板':
+        return templates[0];
+      case '页面模板':
+        return templates[1];
+      case '应用模板':
+        return templates[2];
+    }
+  };
 
   const changeLeft = key => {
     setCurrentLeft(key);
   };
+  console.log(app);
 
+  // 添加
   const add = async values => {
     switch (currentLeft) {
-      // 添加组件库
       case '组件库':
-        const _components = await postComponents({ components: values });
-        console.log(_components);
-
-        components = _components;
-        setComponent(_components[0]);
+        components = await postComponents({ components: values });
         changeCurrent(0);
         break;
-      // 添加页面
       case '页面':
         const page = await postPage({ page: values, app });
         app.pageId = app.pageId ? [page, ...app.pageId] : [page];
         setApp({ ...app });
         setPage(page);
         break;
-      // 添加项目
       case '应用':
         const _app = await postApp(values);
         apps.unshift(_app);
         setApp(_app);
         changeCurrent(0);
         break;
-      // 添加页面模板
+      case '组件模板':
+        break;
       case '页面模板':
+        break;
+      case '应用模板':
         break;
     }
   };
 
-  const changeCurrent = index => {
+  // 切换
+  const changeCurrent = item => {
     switch (currentLeft) {
-      // 切换组件
       case '组件库':
-        console.log(components[index]);
-        setComponent(components[index]);
+        setComponent(item);
         break;
-      // 切换页面
       case '页面':
-        app.pageId && setPage(app.pageId[index]);
+        app.pageId && setPage(item);
         break;
-      // 切换项目
       case '应用':
-        setApp(apps[index]);
-        setPage(apps[index].pageId && apps[index].pageId[0]);
+        setApp(item);
+        setPage(item.pageId && item.pageId[0]);
         break;
-      // 切换页面模板
+      case '组件模板':
+        setComponentTemplate(item);
+        break;
       case '页面模板':
+        setPageTemplate(item);
+        break;
+      case '应用模板':
+        setAppTemplate(item);
         break;
     }
   };
 
-  const remove = async item => {
+  // 删除
+  const remove = async (item, index) => {
     switch (currentLeft) {
-      // 删除组件
       case '组件库':
         await deleteComponent({ component: item });
-        components.splice(
-          components.findIndex(item1 => item1._id === item._id),
-          1,
-        );
+        components.splice(index, 1);
         setComponent(components[0]);
         changeCurrent(0);
         break;
-      // 删除页面
       case '页面':
         await deletePage({ app, page: item });
-        app.pageId.splice(
-          app.pageId.findIndex(item1 => item1._id === item._id),
-          1,
-        );
+        app.pageId.splice(index, 1);
         setApp({ ...app });
         changeCurrent(0);
         break;
-      // 删除项目
       case '应用':
         await deleteApp(item);
-        apps.splice(
-          apps.findIndex(item1 => item1._id === item._id),
-          1,
-        );
+        apps.splice(index, 1);
         setApp(apps[0]);
         changeCurrent(0);
         break;
-      // 删除页面模板
-      case '页面模板':
+      case '组件模板':
         break;
     }
   };
+
+  // 修改配置
   const configSave = async (data: any) => {
     switch (currentLeft) {
-      // 修改组件配置
       case '组件库':
-        console.log(data);
         await patchComponent({ component, config: data });
         component.config = data;
         setComponent(component);
         break;
-      // 修改页面配置
       case '页面':
         const style = { ...page.uniPagesConfigId.style, ...data };
         await patchUniPagesConfig({
@@ -169,7 +187,6 @@ export default function noCodeApp({ components, appInit, apps }) {
         page.uniPagesConfigId.style = style;
         setPage(page);
         break;
-      // 修改项目配置
       case '应用':
         await patchUniAppsConfig({
           id: app.uctuiConfigId._id,
@@ -177,25 +194,43 @@ export default function noCodeApp({ components, appInit, apps }) {
           uctuiConfig: { ...app.uctuiConfigId.uctuiConfig, ...data },
         });
         break;
-      // 修改页面模板配置
-      case '页面模板':
+      case '组件模板':
         break;
     }
   };
 
-  const collection = (item: any) => {
+  // (取消)收藏
+  const collection = async (item: any, index: number) => {
     switch (currentLeft) {
-      // 收藏组件
       case '组件库':
+        console.log(item);
+        item.status ? await deleteCollectionComponent(item) : await postCollectionComponent(item);
+        item.status = item.status ? 0 : 1;
+        components.splice(index, 1, item);
         break;
-      // 收藏页面
       case '页面':
         break;
-      // 收藏组件
       case '应用':
         break;
-      // 收藏页面模板
+      case '组件模板':
+        break;
+    }
+  };
+
+  // 导入模板
+  const input = async (item: any) => {
+    switch (currentLeft) {
+      case '组件模板':
+        await postComponentInput({
+          file: app.file,
+          path: page.path,
+          name: item.name,
+          config: item.config,
+        });
+        break;
       case '页面模板':
+        break;
+      case '应用模板':
         break;
     }
   };
@@ -205,7 +240,7 @@ export default function noCodeApp({ components, appInit, apps }) {
       <HeaderNocode navigation={navigation} />
       <div className='flex-auto flex justify-between overflow-hidden'>
         <TabsCard changeLeft={changeLeft}>
-          {moduleList.map((item, index) => (
+          {moduleList.map(item => (
             <TabPane
               className='p-4'
               key={item.title}
@@ -216,16 +251,24 @@ export default function noCodeApp({ components, appInit, apps }) {
                 </div>
               }
             >
-              <ListBox
-                dataSource={
-                  index === 0 ? components : index === 1 ? app.pageId : index === 2 ? apps : []
-                }
-                collection={collection}
-                changeCurrent={changeCurrent}
-                config={item}
-                add={add}
-                remove={remove}
-              />
+              {['组件库', '页面', '应用'].includes(item.title) ? (
+                <ListBox
+                  dataSource={dataSource(item.title)}
+                  collection={collection}
+                  changeCurrent={changeCurrent}
+                  config={item}
+                  remove={remove}
+                />
+              ) : (
+                <TemplateListBox
+                  dataSource={dataSource(item.title)}
+                  collection={collection}
+                  changeCurrent={changeCurrent}
+                  config={item}
+                  input={input}
+                  remove={remove}
+                />
+              )}
             </TabPane>
           ))}
         </TabsCard>
@@ -236,7 +279,7 @@ export default function noCodeApp({ components, appInit, apps }) {
             style={{ height: '100%', width: '100%', borderRadius: '30px' }}
           />
         </div>
-        <div style={{ width: '400px' }} className='shadow-xl px-4 py-5 overflow-auto'>
+        <div style={{ width: '600px' }} className='shadow-xl px-4 py-5 overflow-auto'>
           {currentLeft === '组件库' && isNoEmpty(component) && (
             <FormItems edit={true} formList={component.config} onChange={configSave} />
           )}
@@ -287,20 +330,20 @@ export default function noCodeApp({ components, appInit, apps }) {
           )}
         </div>
       </div>
+      <UniAppModal
+        ref={uniModal}
+        add={add}
+        type={moduleList[moduleList.findIndex(item => item.title === currentLeft)].type}
+        title={moduleList[moduleList.findIndex(item => item.title === currentLeft)].title}
+      />
     </>
   );
 }
 
 export async function getServerSideProps(context) {
   const { data: components } = await getComponent();
-
-  // const components = await Promise.all(
-  //   _components.map(async item => {
-  //     const { data } = await getComponentAST(item);
-  //     return Object.assign(item, data);
-  //   }),
-  // );
   const { data: apps } = await getApp({});
+  const { data: templates } = await getTemplate({});
   const appInit = apps[0] || [];
-  return { props: { components, appInit, apps } };
+  return { props: { components, appInit, apps, templates } };
 }

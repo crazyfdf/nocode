@@ -78,8 +78,6 @@ function EditableFormItems(props: FormItemsProps) {
     changeVal: v => {},
   });
 
-  console.log(formList);
-
   const handleAddItem = (item: baseFormUnion) => {
     setCurItem(item);
     handleEditItem(item);

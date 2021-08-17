@@ -109,7 +109,6 @@ export default function noCodeComponents({ docComponents, myCollection }) {
   const collection = async (item, e) => {
     e.stopPropagation();
     const { data } = await postCollectionComponents({ data: item });
-    console.log(data);
   };
 
   return (
@@ -210,7 +209,6 @@ export default function noCodeComponents({ docComponents, myCollection }) {
             uid={dataSource[currentComponent].title}
             defaultValue={{}}
             onSave={handleFormSave}
-            onDel={handleDel}
             rightPanelRef={ref}
           />
           {/* <FormItems
@@ -244,7 +242,6 @@ export async function getStaticProps() {
       return Object.assign(item, data);
     }),
   );
-  console.log(docComponents[1].props);
 
   const myCollection = await Promise.all(
     _myCollection.map(async item => {

@@ -2,19 +2,19 @@
   {
     "id": "height",
     "label": "导航栏高度，单位px，非rpx",
-    "value": "''",
+    "value": "",
     "type": "Text"
   },
   {
     "id": "titleWidth",
     "label": "标题的宽度，如果需要自定义右侧内容，且右侧内容很多时，可能需要减少这个宽度，单位rpx",
-    "value": "'500'",
+    "value": "500",
     "type": "Text"
   },
   {
     "id": "titleColor",
     "label": "标题的颜色",
-    "value": "'#606266'",
+    "value": "#606266",
     "type": "Text"
   },
   {
@@ -32,7 +32,7 @@
   {
     "id": "background",
     "label": "对象形式，因为用户可能定义一个纯色，或者线性渐变的颜色",
-    "value": "'#ffffff'",
+    "value": "#ffffff",
     "type": "Text"
   },
   {
@@ -56,7 +56,7 @@
   {
     "id": "zIndex",
     "label": "导航栏层级",
-    "value": "''",
+    "value": "",
     "type": "Text"
   },
   {

@@ -3,8 +3,8 @@ import { RGBColor } from 'react-color';
 
 // 生成uuid
 function uuid(len: number, radix: number) {
-  let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
-  let uuid: string[] = [];
+  const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+  const uuid: string[] = [];
   let i;
   radix = radix || chars.length;
 
@@ -27,15 +27,13 @@ function uuid(len: number, radix: number) {
       }
     }
   }
-
   return uuid.join('');
 }
 
 // 将rgba字符串对象转化为rgba对象
-function rgba2Obj(rgba = 'rgba(255,255,255)') {
-  let reg = /rgba\((\d+),(\d+),(\d+),(\d+)\)/g;
+function rgba2Obj(rgba = 'rgba(255,255,255,1)') {
+  const reg = /rgba\((\d+),(\d+),(\d+),(\d+)\)/g;
   let rgbaObj: RGBColor = { r: 0, g: 0, b: 0, a: 0 };
-
   rgba.replace(reg, (_m, r, g, b, a) => {
     rgbaObj = { r, g, b, a };
     return rgba;
@@ -43,32 +41,25 @@ function rgba2Obj(rgba = 'rgba(255,255,255)') {
   return rgbaObj;
 }
 // 将rgb颜色转成hex
-function colorRGB2Hex(color) {
-  var rgb = color.split(',');
-  var r = parseInt(rgb[0].split('(')[1], 10);
-  var g = parseInt(rgb[1], 10);
-  var b = parseInt(rgb[2].split(')')[0], 10);
-
-  var hex = '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+function colorRGB2Hex(color = 'rgba(255,255,255)') {
+  const rgb = color.split(',');
+  const r = parseInt(rgb[0].split('(')[1], 10);
+  const g = parseInt(rgb[1], 10);
+  const b = parseInt(rgb[2].split(')')[0], 10);
+  const hex = '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
   return hex;
 }
-// 将hex颜色转成rgb
-function hexToRgba(hex, opacity) {
-  var RGBA =
-    'rgba(' +
-    parseInt('0x' + hex.slice(1, 3), 10) +
-    ',' +
-    parseInt('0x' + hex.slice(3, 5), 10) +
-    ',' +
-    parseInt('0x' + hex.slice(5, 7), 10) +
-    ',' +
-    opacity +
-    ')';
+// 将hex颜色转成rgba
+function hexToRgba(hex, opacity = 1) {
+  const red = parseInt('0x' + hex.slice(1, 3), 10);
+  const green = parseInt('0x' + hex.slice(3, 5), 10);
+  const blue = parseInt('0x' + hex.slice(5, 7), 10);
+  const rgba = `rgba(${red},${green},${blue},${opacity})`;
   return {
-    red: parseInt('0x' + hex.slice(1, 3), 10),
-    green: parseInt('0x' + hex.slice(3, 5), 10),
-    blue: parseInt('0x' + hex.slice(5, 7), 10),
-    rgba: RGBA,
+    red,
+    green,
+    blue,
+    rgba,
   };
 }
 
@@ -117,7 +108,7 @@ export function useAnimation(state: boolean, delay: number) {
 }
 
 export function unParams(params = '?a=1&b=2&c=3') {
-  let obj: any = {};
+  const obj: any = {};
   params &&
     // eslint-disable-next-line no-useless-escape
     params.replace(/((\w*)=([\.a-z0-9A-Z]*)?)?/g, (m, a, b, c): any => {
@@ -130,7 +121,7 @@ export function unParams(params = '?a=1&b=2&c=3') {
 export const debounce = (fn: Function, time: number = 500, isImmediate: boolean = true) => {
   let timer: undefined | number;
   return function (...args: any) {
-    let init = isImmediate && !timer;
+    const init = isImmediate && !timer;
     clearTimeout(timer);
     timer = window.setTimeout(() => {
       timer = undefined;
@@ -143,8 +134,8 @@ export const debounce = (fn: Function, time: number = 500, isImmediate: boolean 
 export const throttle = (fn: Function, time: number = 500, isImmediate: boolean = true) => {
   let oldTime: number = isImmediate ? 0 : new Date().getTime();
   return function (...args: any) {
-    let newTime = new Date().getTime();
-    let timeOut = newTime - oldTime;
+    const newTime = new Date().getTime();
+    const timeOut = newTime - oldTime;
     if (timeOut >= time) {
       oldTime = newTime;
       fn.apply(this, args);
@@ -166,7 +157,7 @@ export function formatTime(fmt: string, dateObj: any): string {
   if (/(y+)/.test(fmt)) {
     fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
   }
-  for (var k in o) {
+  for (const k in o) {
     if (new RegExp('(' + k + ')').test(fmt)) {
       fmt = fmt.replace(
         RegExp.$1,

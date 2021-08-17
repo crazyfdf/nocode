@@ -13,13 +13,13 @@ module.exports = {
   postComponentsCreate: data => api.post('/post/componentsCreate', { data }),
 
   // 获取收藏组件
-  getCollectionComponents: () => api.get('/get/collectionComponents'),
+  getCollectionComponent: () => api.get('/get/collectionComponent'),
 
   // 收藏组件
-  postCollectionComponents: data => api.post('/post/collectionComponents', { data }),
+  postCollectionComponent: data => api.post('/post/collectionComponent', { data }),
 
   // 取消收藏组件
-  deleteCollectionComponents: data => api.post('/delete/collectionComponents', { data }),
+  deleteCollectionComponent: data => api.post('/delete/collectionComponent', { data }),
 
   // 新建app
   postApp: (data): Promise<CMSPostResult> => api.post('/post/app', { data }),
@@ -39,7 +39,7 @@ module.exports = {
   // 获取页面
   getPage: data => api.get('/get/page', { data }),
 
-  // 删除page
+  // 删除页面
   deletePage: data => api.post('/delete/page', { data }),
 
   // 获取页面配置
@@ -51,17 +51,30 @@ module.exports = {
   // 启动项目
   postRun: data => api.post('/post/run', { data }),
 
-  // 新建组件
-  postComponent: data => api.post('/post/component', { data }),
-
   // 添加组件库
   postComponents: data => api.post('/post/components', { data }),
+
+  // 新建组件
+  postComponent: data => api.post('/post/component', { data }),
 
   // 获取组件
   getComponent: data => api.get('/get/component', { data }),
 
-  // 修改组件配置
+  // 修改组件
   patchComponent: data => api.patch('/patch/component', { data }),
-  // 删除页面
+
+  // 删除组件
   deleteComponent: data => api.post('/delete/component', { data }),
+
+  // 获取模板
+  getTemplate: data => api.post('/get/template', { data }),
+
+  // 导入组件
+  postComponentInput: data => api.post('/post/componentInput', { data }),
+
+  // 导入页面
+  postPageInput: data => api.post('/post/pageInput', { data }),
+
+  // 导入应用
+  postAppInput: data => api.post('/post/appInput', { data }),
 };

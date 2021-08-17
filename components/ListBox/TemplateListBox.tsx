@@ -26,13 +26,14 @@ interface ConfigInterFace {
 interface PropsInterFace {
   dataSource: DataInterFace[];
   changeCurrent: (index: number) => void;
+  input?: (values: any) => void;
   remove: (item: any, index: number) => void;
   collection: (item: any, index: number) => void;
   config: ConfigInterFace;
 }
 
 function ListBox(props: PropsInterFace) {
-  const { dataSource: dataInit = [], changeCurrent, config, remove, collection } = props;
+  const { dataSource: dataInit = [], changeCurrent, input, config, remove, collection } = props;
   const [current, setCurrent] = useState(0);
   const [dataSource, setDataSource] = useState(dataInit);
   const [oldData, setOldData] = useState(dataInit);
@@ -42,6 +43,12 @@ function ListBox(props: PropsInterFace) {
   }, [dataInit]);
 
   const [page, setPage] = useState(1);
+
+  // 添加
+  const onInput = (item, e) => {
+    e.stopPropagation();
+    input && input(item);
+  };
 
   // 删除
   const onRemove = (item, index, e) => {
@@ -67,6 +74,7 @@ function ListBox(props: PropsInterFace) {
     setCurrent((page - 1) * 5 + index);
     changeCurrent && changeCurrent(item);
   };
+
   const typeIcon = type => {
     let res = 'icon-biaoqiankuozhan_shoucang-203';
     for (let i = 0; i < config.type.length; i++) {
@@ -77,6 +85,7 @@ function ListBox(props: PropsInterFace) {
     }
     return res;
   };
+
   const onSearch = value => {
     const _dataSource = value
       ? dataSource.filter(item => item.title.indexOf(value) !== -1)
@@ -136,18 +145,14 @@ function ListBox(props: PropsInterFace) {
                       <>
                         <Button
                           style={{ display: 'flex', alignItems: 'center' }}
-                          onClick={e => onCollection(item, index, e)}
+                          onClick={e => onInput(item, e)}
                         >
-                          <Icon
-                            style={{ fontSize: '16px' }}
-                            type={item.status ? 'icon-shoucang1' : 'icon-shoucang'}
-                          />
-                          {item.status ? '取消' : '收藏'}
+                          <Icon style={{ fontSize: '16px' }} type='icon-lajitong1' />
+                          导入
                         </Button>
-
                         <Button
                           style={{ display: 'flex', alignItems: 'center' }}
-                          onClick={e => onRemove(item, index, e)}
+                          onClick={e => onCollection(item, index, e)}
                         >
                           <Icon style={{ fontSize: '16px' }} type='icon-lajitong1' />
                           删除

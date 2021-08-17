@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Controlled } from 'react-codemirror2';
-// import Cm from '@/components/ide.js'; // 代码在文章底部, 用于初始化编辑器的格式化代码的功能
 // 代码模式，clike是包含java,c++等模式的
 // import 'codemirror/mode/clike/clike';
-// import 'codemirror/mode/css/css';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/material.css';
+import 'codemirror/addon/fold/foldgutter.css';
+import 'codemirror/addon/hint/show-hint.css';
+// 主题风格
+import 'codemirror/theme/solarized.css';
+import 'codemirror/addon/lint/lint.css'; // 代码错误提示
 
 export default function Ide (props) {
   const { onChange, defaultValue } = props;
@@ -12,6 +17,8 @@ export default function Ide (props) {
   useEffect(() => {
     if (typeof navigator !== 'undefined')
     {
+      // require('codemirror/mode/css/css');
+
       // 代码高亮
       require('codemirror/addon/selection/active-line');
       // ctrl+空格代码提示补全

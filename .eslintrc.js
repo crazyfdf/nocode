@@ -593,7 +593,7 @@ module.exports = {
     //
     // React.相关 //
     //
-
+    'react/button-has-type': 0,
     'react/react-in-jsx-scope': 0,
     'react/jsx-indent': 0,
     'react/jsx-indent-props': 0,

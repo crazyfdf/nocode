@@ -113,7 +113,7 @@ export default function Header({ navigation }) {
                       <BellIcon className='h-6 w-6' aria-hidden='true' />
                     </div>
 
-                    {/* Profile dropdown */}
+                    {/* 个人资料下拉菜单 */}
                     <Menu as='div' className='ml-3 relative '>
                       {({ open }) => (
                         <>

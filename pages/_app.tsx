@@ -1,12 +1,6 @@
 import '../styles/globals.css';
 import 'antd/dist/antd.min.css';
-import 'codemirror/lib/codemirror.css';
-import 'codemirror/theme/material.css';
-import 'codemirror/addon/fold/foldgutter.css';
-import 'codemirror/addon/hint/show-hint.css';
-// 主题风格
-import 'codemirror/theme/solarized.css';
-import 'codemirror/addon/lint/lint.css'; // 代码错误提示
+
 import Header from '@/components/Header/Header';
 import { Provider } from 'react-redux';
 import { useStore } from '@/store/store';
