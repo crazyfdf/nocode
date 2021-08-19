@@ -7,7 +7,7 @@ module.exports = {
     dirname: path.resolve(),
     baseURL: 'http://localhost:3000',
     baasBaseURL: 'https://cloudcms.uctoo.com/api/v1.0',
-    iconPath: '//at.alicdn.com/t/font_2649131_tpmmr9k6729.js',
+    iconPath: '//at.alicdn.com/t/font_2649131_zy315w4q4p.js',
   },
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],

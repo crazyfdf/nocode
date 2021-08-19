@@ -11,6 +11,19 @@
   cursor: pointer;
 }
 
+/* @tailwind base;中svg图标不对齐 */
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block;
+  vertical-align: baseline;
+}
+
 html,
 body {
   height: 100%;
@@ -21,11 +34,11 @@ body {
   margin: 0;
 }
 .iframe {
-  height: 812px;
+  min-height: 812px;
   width: 375px; /*/ 375+22+22 */
   box-shadow: 0 4px 30px 0 rgba(4, 59, 85, 0.2);
   transform-origin: top;
-  transform: translate(0, 20px) scale(0.75);
+  transform: scale(0.7);
   border-radius: 30px;
 }
 

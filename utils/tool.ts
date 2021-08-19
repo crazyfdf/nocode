@@ -107,8 +107,24 @@ export function useAnimation(state: boolean, delay: number) {
   return [display, setDisplay];
 }
 
+interface useStateValueInterface {
+  <T>(value: T): [T, any];
+}
+
+// 父组件传参变化时更新子组件数据
+export const useStateValue: useStateValueInterface = value => {
+  const [stateValue, setStateValue] = useState(value);
+
+  useEffect(() => {
+    setStateValue(value);
+  }, [value]);
+
+  return [stateValue, setStateValue];
+};
+
+// 创建一个包含当前 URL 参数的对象。
 export function unParams(params = '?a=1&b=2&c=3') {
-  const obj: any = {};
+  const obj = {};
   params &&
     // eslint-disable-next-line no-useless-escape
     params.replace(/((\w*)=([\.a-z0-9A-Z]*)?)?/g, (m, a, b, c): any => {

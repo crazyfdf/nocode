@@ -4,16 +4,14 @@ import 'antd/dist/antd.min.css';
 import Header from '@/components/Header/Header';
 import { Provider } from 'react-redux';
 import { useStore } from '@/store/store';
-import { useRouter } from 'next/dist/client/router';
 
 const navigation = [
-  { title: '插件市场', href: '/' },
-  { title: '创作中心', href: '/create' },
+  { title: '模板', href: '/' },
+  { title: '创作', href: '/no-code/uni-app/app' },
   { title: '论坛', href: '#' },
   { title: '我的', href: '/user' },
 ];
 export default function MyApp({ Component, pageProps }) {
-  const router = useRouter();
   const store = useStore(pageProps.initialReduxState);
   // useEffect(() => {
   //   const { registerMicroApps, start } = require('qiankun');
@@ -32,9 +30,7 @@ export default function MyApp({ Component, pageProps }) {
   return (
     <div className='flex flex-col h-screen'>
       <Provider store={store}>
-        {navigation.findIndex(item => item.href === router.pathname) !== -1 && (
-          <Header navigation={navigation} />
-        )}
+        <Header navigation={navigation} />
         <Component {...pageProps} />
       </Provider>
     </div>

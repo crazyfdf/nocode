@@ -1,5 +1,5 @@
 import QueueAnim from 'rc-queue-anim';
-import { memo } from 'react';
+import { useEffect, useState } from 'react';
 
 const enterAnim = [
   {
@@ -20,16 +20,20 @@ const enterAnim = [
 
 function ListQueueAnim(props) {
   const { children } = props;
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    setLoading(false);
+  });
   // FIXME: -- 渲染待优化
   return (
-    <QueueAnim type={['left', 'right']} animConfig={enterAnim}>
-      {children}
-    </QueueAnim>
+    <>
+      {loading ? null : (
+        <QueueAnim type={['left', 'right']} animConfig={enterAnim}>
+          {children}
+        </QueueAnim>
+      )}
+    </>
   );
 }
 
-const compare = (preProps, nextProps) => {
-  return true;
-};
-
-export default memo(ListQueueAnim, compare);
+export default ListQueueAnim;

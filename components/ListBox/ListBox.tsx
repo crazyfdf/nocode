@@ -2,6 +2,7 @@ import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import Icon from '@/components/Icon/Icon';
 import ListQueueAnim from '@/components/Animation/ListQueueAnim';
 import { Tooltip, Button, List, Select, Input } from 'antd';
+import { useStateValue } from '@/utils/tool';
 
 const { Search } = Input;
 
@@ -26,22 +27,24 @@ interface ConfigInterFace {
 interface PropsInterFace {
   dataSource: DataInterFace[];
   changeCurrent: (index: number) => void;
+  input?: (values: any) => void;
   remove: (item: any, index: number) => void;
   collection: (item: any, index: number) => void;
   config: ConfigInterFace;
 }
 
 function ListBox(props: PropsInterFace) {
-  const { dataSource: dataInit = [], changeCurrent, config, remove, collection } = props;
+  const { dataSource: dataInit = [], changeCurrent, config, input, remove, collection } = props;
   const [current, setCurrent] = useState(0);
-  const [dataSource, setDataSource] = useState(dataInit);
+  const [dataSource, setDataSource] = useStateValue(dataInit);
   const [oldData, setOldData] = useState(dataInit);
-
-  useEffect(() => {
-    setDataSource(dataInit);
-  }, [dataInit]);
-
   const [page, setPage] = useState(1);
+
+  // 添加
+  const onInput = (item, e) => {
+    e.stopPropagation();
+    input && input(item);
+  };
 
   // 删除
   const onRemove = (item, index, e) => {
@@ -95,17 +98,13 @@ function ListBox(props: PropsInterFace) {
         <div className='flex justify-between'>
           <Select defaultValue='' style={{ width: 100 }} onChange={filterData} bordered={false}>
             <Select.Option value=''>
-              <div className='flex items-center'>
-                <Icon className='mr-2' type='icon-xianxingbiaodan' />
-                <div>全部</div>
-              </div>
+              <Icon className='mr-2' type='icon-xianxingbiaodan' />
+              全部
             </Select.Option>
             {config.type.map(item => (
               <Select.Option key={item.value} value={item.value}>
-                <div className='flex items-center'>
-                  <Icon className='mr-2' type={item.icon} />
-                  <div>{item.title}</div>
-                </div>
+                <Icon className='mr-2' type={item.icon} />
+                {item.title}
               </Select.Option>
             ))}
           </Select>
@@ -124,8 +123,7 @@ function ListBox(props: PropsInterFace) {
           }
         >
           <ListQueueAnim>
-            {/* key={item.name} */}
-            <div className='flex items-center'>
+            <div key={item.name} className='flex items-center'>
               <Icon style={{ fontSize: '24px' }} type={typeIcon(item.type)} />
               <div className='ml-2 flex-1'>
                 <div className='flex justify-between mb-2'>
@@ -134,10 +132,11 @@ function ListBox(props: PropsInterFace) {
                     placement='rightBottom'
                     title={
                       <>
-                        <Button
-                          style={{ display: 'flex', alignItems: 'center' }}
-                          onClick={e => onCollection(item, index, e)}
-                        >
+                        <Button onClick={e => onInput(item, e)}>
+                          <Icon style={{ fontSize: '16px' }} type='icon-daoru' />
+                          导入
+                        </Button>
+                        <Button onClick={e => onCollection(item, index, e)}>
                           <Icon
                             style={{ fontSize: '16px' }}
                             type={item.status ? 'icon-shoucang1' : 'icon-shoucang'}
@@ -145,10 +144,7 @@ function ListBox(props: PropsInterFace) {
                           {item.status ? '取消' : '收藏'}
                         </Button>
 
-                        <Button
-                          style={{ display: 'flex', alignItems: 'center' }}
-                          onClick={e => onRemove(item, index, e)}
-                        >
+                        <Button onClick={e => onRemove(item, index, e)}>
                           <Icon style={{ fontSize: '16px' }} type='icon-lajitong1' />
                           删除
                         </Button>
