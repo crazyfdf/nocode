@@ -171,7 +171,7 @@ export type baseFormTextTpl = {
   value: string;
   type: 'Text';
   label: string;
-  placeholder: string;
+  placeholder?: string;
 };
 
 export type baseFormCodeDataTpl = {
@@ -179,7 +179,7 @@ export type baseFormCodeDataTpl = {
   value: any;
   type: 'CodeData';
   label: string;
-  placeholder: string;
+  placeholder?: string;
 };
 
 export type baseFormColorTpl = {
@@ -187,7 +187,7 @@ export type baseFormColorTpl = {
   value: string;
   type: 'Color';
   label: string;
-  placeholder: string;
+  placeholder?: string;
 };
 
 export type baseFormSwitchTpl = {
@@ -202,7 +202,7 @@ export type baseFormNumberTpl = {
   value: any;
   type: 'Number';
   label: string;
-  placeholder: string;
+  placeholder?: string;
 };
 
 export type baseFormTextAreaTpl = {
@@ -210,7 +210,7 @@ export type baseFormTextAreaTpl = {
   value: string;
   type: 'Textarea';
   label: string;
-  placeholder: string;
+  placeholder?: string;
 };
 
 export type baseFormRadioTpl = {
@@ -242,7 +242,7 @@ export type baseFormDateTpl = {
   value: any;
   type: 'Date';
   label: string;
-  placeholder: string;
+  placeholder?: string;
 };
 
 export type baseFormUnion =

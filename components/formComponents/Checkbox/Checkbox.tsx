@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import { uuid } from '@/utils/tool';
 
 export default function Checkbox(props: any) {
-  const { value: defaultValue = [], options } = props;
+  const { value: defaultValue = [], onChange, options } = props;
   const [value, setValue] = useState(defaultValue);
   const btnClick = e => {
     console.log(e.target.value);
@@ -13,11 +14,11 @@ export default function Checkbox(props: any) {
     } else {
       res = [...value, e.target.value];
     }
-    props.onChange && props.onChange(res);
+    onChange && onChange(res);
     setValue(res);
   };
   return options.map((v: any) => (
-    <div className='flex items-center mx-2'>
+    <div className='flex items-center mx-2' key={uuid(6, 10)}>
       <label htmlFor='candidates' className='font-medium text-gray-700'>
         {v.label}
       </label>

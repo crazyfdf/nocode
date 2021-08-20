@@ -15,7 +15,8 @@ import { uuid } from '@/utils/tool';
 import { DatePicker, Input, Select } from 'antd';
 import Switch from '@/components/FormComponents/Switch';
 import Color from '@/components/FormComponents/Color';
-import Checkbox from '@/components/FormComponents/Checkbox';
+import Checkbox from '@/components/FormComponents/Checkbox/Checkbox';
+import Radio from '@/components/FormComponents/Radio/Radio';
 import Ide from '@/components/Ide/Ide';
 // 维护表单控件， 提高form渲染性能
 
@@ -61,18 +62,13 @@ const BaseForm: TBaseForm = {
   },
   Radio: (props: baseFormRadioTpl & { onChange }) => {
     const { id, options, value, onChange } = props;
-    return options.map((v: any) => (
-      <div key={uuid(6, 10)} className='flex items-center'>
-        <label className='ml-3 block text-sm font-medium text-gray-700'>{v.label}</label>
-        <input
-          type='radio'
-          name={id}
-          value={value}
-          className='focus:ring-indigo-500 h-4 w-4 ml-1 text-indigo-600 border-gray-300'
-          onChange={() => onChange(id, event)}
-        />
-      </div>
-    ));
+    return (
+      <Radio
+        options={options}
+        value={value}
+        onChange={value => onChange(id, { target: { value } })}
+      />
+    );
   },
   Checkbox: (props: baseFormCheckboxTpl & { onChange }) => {
     const { id, options, value, onChange } = props;
@@ -105,7 +101,7 @@ const BaseForm: TBaseForm = {
     );
   },
   CodeData: (props: baseFormCodeDataTpl & { onChange }) => {
-    const { id, placeholder = '', value, onChange } = props;
+    let { id, placeholder = '', value, onChange } = props;
     return <Ide defaultValue={value} onChange={value => onChange(id, { target: { value } })} />;
   },
 };

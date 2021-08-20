@@ -2,7 +2,7 @@ import { baseFormUnion, TFormItemsDefaultType } from '@/types/types';
 import { uuid } from '@/utils/tool';
 import { MinusCircleFilled, EditFilled } from '@ant-design/icons';
 import { Button, Tooltip } from 'antd';
-import React, { RefObject, useState, memo, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import BasePopoverForm from '@/components/FormComponents/FormItems/BasePopoverForm';
 import EditorModal from '@/components/FormComponents/FormItems/EditorModal';
 import BaseForm from '@/components/FormComponents/FormItems/BaseForm';
@@ -135,10 +135,7 @@ function EditableFormItems(props: FormItemsProps) {
     if (edit) {
       onChange(formList);
     } else {
-      onChange &&
-        onChange({
-          [formData.id]: formList.map(item => ({ [item.id]: item.value })),
-        });
+      onChange && onChange({ [data.id]: data.value });
     }
   };
 
@@ -152,8 +149,8 @@ function EditableFormItems(props: FormItemsProps) {
               <label className='font-medium'>{item.label}</label>
             </Tooltip>
             <div className='flex justify-between items-center mt-2 mb-4'>
-              <MinusCircleFilled onClick={() => handleDelItem(item)} />
-              <div className='flex mx-4 flex-1 items-center'>
+              {edit && <MinusCircleFilled onClick={() => handleDelItem(item)} />}
+              <div className='flex mx-4 my-2 items-center w-full'>
                 <FormItem
                   {...item}
                   onChange={(id, e) => handleChange({ ...item, value: e.target.value })}

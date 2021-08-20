@@ -1,19 +1,16 @@
 import { Tabs, Collapse } from 'antd';
-import React, { useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { useReducer, useRef, useState } from 'react';
 import Icon from '@/components/Icon/Icon';
 import ListBox from '@/components/ListBox/ListBox';
-import FormRender from '@/components/Renderer/FormRender';
-import uniAppPage from '@/public/app/uniAppPage';
-import { uniAppAppConfig } from '@/public/app/uniAppApp';
-import { configAdapter } from '@/components/Renderer/FormRenderAdapter';
 import TabsCard from '@/components/TabsCard/TabCard';
 import { isNoEmpty, debounce } from '@/utils/tool';
 import FormItems from '@/components/FormComponents/FormItems';
 import UniAppModal from '@/components/Modal/UniAppModal';
 import HandlerList from '@/components/HandlerList/HandlerList';
 
-const { TabPane } = Tabs;
-const { Panel } = Collapse;
+const uniAppApp = require('@/public/app/uniAppApp.json');
+const uniAppPage = require('@/public/app/uniAppPage.json');
+const moduleList = require('@/public/app/app.json');
 const {
   getApp,
   getComponent,
@@ -37,7 +34,8 @@ const {
   postCollectionApp,
 } = require('@/request/api');
 
-const moduleList = require('./app.json');
+const { TabPane } = Tabs;
+const { Panel } = Collapse;
 
 function uniReducer(state, action) {
   switch (action.type) {
@@ -87,13 +85,7 @@ export default function noCodeApp({ uniInit, unisInit }) {
   const [uni, uniDispatch] = useReducer(uniReducer, uniInit); // 当前组件、页面、应用、组件模板、页面模板、应用模板
   const [unis, unisDispatch] = useReducer(unisReducer, unisInit); // 当前组件库、页面库、应用库、组件模板库、页面模板库、应用模板库
   const ref = useRef(null);
-  // 初始化app配置
-  if (isNoEmpty(uni.app)) {
-    const appConfig = uni.app.uctuiConfigId.uctuiConfig;
-    uniAppAppConfig.forEach((item, index) => {
-      uniAppAppConfig[index].value = appConfig[item.id];
-    });
-  }
+
   // 切换左侧下标
   const changeLeft = key => {
     setCurrentLeft(key);
@@ -148,6 +140,7 @@ export default function noCodeApp({ uniInit, unisInit }) {
 
   // 修改配置
   const configSave = async (data: any) => {
+    console.log(data);
     switch (currentLeft) {
       case 'component':
         await patchComponent({ component: uni.component, config: data });
@@ -270,27 +263,10 @@ export default function noCodeApp({ uniInit, unisInit }) {
             <Tabs defaultActiveKey='页面配置'>
               {moduleList[1].children!.map((item, index) => (
                 <TabPane key={item.title} tab={item.title}>
-                  {index === 0 && (
-                    <FormRender
-                      config={uniAppPage}
-                      defaultValue={
-                        isNoEmpty(uni.page.uniPagesConfigId) ? uni.page.uniPagesConfigId.style : {}
-                      }
-                      onSave={configSave}
-                      uid={uni.page._id}
-                      rightPanelRef={ref}
-                    />
-                  )}
+                  {index === 0 && <FormItems formList={uniAppPage} onChange={configSave} />}
                   {index === 1 && (
                     <Collapse accordion>
-                      <Panel header='This is panel header 1' key='1'>
-                        <FormRender
-                          config={configAdapter(uni.component.props ?? [])}
-                          uid={uni.component._id}
-                          onSave={configSave}
-                          rightPanelRef={ref}
-                        />
-                      </Panel>
+                      <Panel header='This is panel header 1' key='1' />
                     </Collapse>
                   )}
                 </TabPane>
@@ -301,12 +277,7 @@ export default function noCodeApp({ uniInit, unisInit }) {
             <Tabs defaultActiveKey='config配置'>
               {moduleList[2].children!.map((item, index) => (
                 <TabPane key={item.title} tab={item.title}>
-                  <FormRender
-                    config={uniAppAppConfig}
-                    onSave={configSave}
-                    uid={uni.app._id}
-                    rightPanelRef={ref}
-                  />
+                  <FormItems formList={uniAppApp} onChange={configSave} />
                 </TabPane>
               ))}
             </Tabs>

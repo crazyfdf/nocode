@@ -10,28 +10,32 @@ import 'codemirror/addon/hint/show-hint.css';
 import 'codemirror/theme/solarized.css';
 import 'codemirror/addon/lint/lint.css'; // 代码错误提示
 
-export default function Ide (props) {
-  const { onChange, defaultValue } = props;
+export default function Ide(props) {
+  let { onChange, defaultValue } = props;
+  try {
+    defaultValue = typeof defaultValue === 'string' ? defaultValue : JSON.stringify(defaultValue);
+  } catch (err) {
+    console.log(err);
+  }
   const [value, setValue] = useState(defaultValue);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    if (typeof navigator !== 'undefined')
-    {
+    if (typeof navigator !== 'undefined') {
       // require('codemirror/mode/css/css');
 
       // 代码高亮
       require('codemirror/addon/selection/active-line');
       // ctrl+空格代码提示补全
       require('codemirror/addon/hint/show-hint');
-      require('codemirror/addon/hint/anyword-hint.js');
+      require('codemirror/addon/hint/anyword-hint');
       // 折叠代码
-      require('codemirror/addon/fold/foldcode.js');
-      require('codemirror/addon/fold/foldgutter.js');
-      require('codemirror/addon/fold/brace-fold.js');
-      require('codemirror/addon/fold/comment-fold.js');
+      require('codemirror/addon/fold/foldcode');
+      require('codemirror/addon/fold/foldgutter');
+      require('codemirror/addon/fold/brace-fold');
+      require('codemirror/addon/fold/comment-fold');
       require('codemirror/addon/edit/closebrackets');
       require('codemirror/addon/edit/matchBrackets');
-      require('codemirror/addon/lint/lint.js'); // 错误校验
+      require('codemirror/addon/lint/lint'); // 错误校验
       require('codemirror/mode/xml/xml');
       require('codemirror/mode/javascript/javascript');
       const CodeMirror = require('codemirror');
@@ -49,11 +53,9 @@ export default function Ide (props) {
         commentEnd: '*/',
         // FIXME semicolons inside of for
         newlineAfterToken: function (type, content, textAfter, state) {
-          if (this.jsonMode)
-          {
+          if (this.jsonMode) {
             return /^[\[,{]$/.test(content) || /^}/.test(textAfter);
-          } else
-          {
+          } else {
             if (content === ';' && state.lexical && state.lexical.type === ')') return false;
             return /^[;{}]$/.test(content) && !/^;/.test(textAfter);
           }
@@ -70,25 +72,23 @@ export default function Ide (props) {
 
       // Comment/uncomment the specified range
       CodeMirror.defineExtension('commentRange', function (isComment, from, to) {
-        var cm = this,
-          curMode = CodeMirror.innerMode(cm.getMode(), cm.getTokenAt(from).state).mode;
+        const cm = this;
+        const curMode = CodeMirror.innerMode(cm.getMode(), cm.getTokenAt(from).state).mode;
         cm.operation(function () {
-          if (isComment)
-          {
+          if (isComment) {
             // Comment range
             cm.replaceRange(curMode.commentEnd, to);
             cm.replaceRange(curMode.commentStart, from);
-            if (from.line === to.line && from.ch === to.ch)
+            if (from.line === to.line && from.ch === to.ch) {
               // An empty comment inserted - put cursor inside
               cm.setCursor(from.line, from.ch + curMode.commentStart.length);
-          } else
-          {
+            }
+          } else {
             // Uncomment range
-            var selText = cm.getRange(from, to);
-            var startIndex = selText.indexOf(curMode.commentStart);
-            var endIndex = selText.lastIndexOf(curMode.commentEnd);
-            if (startIndex > -1 && endIndex > -1 && endIndex > startIndex)
-            {
+            let selText = cm.getRange(from, to);
+            const startIndex = selText.indexOf(curMode.commentStart);
+            const endIndex = selText.lastIndexOf(curMode.commentEnd);
+            if (startIndex > -1 && endIndex > -1 && endIndex > startIndex) {
               // Take string till comment start
               selText =
                 selText.substr(0, startIndex) +
@@ -104,10 +104,9 @@ export default function Ide (props) {
 
       // Applies automatic mode-aware indentation to the specified range
       CodeMirror.defineExtension('autoIndentRange', function (from, to) {
-        var cmInstance = this;
+        const cmInstance = this;
         this.operation(function () {
-          for (var i = from.line; i <= to.line; i++)
-          {
+          for (let i = from.line; i <= to.line; i++) {
             cmInstance.indentLine(i, 'smart');
           }
         });
@@ -115,32 +114,29 @@ export default function Ide (props) {
 
       // Applies automatic formatting to the specified range
       CodeMirror.defineExtension('autoFormatRange', function (from, to) {
-        var cm = this;
-        var outer = cm.getMode(),
-          text = cm.getRange(from, to).split('\n');
-        var state = CodeMirror.copyState(outer, cm.getTokenAt(from).state);
-        var tabSize = cm.getOption('tabSize');
+        const cm = this;
+        const outer = cm.getMode();
+        const text = cm.getRange(from, to).split('\n');
+        const state = CodeMirror.copyState(outer, cm.getTokenAt(from).state);
+        const tabSize = cm.getOption('tabSize');
 
-        var out = '',
-          lines = 0,
-          atSol = from.ch === 0;
-        function newline () {
+        let out = '';
+        let lines = 0;
+        let atSol = from.ch === 0;
+        function newline() {
           out += '\n';
           atSol = true;
           ++lines;
         }
 
-        for (var i = 0; i < text.length; ++i)
-        {
-          var stream = new CodeMirror.StringStream(text[i], tabSize);
-          while (!stream.eol())
-          {
-            var inner = CodeMirror.innerMode(outer, state);
-            var style = outer.token(stream, state),
-              cur = stream.current();
+        for (let i = 0; i < text.length; ++i) {
+          const stream = new CodeMirror.StringStream(text[i], tabSize);
+          while (!stream.eol()) {
+            const inner = CodeMirror.innerMode(outer, state);
+            const style = outer.token(stream, state);
+            const cur = stream.current();
             stream.start = stream.pos;
-            if (!atSol || /\S/.test(cur))
-            {
+            if (!atSol || /\S/.test(cur)) {
               out += cur;
               atSol = false;
             }
@@ -153,8 +149,9 @@ export default function Ide (props) {
                 stream.string.slice(stream.pos) || text[i + 1] || '',
                 inner.state,
               )
-            )
+            ) {
               newline();
+            }
           }
           if (!stream.pos && outer.blankLine) outer.blankLine(state);
           if (!atSol) newline();
@@ -162,8 +159,9 @@ export default function Ide (props) {
 
         cm.operation(function () {
           cm.replaceRange(out, from, to);
-          for (var cur = from.line + 1, end = from.line + lines; cur <= end; ++cur)
+          for (let cur = from.line + 1, end = from.line + lines; cur <= end; ++cur) {
             cm.indentLine(cur, 'smart');
+          }
           cm.setSelection(from, cm.getCursor(false));
         });
       });
@@ -172,9 +170,9 @@ export default function Ide (props) {
   }, []);
   // 格式化代码
   const autoFormatSelection = editor => {
-    const script_length = editor.getValue().length;
+    const scriptLength = editor.getValue().length;
     const startPos = { line: 0, ch: 0, sticky: null };
-    const endPos = editor.doc.posFromIndex(script_length);
+    const endPos = editor.doc.posFromIndex(scriptLength);
     editor.setSelection(startPos, endPos);
     editor.autoFormatRange(startPos, endPos);
     editor.commentRange(false, startPos, endPos);
@@ -198,10 +196,10 @@ export default function Ide (props) {
       Ctrl: 'autocomplete',
       'Ctrl-Z': function (editor) {
         editor.undo();
-      }, //undo
+      }, // undo
       'Ctrl-Y': function (editor) {
         editor.redo();
-      }, //Redo
+      }, // Redo
       'Ctrl-S': function (editor) {
         onChange && onChange(value);
         autoFormatSelection(editor);
@@ -217,9 +215,7 @@ export default function Ide (props) {
       onBeforeChange={(editor, data, value) => {
         setValue(value);
       }}
-      onChange={(editor, data, value) => { }}
+      onChange={(editor, data, value) => {}}
     />
-  ) : (
-    <div />
-  );
+  ) : null;
 }
