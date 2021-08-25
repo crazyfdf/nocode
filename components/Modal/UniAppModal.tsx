@@ -29,7 +29,9 @@ const tailFormItemLayout = {
   },
 };
 function UniAppModal(props, ref) {
-  const { add, title, type } = props;
+  const { add, config } = props;
+  const { title, type, modal } = config;
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalLoading, setIsModalLoading] = useState(false);
   const [form] = Form.useForm();
@@ -47,7 +49,6 @@ function UniAppModal(props, ref) {
   };
   const onFinish = async (values: any) => {
     setIsModalLoading(true);
-    console.log('Received values of form: ', values);
 
     await handleOk(values);
     form.resetFields();
@@ -66,7 +67,7 @@ function UniAppModal(props, ref) {
       <Form {...formItemLayout} form={form} name='app' onFinish={onFinish} scrollToFirstError>
         <Form.Item
           name='title'
-          label={`${title}名称`}
+          label={modal && modal.title}
           tooltip='不能超过20个字符'
           rules={[
             { required: true, message: `请输入${title}名称，不能超过20个字符`, whitespace: true },
@@ -77,7 +78,7 @@ function UniAppModal(props, ref) {
 
         <Form.Item
           name='name'
-          label={`${title}标识`}
+          label={modal && modal.name}
           tooltip='只能包含小写字母、数字、-或_'
           rules={[
             {

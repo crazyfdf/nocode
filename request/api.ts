@@ -37,7 +37,7 @@ module.exports = {
   deleteCollectionComponent: data => api.post('/delete/collectionComponent', { data }),
 
   // 导入组件
-  postComponentInput: data => api.post('/post/componentInput', { data }),
+  patchUniPageComponentsConfig: data => api.patch('/patch/pageComponentsConfig', { data }),
 
   // 新建页面
   postPage: data => api.post('/post/page', { data }),
@@ -54,11 +54,8 @@ module.exports = {
   // 取消收藏页面
   deleteCollectionPage: data => api.post('/delete/collectionPage', { data }),
 
-  // 获取页面配置
-  getUniPagesConfig: data => api.get('/get/uniPagesConfig', { data }),
-
   // 修改页面配置
-  patchUniPagesConfig: data => api.patch('/patch/uniPagesConfig', { data }),
+  patchPagesConfig: data => api.patch('/patch/pagesConfig', { data }),
 
   // 导入页面
   postPageInput: data => api.post('/post/pageInput', { data }),

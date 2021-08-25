@@ -1,10 +1,23 @@
 import { exec } from 'child_process';
 
-const { postPage, postUniPagesConfig, patchApp } = require('@/CMSRequest/api');
+const {
+  postPage,
+  postPagesConfig,
+  patchApp,
+  postPageComponentsConfig,
+} = require('@/CMSRequest/api');
+const fs = require('fs');
 
 export default async (req, res) => {
   const { data } = req.body;
-  const { page, app } = data;
+  let {
+    page,
+    app,
+    style = {
+      navigationBarTitleText: page.title,
+    },
+    config,
+  } = data;
   console.log(app);
 
   const commend = `cd /D ${app.file} && uct-plop createPage ${page.name} ${page.type}`;
@@ -18,23 +31,34 @@ export default async (req, res) => {
   page.path = `pages/${page.type}/${page.name}/${page.name}`;
   page._updateTime = new Date().getTime();
   page._createTime = new Date().getTime();
-  const style = {
-    navigationBarTitleText: page.title,
-  };
 
-  const pageConfig = await postUniPagesConfig({
+  const pageConfig = await postPagesConfig({
     style,
     _updateTime: page._updateTime,
     _createTime: page._createTime,
   });
-  const pageRes = await postPage({ ...page, uniPagesConfigId: pageConfig.id, status: 0 });
+  config =
+    config || JSON.parse(fs.readFileSync(`uct-cli/plop-templates/page/${page.type}.json`, 'utf-8'));
+  console.log(config);
+
+  const pageComponent = await postPageComponentsConfig({
+    config,
+    _updateTime: page._updateTime,
+    _createTime: page._createTime,
+  });
+  const pageRes = await postPage({
+    ...page,
+    pagesConfigId: pageConfig.id,
+    status: 0,
+    pageComponentsId: pageComponent.id,
+  });
 
   const pageId = app.pageId ? [pageRes.id, ...app.pageId.map(item => item._id)] : [pageRes.id];
   patchApp(app._id, { pageId });
   res.status(201).json({
     ...page,
     _id: pageRes.id,
-    uniPagesConfigId: {
+    pagesConfigId: {
       _id: pageConfig.id,
       style,
       _createTime: page._createTime,

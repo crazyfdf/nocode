@@ -36,16 +36,22 @@ module.exports = {
   deletePage: (id): Promise<CMSDeleteResult> => api.delete(`/page/${id}`),
 
   // 新建页面配置
-  postUniPagesConfig: (data): Promise<CMSPostResult> => api.post('/uniPagesConfig', { data }),
-
-  // 获取页面配置
-  getUniPagesConfig: data => api.get('/uniPagesConfig/', { data }),
+  postPagesConfig: (data): Promise<CMSPostResult> => api.post('/pagesConfig', { data }),
 
   // 修改页面配置
-  patchUniPagesConfig: (id, data) => api.patch(`/uniPagesConfig/${id}`, { data }),
+  patchPagesConfig: (id, data) => api.patch(`/pagesConfig/${id}`, { data }),
 
   // 删除页面配置
-  deleteUniPagesConfig: (id): Promise<CMSDeleteResult> => api.delete(`/uniPagesConfig/${id}`),
+  deletePagesConfig: (id): Promise<CMSDeleteResult> => api.delete(`/pagesConfig/${id}`),
+
+  // 新建页面组件配置
+  postPageComponentsConfig: data => api.post('/pageComponentsConfig', { data }),
+
+  // 修改页面组件配置
+  patchPageComponentsConfig: (id, data) => api.patch(`/pageComponentsConfig/${id}`, { data }),
+
+  // 删除页面组件配置
+  deletePageComponentsConfig: id => api.delete(`/pageComponentsConfig/${id}`),
 
   // 收藏页面
   postCollectionPage: id => api.patch(`/page/${id}`, { data: { status: 1 } }),

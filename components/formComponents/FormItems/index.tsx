@@ -67,11 +67,12 @@ const formTpl: TFormItemsDefaultType = [
 interface FormItemsProps {
   formList?: TFormItemsDefaultType;
   onChange?: any;
-  data?: any;
+  onDelete?: any;
+  defaultData?: any;
   edit?: Boolean;
 }
 function EditableFormItems(props: FormItemsProps) {
-  const { formList: list, data: formData = {}, onChange, edit = false } = props;
+  const { formList: list, defaultData, onChange, onDelete, edit = false } = props;
   const [formList, setFormList] = useState<TFormItemsDefaultType>(list || []);
   const [curItem, setCurItem] = useState<baseFormUnion>();
   const ref = useRef({
@@ -91,12 +92,14 @@ function EditableFormItems(props: FormItemsProps) {
   const handleDelItem = (item: baseFormUnion) => {
     let newData = formList.filter(v => v.id !== item.id);
     setFormList(newData);
-    onChange({
-      [formData.id]: formList.map(item => ({ [item.id]: item.value })),
-    });
+    onDelete && onDelete({ [item.id]: item.value });
   };
   useEffect(() => {
-    setFormList(list || []);
+    if (defaultData) {
+      setFormList(formList.map(item => ({ ...item, value: defaultData[item.id] })));
+    } else {
+      setFormList(list || []);
+    }
   }, [list]);
 
   const handleSaveItem = (data: baseFormUnion) => {
@@ -114,16 +117,7 @@ function EditableFormItems(props: FormItemsProps) {
     } else {
       setFormList(newData);
     }
-    if (edit) {
-      onChange([...newData, data]);
-    } else {
-      onChange({
-        [formData.id]: [
-          ...formList.map(item => ({ [item.id]: item.value })),
-          { [data.id]: data.value },
-        ],
-      });
-    }
+    onChange({ [data.id]: data.value });
   };
 
   const handleChange = data => {

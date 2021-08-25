@@ -3,20 +3,39 @@
     "id": "component",
     "title": "组件库",
     "icon": "icon-guanlizujian",
+    "modal": {
+      "title": "组件库名称",
+      "name": "组件前缀"
+    },
     "type": [
       {
-        "title": "列表",
-        "value": "scroll",
+        "title": "通用",
+        "value": "general",
         "icon": "icon-wuxuliebiao"
       },
       {
-        "title": "表单",
-        "value": "form",
+        "title": "布局",
+        "value": "layout",
         "icon": "icon-dingdan"
       },
       {
-        "title": "详情",
-        "value": "details",
+        "title": "导航",
+        "value": "navigation",
+        "icon": "icon-xiangqing2"
+      },
+      {
+        "title": "数据",
+        "value": "data",
+        "icon": "icon-xiangqing2"
+      },
+      {
+        "title": "表单",
+        "value": "fom",
+        "icon": "icon-xiangqing2"
+      },
+      {
+        "title": "反馈",
+        "value": "feedback",
         "icon": "icon-xiangqing2"
       },
       {
@@ -24,12 +43,22 @@
         "value": "other",
         "icon": "icon-biaoqiankuozhan_shoucang-203"
       }
+    ],
+    "children": [
+      {
+        "id": "component0",
+        "title": "组件配置"
+      }
     ]
   },
   {
     "id": "page",
     "title": "页面",
     "icon": "icon-shouye",
+    "modal": {
+      "title": "页面名称",
+      "name": "页面标识"
+    },
     "type": [
       {
         "title": "列表",
@@ -54,9 +83,11 @@
     ],
     "children": [
       {
+        "id": "page0",
         "title": "页面配置"
       },
       {
+        "id": "page1",
         "title": "组件配置"
       }
     ]
@@ -65,6 +96,10 @@
     "id": "app",
     "title": "应用",
     "icon": "icon-yingyong",
+    "modal": {
+      "title": "应用名称",
+      "name": "应用标识"
+    },
     "type": [
       {
         "title": "商城",
@@ -99,9 +134,11 @@
     ],
     "children": [
       {
+        "id": "app0",
         "title": "config配置"
       },
       {
+        "id": "app1",
         "title": "theme配置"
       }
     ]
@@ -112,24 +149,45 @@
     "icon": "icon-APPmoban",
     "type": [
       {
-        "title": "列表",
-        "value": "scroll",
+        "title": "通用",
+        "value": "general",
         "icon": "icon-wuxuliebiao"
       },
       {
-        "title": "表单",
-        "value": "form",
+        "title": "布局",
+        "value": "layout",
         "icon": "icon-dingdan"
       },
       {
-        "title": "详情",
-        "value": "details",
+        "title": "导航",
+        "value": "navigation",
+        "icon": "icon-xiangqing2"
+      },
+      {
+        "title": "数据",
+        "value": "data",
+        "icon": "icon-xiangqing2"
+      },
+      {
+        "title": "表单",
+        "value": "fom",
+        "icon": "icon-xiangqing2"
+      },
+      {
+        "title": "反馈",
+        "value": "feedback",
         "icon": "icon-xiangqing2"
       },
       {
         "title": "其他",
         "value": "other",
         "icon": "icon-biaoqiankuozhan_shoucang-203"
+      }
+    ],
+    "children": [
+      {
+        "id": "component0",
+        "title": "组件配置"
       }
     ]
   },
@@ -161,9 +219,11 @@
     ],
     "children": [
       {
+        "id": "page0",
         "title": "页面配置"
       },
       {
+        "id": "page1",
         "title": "组件配置"
       }
     ]
@@ -206,9 +266,11 @@
     ],
     "children": [
       {
+        "id": "app0",
         "title": "config配置"
       },
       {
+        "id": "app1",
         "title": "theme配置"
       }
     ]

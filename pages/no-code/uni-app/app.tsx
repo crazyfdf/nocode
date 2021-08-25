@@ -1,5 +1,5 @@
 import { Tabs, Collapse } from 'antd';
-import { useReducer, useRef, useState } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 import Icon from '@/components/Icon/Icon';
 import ListBox from '@/components/ListBox/ListBox';
 import TabsCard from '@/components/TabsCard/TabCard';
@@ -17,7 +17,7 @@ const {
   getTemplate,
   patchComponent,
   patchUniAppsConfig,
-  patchUniPagesConfig,
+  patchPagesConfig,
   postPage,
   postApp,
   deleteApp,
@@ -26,7 +26,7 @@ const {
   postComponents,
   postCollectionComponent,
   deleteCollectionComponent,
-  postComponentInput,
+  patchUniPageComponentsConfig,
   postRun,
   deleteCollectionPage,
   postCollectionPage,
@@ -61,34 +61,39 @@ function unisReducer(state, action) {
 }
 
 export default function noCodeApp({ uniInit, unisInit }) {
+  const [src, setSrc] = useState('http://localhost:3306/#');
   // 添加的模态框
   const uniModal = useRef({
     changeVal: v => {},
   });
-  const [src, setSrc] = useState('http://localhost:3306/#');
   const navigation = [
     { title: '添加', icon: 'icon-tianjia1', handler: () => uniModal.current.changeVal(true) },
     { title: '发布', icon: 'icon-fabu-', handler: 'user' },
     {
-      title: '预览',
+      title: '保存',
       icon: 'icon-yulan',
-      handler: async () => {
-        await postRun({ path: `${process.env.dirname}/uni-components/`, type: 'h5' });
-        // FIXME:无法知道项目什么时候在运行，先用setTimeout代替
-        setTimeout(() => {
-          setSrc('http://localhost:3306/#/');
-        }, 5000);
-      },
+      handler: async () => {},
     },
   ];
+  // useEffect(() => {
+  //   postRun({ path: `${process.env.dirname}/uni-components/`, type: 'h5' });
+  //   setSrc('http://localhost:3306/#/');
+  // }, []);
+
   const [currentLeft, setCurrentLeft] = useState('component'); // 当前左侧下标
+  const [currentRight, setCurrentRight] = useState('page0'); // 当前右侧下标
   const [uni, uniDispatch] = useReducer(uniReducer, uniInit); // 当前组件、页面、应用、组件模板、页面模板、应用模板
   const [unis, unisDispatch] = useReducer(unisReducer, unisInit); // 当前组件库、页面库、应用库、组件模板库、页面模板库、应用模板库
-  const ref = useRef(null);
 
   // 切换左侧下标
   const changeLeft = key => {
     setCurrentLeft(key);
+    changeRight(`${key}0`);
+  };
+
+  // 切换右侧下标
+  const changeRight = key => {
+    setCurrentRight(key);
   };
 
   // 添加
@@ -97,11 +102,12 @@ export default function noCodeApp({ uniInit, unisInit }) {
     switch (currentLeft) {
       case 'component':
         const _components = await postComponents({ components: values });
-        value = [..._components, ...unis.app];
+        value = [..._components, ...unis.component];
         break;
       case 'page':
         const page = await postPage({ page: values, app: uni.app });
-        value = uni.app.pageId ? [page, ...uni.app.pageId] : [page];
+        uni.app.pageId.unshift(page);
+        value = uni.app.pageId;
         break;
       case 'app':
         const app = await postApp(values);
@@ -115,6 +121,16 @@ export default function noCodeApp({ uniInit, unisInit }) {
 
   // 切换
   const changeCurrent = item => {
+    if (currentLeft === 'app') {
+      unisDispatch({
+        type: 'edit',
+        payload: { key: 'page', value: item.pageId },
+      });
+      uniDispatch({
+        type: 'edit',
+        payload: { key: 'page', value: item.pageId ? item.pageId[0] : {} },
+      });
+    }
     uniDispatch({ type: 'edit', payload: { key: currentLeft, value: item } });
   };
 
@@ -143,19 +159,20 @@ export default function noCodeApp({ uniInit, unisInit }) {
     console.log(data);
     switch (currentLeft) {
       case 'component':
-        await patchComponent({ component: uni.component, config: data });
-        uni.component.config = data;
+        const config = { ...uni.component.config, ...data };
+        await patchComponent({ component: uni.component, config });
+        uni.component.config = config;
         break;
       case 'page':
-        const style = { ...uni.page.uniPagesConfigId.style, ...data };
-        await patchUniPagesConfig({
-          id: uni.page.uniPagesConfigId._id,
+        const style = { ...uni.page.pagesConfigId.style, ...data };
+        await patchPagesConfig({
+          id: uni.page.pagesConfigId._id,
           file: uni.app.file,
           name: uni.page.name,
           type: uni.page.type,
           style,
         });
-        uni.page.uniPagesConfigId.style = style;
+        uni.page.pagesConfigId.style = style;
         break;
       case 'app':
         await patchUniAppsConfig({
@@ -204,17 +221,39 @@ export default function noCodeApp({ uniInit, unisInit }) {
   // 导入模板
   const input = async (item: any) => {
     switch (currentLeft) {
-      case '组件模板':
-        await postComponentInput({
+      case 'components':
+        await patchUniPageComponentsConfig({
           file: uni.app.file,
           path: uni.page.path,
+          pageId: uni.page.pageComponentsId._id,
           name: item.name,
+          title: item.title,
           config: item.config,
         });
         break;
-      case '页面模板':
+      case 'pages':
+        const _page = {
+          title: `${item.title}_copy`,
+          name: `${item.name}_copy`,
+          description: item.description,
+          type: item.type,
+          style: item.pagesConfigId.style,
+        };
+        const page = await postPage({ page: _page, app: uni.app });
+        uni.app.pageId.unshift(page);
+        unisDispatch({ type: 'edit', payload: { key: 'page', value: [page, ...uni.app.pageId] } });
         break;
-      case '应用模板':
+      case 'apps':
+        const app = await postApp({
+          title: `${item.title}_copy`,
+          name: `${item.name}_copy`,
+          description: item.description,
+          type: item.type,
+          file: item.file,
+          pageId: item.pageId,
+          uctuiConfig: item.uctuiConfigId.uctuiConfig,
+        });
+        unisDispatch({ type: 'edit', payload: { key: 'app', value: [app, ...unis.app] } });
         break;
     }
   };
@@ -248,47 +287,57 @@ export default function noCodeApp({ uniInit, unisInit }) {
         <div className='flex items-center flex-col'>
           <HandlerList navigation={navigation} />
           <div className='iframe'>
-            <iframe
+            {/* <iframe
+              src={src}
               title='uni-app'
               scrolling='auto'
               style={{ height: '100%', width: '100%', borderRadius: '30px' }}
-            />
+            /> */}
           </div>
         </div>
         <div style={{ width: '600px' }} className='shadow-xl px-4 py-5 overflow-auto'>
-          {currentLeft === 'component' && isNoEmpty(uni.component) && (
-            <FormItems edit={true} formList={uni.component.config} onChange={configSave} />
-          )}
-          {currentLeft === 'page' && isNoEmpty(uni.page) && (
-            <Tabs defaultActiveKey='页面配置'>
-              {moduleList[1].children!.map((item, index) => (
-                <TabPane key={item.title} tab={item.title}>
-                  {index === 0 && <FormItems formList={uniAppPage} onChange={configSave} />}
-                  {index === 1 && (
-                    <Collapse accordion>
-                      <Panel header='This is panel header 1' key='1' />
-                    </Collapse>
-                  )}
-                </TabPane>
-              ))}
-            </Tabs>
-          )}
-          {currentLeft === 'app' && (
-            <Tabs defaultActiveKey='config配置'>
-              {moduleList[2].children!.map((item, index) => (
-                <TabPane key={item.title} tab={item.title}>
-                  <FormItems formList={uniAppApp} onChange={configSave} />
-                </TabPane>
-              ))}
-            </Tabs>
+          {moduleList.map(
+            tabs =>
+              isNoEmpty(uni[currentLeft]) &&
+              currentLeft === tabs.id && (
+                <Tabs defaultActiveKey='component0' key={tabs.id} onChange={changeRight}>
+                  {tabs.children.map(item => (
+                    <TabPane key={item.id} tab={item.title}>
+                      {['component0', 'page0', 'app0', 'app1'].includes(currentRight) && (
+                        <FormItems
+                          edit={currentRight === 'component0'}
+                          formList={uniAppPage}
+                          onChange={configSave}
+                        />
+                      )}
+                      {currentRight === 'page1' && (
+                        <Collapse accordion>
+                          {Object.entries(uni.page.pageComponentsId.config).map(([key, value]) => (
+                            <Panel header={key} key={key}>
+                              <FormItems
+                                formList={
+                                  unis.component.find(
+                                    item => item.name === key.replace(/\d+/gi, ''),
+                                  )?.config
+                                }
+                                defaultData={value}
+                                onChange={configSave}
+                              />
+                            </Panel>
+                          ))}
+                        </Collapse>
+                      )}
+                    </TabPane>
+                  ))}
+                </Tabs>
+              ),
           )}
         </div>
       </div>
       <UniAppModal
         ref={uniModal}
         add={add}
-        type={moduleList[moduleList.findIndex(item => item.id === currentLeft)].type}
-        title={moduleList[moduleList.findIndex(item => item.id === currentLeft)].title}
+        config={moduleList.find(item => item.id === currentLeft)}
       />
     </>
   );
@@ -301,7 +350,7 @@ export async function getServerSideProps(context) {
   const app = apps[0] || [];
   const uniInit = {
     component: isNoEmpty(components) ? components[0] : {},
-    page: isNoEmpty(app.pageId) ? app.pageId[0] : {},
+    page: isNoEmpty(app && app.pageId) ? app.pageId[0] : {},
     app: app,
     components: isNoEmpty(templates[0]) ? templates[0][0] : {},
     pages: isNoEmpty(templates[1]) ? templates[1][0] : {},
@@ -309,7 +358,7 @@ export async function getServerSideProps(context) {
   };
   const unisInit = {
     component: components,
-    page: app.pageId ?? [],
+    page: isNoEmpty(app && app.pageId) ? app.pageId : [],
     app: apps,
     components: templates[0],
     pages: templates[1],

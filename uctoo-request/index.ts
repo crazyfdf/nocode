@@ -91,7 +91,7 @@ const api = {
       },
       (error: any) => {
         // 异常处理
-        console.log(error);
+        // console.log(error);
         pending = [];
         if (error.message === '取消重复请求') {
           return Promise.reject(error);

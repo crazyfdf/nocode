@@ -40,21 +40,26 @@ function rgba2Obj(rgba = 'rgba(255,255,255,1)') {
   });
   return rgbaObj;
 }
-// 将rgb颜色转成hex
-function colorRGB2Hex(color = 'rgba(255,255,255)') {
+// 将rgb或rgba颜色转成hex
+function colorRGBA2Hex(color = 'rgb(255,255,255)') {
   const rgb = color.split(',');
   const r = parseInt(rgb[0].split('(')[1], 10);
   const g = parseInt(rgb[1], 10);
-  const b = parseInt(rgb[2].split(')')[0], 10);
-  const hex = '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  const b = parseInt(rgb[2], 10);
+  const a = parseFloat(rgb[3]);
+  const hex = a
+    ? '#' +
+      ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1) +
+      Number(Math.round(a * 255)).toString(16)
+    : '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
   return hex;
 }
 // 将hex颜色转成rgba
-function hexToRgba(hex, opacity = 1) {
+function hexToRgba(hex, alpha = 1) {
   const red = parseInt('0x' + hex.slice(1, 3), 10);
   const green = parseInt('0x' + hex.slice(3, 5), 10);
   const blue = parseInt('0x' + hex.slice(5, 7), 10);
-  const rgba = `rgba(${red},${green},${blue},${opacity})`;
+  const rgba = `rgba(${red},${green},${blue},${alpha})`;
   return {
     red,
     green,
@@ -63,7 +68,7 @@ function hexToRgba(hex, opacity = 1) {
   };
 }
 
-export { uuid, rgba2Obj, colorRGB2Hex, hexToRgba };
+export { uuid, rgba2Obj, colorRGBA2Hex, hexToRgba };
 
 export const isDev = process.env.NODE_ENV === 'development';
 
@@ -126,7 +131,6 @@ export const useStateValue: useStateValueInterface = value => {
 export function unParams(params = '?a=1&b=2&c=3') {
   const obj = {};
   params &&
-    // eslint-disable-next-line no-useless-escape
     params.replace(/((\w*)=([\.a-z0-9A-Z]*)?)?/g, (m, a, b, c): any => {
       if (b || c) obj[b] = c;
     });

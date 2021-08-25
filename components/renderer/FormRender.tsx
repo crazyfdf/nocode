@@ -132,12 +132,7 @@ const FormEditor = (props: FormEditorProps) => {
             {item.type === 'FormItems' && (
               <div className='my-2'>
                 <div className='text-base text-black font-bold my-2'>{item.label}</div>
-                <FormItems
-                  edit={edit}
-                  formList={formListAdapter(item)}
-                  data={item}
-                  onChange={handleChange}
-                />
+                <FormItems edit={edit} formList={formListAdapter(item)} onChange={handleChange} />
               </div>
             )}
             {item.type === 'Color' && (
@@ -148,12 +143,7 @@ const FormEditor = (props: FormEditorProps) => {
             {item.type === 'Object' && item.children && (
               <div className='mt-2'>
                 <div className='text-base text-black font-bold'>{item.label}</div>
-                <FormItems
-                  edit={edit}
-                  formList={item.children}
-                  data={item}
-                  onChange={handleChange}
-                />
+                <FormItems edit={edit} formList={item.children} onChange={handleChange} />
               </div>
             )}
             {/* {item.type === 'MutiText' && (

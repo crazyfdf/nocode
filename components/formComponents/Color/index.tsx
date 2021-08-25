@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { SketchPicker, ColorResult } from 'react-color';
-import { rgba2Obj, colorRGB2Hex } from '@/utils/tool';
+import { rgba2Obj, colorRGBA2Hex } from '@/utils/tool';
 
 export type ColorConfigType = string;
 

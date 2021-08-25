@@ -1,5 +1,10 @@
 const { exec } = require('child_process');
-const { deletePage, deleteUniPagesConfig, patchApp } = require('@/CMSRequest/api');
+const {
+  deletePage,
+  deletePagesConfig,
+  deletePageComponentsConfig,
+  patchApp,
+} = require('@/CMSRequest/api');
 
 export default async function (req, res) {
   const { app, page } = req.body.data;
@@ -22,7 +27,11 @@ export default async function (req, res) {
   patchApp(app._id, { pageId });
 
   const response = (
-    await Promise.all([deletePage(page._id), deleteUniPagesConfig(page.uniPagesConfigId._id)])
+    await Promise.all([
+      deletePage(page._id),
+      deletePagesConfig(page.pagesConfigId._id),
+      deletePageComponentsConfig(page.pageComponentsId._id),
+    ])
   )[0];
 
   res.status(200).json(response);

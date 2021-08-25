@@ -1,4 +1,4 @@
-const { patchUniPagesConfig } = require('@/CMSRequest/api');
+const { patchPagesConfig } = require('@/CMSRequest/api');
 
 const fs = require('fs');
 
@@ -38,7 +38,7 @@ export default async (req, res) => {
       },
     );
   });
-  const pagesConfig = await patchUniPagesConfig(id, style);
+  const pagesConfig = await patchPagesConfig(id, style);
   console.log(pagesConfig);
   res.status(201).json(pagesConfig);
 };
