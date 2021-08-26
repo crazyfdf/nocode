@@ -2,9 +2,9 @@ import React, { memo, RefObject, useEffect } from 'react';
 import { Form, Select, InputNumber, Input, Switch, Radio } from 'antd';
 import { Store } from 'antd/lib/form/interface';
 import { formListAdapter } from '@/components/Renderer/FormRenderAdapter';
-import FormItems from '@/components/FormComponents/FormItems';
+import FormItems from '@/components/FormComponents/FormItems/FormItems';
 import { uuid } from '@/utils/tool';
-import Color from '@/components/FormComponents/Color';
+import Color from '@/components/FormComponents/Color/Color';
 // TODO:丰富组件类型
 // import Upload from '../../components/FormComponents/Upload';
 // import DataList from '../../components/FormComponents/DataList';

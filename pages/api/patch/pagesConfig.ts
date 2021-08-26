@@ -38,7 +38,7 @@ export default async (req, res) => {
       },
     );
   });
-  const pagesConfig = await patchPagesConfig(id, style);
+  const pagesConfig = await patchPagesConfig(id, { style });
   console.log(pagesConfig);
   res.status(201).json(pagesConfig);
 };

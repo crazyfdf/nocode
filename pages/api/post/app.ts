@@ -6,11 +6,14 @@ const uctuiConfig = require('@/public/app/uniAppApp.json');
 
 export default async (req, res) => {
   const { data } = req.body;
-
+  const _uctuiConfig = uctuiConfig.reduce(
+    (arr, item) => Object.assign(arr, { [item.id]: item.value }),
+    {},
+  );
   data._updateTime = new Date().getTime();
   data._createTime = new Date().getTime();
   const uctId = await postUniAppsConfig({
-    uctuiConfig: data.uctuiConfig ? data.uctuiConfig : uctuiConfig,
+    uctuiConfig: data.uctuiConfig ? data.uctuiConfig : _uctuiConfig,
     _updateTime: data._updateTime,
     _createTime: data._createTime,
   });
@@ -40,7 +43,7 @@ export default async (req, res) => {
     );
   } else {
     // 防止pageId为null的影响，创建一个页面
-    postPage({
+    await postPage({
       page: { title: '首页', name: 'index', description: '', type: 'index' },
       app: { _id: appId.id, file: data.file },
     });

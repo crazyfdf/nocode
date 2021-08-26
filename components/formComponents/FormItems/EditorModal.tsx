@@ -1,8 +1,9 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { Form, Select, Input, Modal, Button, InputNumber } from 'antd';
 import { baseFormOptionsType } from '@/types/types';
-import { uuid } from '@/utils/tool';
-import Color from '@/components/FormComponents/Color';
+import { useStateValue, uuid } from '@/utils/tool';
+import Color from '@/components/FormComponents/Color/Color';
+import { formTpl } from '@/components/FormComponents/FormItems/formTpl';
 
 const { Option } = Select;
 
@@ -12,9 +13,14 @@ const formItemLayout = {
 };
 
 const EditorModal = (props, ref) => {
-  const { item, onSave } = props;
+  const { item: data, onSave } = props;
+  const [item, setItem] = useStateValue(data);
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
+  const onChange = type => {
+    item.type = type;
+    setItem({ ...item });
+  };
 
   useImperativeHandle(ref, () => ({
     changeVal: newVal => {
@@ -36,7 +42,7 @@ const EditorModal = (props, ref) => {
   useEffect(() => {
     // 关联form前不能使用form下的方法，需要等到组件挂载完成
     item && form.resetFields();
-  }, [visible]);
+  }, [visible, item]);
 
   return (
     <>
@@ -44,11 +50,9 @@ const EditorModal = (props, ref) => {
         <Modal
           title='设置props属性'
           footer={
-            <div>
-              <Button type='primary' onClick={handleOk}>
-                确定
-              </Button>
-            </div>
+            <Button type='primary' onClick={handleOk}>
+              确定
+            </Button>
           }
           forceRender
           visible={visible}
@@ -63,9 +67,6 @@ const EditorModal = (props, ref) => {
             onFinish={onFinish}
             initialValues={item}
           >
-            <Form.Item label='类型' name='type' hidden>
-              <Input />
-            </Form.Item>
             <Form.Item
               label='字段名'
               name='id'
@@ -73,6 +74,15 @@ const EditorModal = (props, ref) => {
               rules={[{ required: true, message: '请输入props内的字段名!' }]}
             >
               <Input />
+            </Form.Item>
+            <Form.Item label='类型' name='type'>
+              <Select onChange={onChange}>
+                {formTpl.map(item1 => (
+                  <Option key={item1.type} value={item1.type}>
+                    {item1.label}
+                  </Option>
+                ))}
+              </Select>
             </Form.Item>
             {item.label && (
               <Form.Item label='字段名说明' name='label' tooltip='label'>

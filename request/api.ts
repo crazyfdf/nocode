@@ -37,7 +37,7 @@ module.exports = {
   deleteCollectionComponent: data => api.post('/delete/collectionComponent', { data }),
 
   // 导入组件
-  patchUniPageComponentsConfig: data => api.patch('/patch/pageComponentsConfig', { data }),
+  postComponentInput: data => api.patch('/patch/componentInput', { data }),
 
   // 新建页面
   postPage: data => api.post('/post/page', { data }),
@@ -56,6 +56,9 @@ module.exports = {
 
   // 修改页面配置
   patchPagesConfig: data => api.patch('/patch/pagesConfig', { data }),
+
+  // 修改页面组件配置
+  patchPageComponentConfig: data => api.patch('/patch/pageComponentConfig', { data }),
 
   // 导入页面
   postPageInput: data => api.post('/post/pageInput', { data }),

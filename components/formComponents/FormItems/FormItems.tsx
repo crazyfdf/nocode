@@ -3,67 +3,10 @@ import { uuid } from '@/utils/tool';
 import { MinusCircleFilled, EditFilled } from '@ant-design/icons';
 import { Button, Tooltip } from 'antd';
 import { useState, useRef, useEffect } from 'react';
-import BasePopoverForm from '@/components/FormComponents/FormItems/BasePopoverForm';
 import EditorModal from '@/components/FormComponents/FormItems/EditorModal';
 import BaseForm from '@/components/FormComponents/FormItems/BaseForm';
+import { formTpl } from '@/components/FormComponents/FormItems/formTpl';
 
-const formTpl: TFormItemsDefaultType = [
-  {
-    id: '',
-    type: 'Text',
-    label: 'string',
-    placeholder: 'string属性默认值',
-    value: '',
-  },
-  {
-    id: '',
-    type: 'Color',
-    label: 'color',
-    placeholder: 'color',
-    value: '',
-  },
-  {
-    id: '',
-    type: 'Number',
-    label: 'number',
-    placeholder: 'number属性默认值',
-    value: '',
-  },
-  {
-    id: '',
-    type: 'Switch',
-    label: 'boolean',
-    value: false,
-  },
-  {
-    id: '',
-    type: 'Radio',
-    label: 'type',
-    options: [], // {label:"",value:""}
-    value: '',
-  },
-  {
-    id: '',
-    type: 'Checkbox',
-    label: 'array',
-    options: [], // {label:"",value:""}
-    value: '',
-  },
-  {
-    id: '',
-    type: 'Date',
-    label: 'date',
-    placeholder: 'date属性默认值',
-    value: '',
-  },
-  {
-    id: '',
-    type: 'CodeData',
-    label: 'number',
-    placeholder: 'number属性默认值',
-    value: '',
-  },
-];
 interface FormItemsProps {
   formList?: TFormItemsDefaultType;
   onChange?: any;
@@ -92,7 +35,7 @@ function EditableFormItems(props: FormItemsProps) {
   const handleDelItem = (item: baseFormUnion) => {
     let newData = formList.filter(v => v.id !== item.id);
     setFormList(newData);
-    onDelete && onDelete({ [item.id]: item.value });
+    onDelete && onDelete(item);
   };
   useEffect(() => {
     if (defaultData) {
@@ -117,7 +60,7 @@ function EditableFormItems(props: FormItemsProps) {
     } else {
       setFormList(newData);
     }
-    onChange({ [data.id]: data.value });
+    onChange(data);
   };
 
   const handleChange = data => {
@@ -126,11 +69,7 @@ function EditableFormItems(props: FormItemsProps) {
         formList[index].value = data.value;
       }
     });
-    if (edit) {
-      onChange(formList);
-    } else {
-      onChange && onChange({ [data.id]: data.value });
-    }
+    onChange(data);
   };
 
   return (
@@ -144,11 +83,8 @@ function EditableFormItems(props: FormItemsProps) {
             </Tooltip>
             <div className='flex justify-between items-center mt-2 mb-4'>
               {edit && <MinusCircleFilled onClick={() => handleDelItem(item)} />}
-              <div className='flex mx-4 my-2 items-center w-full'>
-                <FormItem
-                  {...item}
-                  onChange={(id, e) => handleChange({ ...item, value: e.target.value })}
-                />
+              <div className='flex px-4 my-2 items-center w-full'>
+                <FormItem {...item} onChange={value => handleChange({ ...item, value })} />
               </div>
               {edit && <EditFilled onClick={() => handleEditItem(item)} />}
             </div>
@@ -158,20 +94,18 @@ function EditableFormItems(props: FormItemsProps) {
       <Tooltip
         placement='leftBottom'
         title={
-          <>
-            {formTpl.map(item => {
-              let FormItem = BasePopoverForm[item.type];
-              return (
-                <div
-                  key={uuid(6, 10)}
-                  className='flex flex-col mb-1'
-                  onClick={() => handleAddItem(item)}
-                >
-                  <FormItem {...item} onChange={onChange} />
-                </div>
-              );
-            })}
-          </>
+          <div className='flex flex-col'>
+            {formTpl.map(item => (
+              <Button
+                className='mb-1'
+                key={uuid(6, 10)}
+                onClick={() => handleAddItem(item)}
+                style={{ color: '#fff', backgroundColor: '#4a4a4a' }}
+              >
+                {item.label}
+              </Button>
+            ))}
+          </div>
         }
       >
         {edit && <Button style={{ width: '100%' }}>添加</Button>}

@@ -1,9 +1,9 @@
 [
   {
     "id": "height",
+    "type": "Text",
     "label": "导航栏高度，单位px，非rpx",
-    "value": "",
-    "type": "Text"
+    "value": "30"
   },
   {
     "id": "titleWidth",
@@ -15,7 +15,7 @@
     "id": "titleColor",
     "label": "标题的颜色",
     "value": "#606266",
-    "type": "Text"
+    "type": "Color"
   },
   {
     "id": "titleBold",
@@ -25,15 +25,15 @@
   },
   {
     "id": "titleSize",
+    "type": "Number",
     "label": "标题的字体大小",
-    "value": 32,
-    "type": "Text"
+    "value": 32
   },
   {
     "id": "background",
+    "type": "Color",
     "label": "对象形式，因为用户可能定义一个纯色，或者线性渐变的颜色",
-    "value": "#ffffff",
-    "type": "Text"
+    "value": "#ffffff"
   },
   {
     "id": "isFixed",

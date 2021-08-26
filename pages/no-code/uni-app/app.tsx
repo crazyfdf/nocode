@@ -1,10 +1,11 @@
 import { Tabs, Collapse } from 'antd';
 import { useEffect, useReducer, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
 import Icon from '@/components/Icon/Icon';
 import ListBox from '@/components/ListBox/ListBox';
 import TabsCard from '@/components/TabsCard/TabCard';
 import { isNoEmpty, debounce } from '@/utils/tool';
-import FormItems from '@/components/FormComponents/FormItems';
+import FormItems from '@/components/FormComponents/FormItems/FormItems';
 import UniAppModal from '@/components/Modal/UniAppModal';
 import HandlerList from '@/components/HandlerList/HandlerList';
 
@@ -26,7 +27,8 @@ const {
   postComponents,
   postCollectionComponent,
   deleteCollectionComponent,
-  patchUniPageComponentsConfig,
+  postComponentInput,
+  patchPageComponentConfig,
   postRun,
   deleteCollectionPage,
   postCollectionPage,
@@ -44,7 +46,7 @@ function uniReducer(state, action) {
     case 'remove':
       return { ...state, [action.payload.key]: {} };
     default:
-      throw new Error('uni出错');
+      return action.payload.value;
   }
 }
 
@@ -56,7 +58,7 @@ function unisReducer(state, action) {
       state[action.payload.key].splice(action.payload.value, 1);
       return { ...state };
     default:
-      throw new Error('unis出错');
+      return action.payload.value;
   }
 }
 
@@ -75,6 +77,7 @@ export default function noCodeApp({ uniInit, unisInit }) {
       handler: async () => {},
     },
   ];
+
   // useEffect(() => {
   //   postRun({ path: `${process.env.dirname}/uni-components/`, type: 'h5' });
   //   setSrc('http://localhost:3306/#/');
@@ -84,7 +87,11 @@ export default function noCodeApp({ uniInit, unisInit }) {
   const [currentRight, setCurrentRight] = useState('page0'); // 当前右侧下标
   const [uni, uniDispatch] = useReducer(uniReducer, uniInit); // 当前组件、页面、应用、组件模板、页面模板、应用模板
   const [unis, unisDispatch] = useReducer(unisReducer, unisInit); // 当前组件库、页面库、应用库、组件模板库、页面模板库、应用模板库
-
+  const router = useRouter();
+  useEffect(() => {
+    uniDispatch({ payload: { value: uniInit } });
+    unisDispatch({ payload: { value: unisInit } });
+  }, [uniInit]);
   // 切换左侧下标
   const changeLeft = key => {
     setCurrentLeft(key);
@@ -94,6 +101,29 @@ export default function noCodeApp({ uniInit, unisInit }) {
   // 切换右侧下标
   const changeRight = key => {
     setCurrentRight(key);
+  };
+
+  const dataSource = (key): { list: any; data: any } => {
+    switch (key) {
+      case 'component0':
+        return { list: uni.component.config, data: null };
+      case 'page0':
+        return { list: uniAppPage, data: uni.page.pagesConfigId.style };
+      case 'page1':
+        return { list: uniAppPage, data: null };
+      case 'app0':
+        return { list: uniAppApp, data: uni.app?.uctuiConfigId?.uctuiConfig };
+      case 'components0':
+        return { list: uni.component.config, data: null };
+      case 'pages0':
+        return { list: uniAppPage, data: uni.pages.pagesConfigId.style };
+      case 'pages1':
+        return { list: uniAppPage, data: null };
+      case 'apps0':
+        return { list: uniAppApp, data: uni.apps.uctuiConfigId.uctuiConfig };
+      default:
+        return { list: null, data: null };
+    }
   };
 
   // 添加
@@ -121,17 +151,20 @@ export default function noCodeApp({ uniInit, unisInit }) {
 
   // 切换
   const changeCurrent = item => {
+    console.log(item);
     if (currentLeft === 'app') {
-      unisDispatch({
-        type: 'edit',
-        payload: { key: 'page', value: item.pageId },
-      });
-      uniDispatch({
-        type: 'edit',
-        payload: { key: 'page', value: item.pageId ? item.pageId[0] : {} },
-      });
+      router.push(`?id=${item._id}`);
+      // unisDispatch({
+      //   type: 'edit',
+      //   payload: { key: 'page', value: item.pageId },
+      // });
+      // uniDispatch({
+      //   type: 'edit',
+      //   payload: { key: 'page', value: item.pageId ? item.pageId[0] : {} },
+      // });
+    } else {
+      uniDispatch({ type: 'edit', payload: { key: currentLeft, value: item } });
     }
-    uniDispatch({ type: 'edit', payload: { key: currentLeft, value: item } });
   };
 
   // 删除
@@ -155,33 +188,60 @@ export default function noCodeApp({ uniInit, unisInit }) {
   };
 
   // 修改配置
-  const configSave = async (data: any) => {
+  const configSave = async (item: any, key?: string) => {
+    const data = ['component', 'components'].includes(currentLeft)
+      ? item
+      : { [item.id]: item.value };
     console.log(data);
-    switch (currentLeft) {
-      case 'component':
-        const config = { ...uni.component.config, ...data };
-        await patchComponent({ component: uni.component, config });
-        uni.component.config = config;
-        break;
-      case 'page':
-        const style = { ...uni.page.pagesConfigId.style, ...data };
-        await patchPagesConfig({
-          id: uni.page.pagesConfigId._id,
-          file: uni.app.file,
-          name: uni.page.name,
-          type: uni.page.type,
-          style,
+    switch (true) {
+      case ['component', 'components'].includes(currentLeft):
+        const config = uni[currentLeft].config.map(v => {
+          if (v.id === data.id) {
+            return data;
+          } else {
+            return v;
+          }
         });
-        uni.page.pagesConfigId.style = style;
+        await patchComponent({ component: uni[currentLeft], config });
+        uni[currentLeft].config = config;
         break;
-      case 'app':
+      case ['page', 'pages'].includes(currentLeft):
+        if (currentRight === 'page0') {
+          const style = { ...uni[currentLeft].pagesConfigId.style, ...data };
+          await patchPagesConfig({
+            id: uni[currentLeft].pagesConfigId._id,
+            file: uni.app.file,
+            name: uni[currentLeft].name,
+            type: uni[currentLeft].type,
+            style,
+          });
+          uni[currentLeft].pagesConfigId.style = style;
+        }
+        if (currentRight === 'page1') {
+          uni[currentLeft].pageComponentsId.config[key!][Object.keys(data)[0]] =
+            data[Object.keys(data)[0]];
+          patchPageComponentConfig({
+            file: uni.app.file,
+            path: uni[currentLeft].path,
+            pageId: uni[currentLeft].pageComponentsId._id,
+            config: uni[currentLeft].pageComponentsId.config,
+          });
+        }
+        break;
+      case ['app', 'apps'].includes(currentLeft):
+        const uctuiConfig = { ...uni[currentLeft].uctuiConfigId.uctuiConfig, ...data };
         await patchUniAppsConfig({
-          id: uni.app.uctuiConfigId._id,
-          file: uni.app.file,
-          uctuiConfig: { ...uni.app.uctuiConfigId.uctuiConfig, ...data },
+          id: uni[currentLeft].uctuiConfigId._id,
+          file: uni[currentLeft].file,
+          uctuiConfig,
         });
+        uni[currentLeft].uctuiConfigId.uctuiConfig = uctuiConfig;
         break;
     }
+  };
+  // 删除配置
+  const configRemove = async (item: any) => {
+    console.log(item);
   };
 
   // (取消)收藏
@@ -222,7 +282,7 @@ export default function noCodeApp({ uniInit, unisInit }) {
   const input = async (item: any) => {
     switch (currentLeft) {
       case 'components':
-        await patchUniPageComponentsConfig({
+        await postComponentInput({
           file: uni.app.file,
           path: uni.page.path,
           pageId: uni.page.pageComponentsId._id,
@@ -274,9 +334,11 @@ export default function noCodeApp({ uniInit, unisInit }) {
               }
             >
               <ListBox
+                isTemplate={item.id.endsWith('s')}
                 dataSource={unis[item.id]}
                 collection={collection}
                 changeCurrent={changeCurrent}
+                defaultItem={currentLeft === 'app' ? uni.app : unis[item.id][0]}
                 config={item}
                 remove={remove}
                 input={input}
@@ -298,22 +360,35 @@ export default function noCodeApp({ uniInit, unisInit }) {
         <div style={{ width: '600px' }} className='shadow-xl px-4 py-5 overflow-auto'>
           {moduleList.map(
             tabs =>
-              isNoEmpty(uni[currentLeft]) &&
-              currentLeft === tabs.id && (
+              currentLeft === tabs.id &&
+              isNoEmpty(uni[currentLeft]) && (
                 <Tabs defaultActiveKey='component0' key={tabs.id} onChange={changeRight}>
                   {tabs.children.map(item => (
                     <TabPane key={item.id} tab={item.title}>
-                      {['component0', 'page0', 'app0', 'app1'].includes(currentRight) && (
+                      {currentRight !== 'page1' && (
                         <FormItems
-                          edit={currentRight === 'component0'}
-                          formList={uniAppPage}
+                          defaultData={dataSource(item.id).data}
+                          edit={currentLeft === 'component'}
+                          formList={dataSource(item.id).list}
                           onChange={configSave}
                         />
                       )}
                       {currentRight === 'page1' && (
                         <Collapse accordion>
                           {Object.entries(uni.page.pageComponentsId.config).map(([key, value]) => (
-                            <Panel header={key} key={key}>
+                            <Panel
+                              header={key}
+                              key={key}
+                              extra={
+                                <Icon
+                                  type='icon-shibai'
+                                  onClick={e => {
+                                    e.stopPropagation();
+                                    configRemove({ [key]: value });
+                                  }}
+                                />
+                              }
+                            >
                               <FormItems
                                 formList={
                                   unis.component.find(
@@ -321,7 +396,7 @@ export default function noCodeApp({ uniInit, unisInit }) {
                                   )?.config
                                 }
                                 defaultData={value}
-                                onChange={configSave}
+                                onChange={data => configSave(data, key)}
                               />
                             </Panel>
                           ))}
@@ -347,7 +422,8 @@ export async function getServerSideProps(context) {
   const { data: components } = await getComponent();
   const { data: apps } = await getApp({});
   const { data: templates } = await getTemplate({});
-  const app = apps[0] || [];
+  const app = context.query.id ? (await getApp({ id: context.query.id })).data : apps[0];
+  console.log(app);
   const uniInit = {
     component: isNoEmpty(components) ? components[0] : {},
     page: isNoEmpty(app && app.pageId) ? app.pageId[0] : {},
@@ -364,5 +440,6 @@ export async function getServerSideProps(context) {
     pages: templates[1],
     apps: templates[2],
   };
+
   return { props: { uniInit, unisInit } };
 }

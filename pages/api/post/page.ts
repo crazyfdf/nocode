@@ -54,7 +54,7 @@ export default async (req, res) => {
   });
 
   const pageId = app.pageId ? [pageRes.id, ...app.pageId.map(item => item._id)] : [pageRes.id];
-  patchApp(app._id, { pageId });
+  await patchApp(app._id, { pageId });
   res.status(201).json({
     ...page,
     _id: pageRes.id,

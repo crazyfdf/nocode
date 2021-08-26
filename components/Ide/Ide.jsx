@@ -10,17 +10,20 @@ import 'codemirror/addon/hint/show-hint.css';
 import 'codemirror/theme/solarized.css';
 import 'codemirror/addon/lint/lint.css'; // 代码错误提示
 
-export default function Ide(props) {
+export default function Ide (props) {
   let { onChange, defaultValue } = props;
-  try {
+  try
+  {
     defaultValue = typeof defaultValue === 'string' ? defaultValue : JSON.stringify(defaultValue);
-  } catch (err) {
+  } catch (err)
+  {
     console.log(err);
   }
   const [value, setValue] = useState(defaultValue);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    if (typeof navigator !== 'undefined') {
+    if (typeof navigator !== 'undefined')
+    {
       // require('codemirror/mode/css/css');
 
       // 代码高亮
@@ -53,9 +56,11 @@ export default function Ide(props) {
         commentEnd: '*/',
         // FIXME semicolons inside of for
         newlineAfterToken: function (type, content, textAfter, state) {
-          if (this.jsonMode) {
+          if (this.jsonMode)
+          {
             return /^[\[,{]$/.test(content) || /^}/.test(textAfter);
-          } else {
+          } else
+          {
             if (content === ';' && state.lexical && state.lexical.type === ')') return false;
             return /^[;{}]$/.test(content) && !/^;/.test(textAfter);
           }
@@ -75,20 +80,24 @@ export default function Ide(props) {
         const cm = this;
         const curMode = CodeMirror.innerMode(cm.getMode(), cm.getTokenAt(from).state).mode;
         cm.operation(function () {
-          if (isComment) {
+          if (isComment)
+          {
             // Comment range
             cm.replaceRange(curMode.commentEnd, to);
             cm.replaceRange(curMode.commentStart, from);
-            if (from.line === to.line && from.ch === to.ch) {
+            if (from.line === to.line && from.ch === to.ch)
+            {
               // An empty comment inserted - put cursor inside
               cm.setCursor(from.line, from.ch + curMode.commentStart.length);
             }
-          } else {
+          } else
+          {
             // Uncomment range
             let selText = cm.getRange(from, to);
             const startIndex = selText.indexOf(curMode.commentStart);
             const endIndex = selText.lastIndexOf(curMode.commentEnd);
-            if (startIndex > -1 && endIndex > -1 && endIndex > startIndex) {
+            if (startIndex > -1 && endIndex > -1 && endIndex > startIndex)
+            {
               // Take string till comment start
               selText =
                 selText.substr(0, startIndex) +
@@ -106,7 +115,8 @@ export default function Ide(props) {
       CodeMirror.defineExtension('autoIndentRange', function (from, to) {
         const cmInstance = this;
         this.operation(function () {
-          for (let i = from.line; i <= to.line; i++) {
+          for (let i = from.line; i <= to.line; i++)
+          {
             cmInstance.indentLine(i, 'smart');
           }
         });
@@ -123,20 +133,23 @@ export default function Ide(props) {
         let out = '';
         let lines = 0;
         let atSol = from.ch === 0;
-        function newline() {
+        function newline () {
           out += '\n';
           atSol = true;
           ++lines;
         }
 
-        for (let i = 0; i < text.length; ++i) {
+        for (let i = 0; i < text.length; ++i)
+        {
           const stream = new CodeMirror.StringStream(text[i], tabSize);
-          while (!stream.eol()) {
+          while (!stream.eol())
+          {
             const inner = CodeMirror.innerMode(outer, state);
             const style = outer.token(stream, state);
             const cur = stream.current();
             stream.start = stream.pos;
-            if (!atSol || /\S/.test(cur)) {
+            if (!atSol || /\S/.test(cur))
+            {
               out += cur;
               atSol = false;
             }
@@ -149,7 +162,8 @@ export default function Ide(props) {
                 stream.string.slice(stream.pos) || text[i + 1] || '',
                 inner.state,
               )
-            ) {
+            )
+            {
               newline();
             }
           }
@@ -159,7 +173,8 @@ export default function Ide(props) {
 
         cm.operation(function () {
           cm.replaceRange(out, from, to);
-          for (let cur = from.line + 1, end = from.line + lines; cur <= end; ++cur) {
+          for (let cur = from.line + 1, end = from.line + lines; cur <= end; ++cur)
+          {
             cm.indentLine(cur, 'smart');
           }
           cm.setSelection(from, cm.getCursor(false));
@@ -180,7 +195,7 @@ export default function Ide(props) {
   const options = {
     mode: { name: 'javascript', json: true },
     theme: 'material',
-    autofocus: true, // 自动获取焦点
+    autofocus: false, // 自动获取焦点
     styleActiveLine: true, // 光标代码高亮
     lineNumbers: true, // 显示行号
     smartIndent: true, // 自动缩进
@@ -215,7 +230,7 @@ export default function Ide(props) {
       onBeforeChange={(editor, data, value) => {
         setValue(value);
       }}
-      onChange={(editor, data, value) => {}}
+      onChange={(editor, data, value) => { }}
     />
   ) : null;
 }

@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Icon from '@/components/Icon/Icon';
 import ListQueueAnim from '@/components/Animation/ListQueueAnim';
 import { Tooltip, Button, List, Select, Input } from 'antd';
@@ -26,20 +26,33 @@ interface ConfigInterFace {
 
 interface PropsInterFace {
   dataSource: DataInterFace[];
-  changeCurrent: (index: number) => void;
+  changeCurrent: (item: DataInterFace) => void;
   input?: (values: any) => void;
+  isTemplate?: boolean;
   remove: (item: any, index: number) => void;
   collection: (item: any, index: number) => void;
   config: ConfigInterFace;
+  defaultItem?: DataInterFace;
 }
 
 function ListBox(props: PropsInterFace) {
-  const { dataSource: dataInit = [], changeCurrent, config, input, remove, collection } = props;
-  const [current, setCurrent] = useState(0);
-  const [dataSource, setDataSource] = useStateValue(dataInit);
+  const {
+    dataSource: dataInit = [],
+    changeCurrent,
+    defaultItem = dataInit[0],
+    config,
+    isTemplate = false,
+    input,
+    remove,
+    collection,
+  } = props;
+  const [current, setCurrent] = useState(defaultItem);
+  const [dataSource, setDataSource] = useState(dataInit);
   const [oldData, setOldData] = useState(dataInit);
-  const [page, setPage] = useState(1);
 
+  useEffect(() => {
+    setDataSource(dataInit);
+  }, [dataInit]);
   // 添加
   const onInput = (item, e) => {
     e.stopPropagation();
@@ -66,8 +79,8 @@ function ListBox(props: PropsInterFace) {
   };
 
   // 切换当前
-  const _changeCurrent = (item, index) => {
-    setCurrent((page - 1) * 5 + index);
+  const _changeCurrent = item => {
+    setCurrent(item);
     changeCurrent && changeCurrent(item);
   };
   const typeIcon = type => {
@@ -91,7 +104,6 @@ function ListBox(props: PropsInterFace) {
       grid={{ gutter: 10, column: 1 }}
       dataSource={dataSource}
       pagination={{
-        onChange: page => setPage(page),
         pageSize: 5,
       }}
       header={
@@ -114,10 +126,10 @@ function ListBox(props: PropsInterFace) {
       renderItem={(item, index) => (
         <List.Item
           key={item.name}
-          onClick={() => _changeCurrent(item, index)}
+          onClick={() => _changeCurrent(item)}
           className='rounded'
           style={
-            current === (page - 1) * 5 + index
+            current.name === item.name
               ? { backgroundImage: 'linear-gradient(to left, #ff6e7f, #bfe9ff)', padding: '12px' }
               : { padding: '12px' }
           }
@@ -131,24 +143,35 @@ function ListBox(props: PropsInterFace) {
                   <Tooltip
                     placement='rightBottom'
                     title={
-                      <>
-                        <Button onClick={e => onInput(item, e)}>
-                          <Icon style={{ fontSize: '16px' }} type='icon-daoru' />
-                          导入
-                        </Button>
-                        <Button onClick={e => onCollection(item, index, e)}>
+                      <div className='flex flex-col'>
+                        <Button
+                          onClick={e => onCollection(item, index, e)}
+                          style={{ color: '#fff', backgroundColor: '#4a4a4a' }}
+                        >
                           <Icon
                             style={{ fontSize: '16px' }}
                             type={item.status ? 'icon-shoucang1' : 'icon-shoucang'}
                           />
                           {item.status ? '取消' : '收藏'}
                         </Button>
-
-                        <Button onClick={e => onRemove(item, index, e)}>
-                          <Icon style={{ fontSize: '16px' }} type='icon-lajitong1' />
-                          删除
-                        </Button>
-                      </>
+                        {isTemplate ? (
+                          <Button
+                            onClick={e => onInput(item, e)}
+                            style={{ color: '#fff', backgroundColor: '#4a4a4a' }}
+                          >
+                            <Icon style={{ fontSize: '16px' }} type='icon-daoru' />
+                            导入
+                          </Button>
+                        ) : (
+                          <Button
+                            onClick={e => onRemove(item, index, e)}
+                            style={{ color: '#fff', backgroundColor: '#4a4a4a' }}
+                          >
+                            <Icon style={{ fontSize: '16px' }} type='icon-lajitong1' />
+                            删除
+                          </Button>
+                        )}
+                      </div>
                     }
                   >
                     <Icon type='icon-more' style={{ fontSize: '22px' }} />

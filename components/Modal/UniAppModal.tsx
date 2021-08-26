@@ -1,6 +1,6 @@
 import { Select, Modal, Form, Input, Button } from 'antd';
 import { useState, useImperativeHandle, forwardRef } from 'react';
-import FilePath from '@/components/FormComponents/FilePath';
+import FilePath from '@/components/FormComponents/FilePath/FilePath';
 import Icon from '@/components/Icon/Icon';
 
 const { Option } = Select;

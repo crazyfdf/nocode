@@ -186,7 +186,7 @@
     ],
     "children": [
       {
-        "id": "component0",
+        "id": "components0",
         "title": "组件配置"
       }
     ]
@@ -219,11 +219,11 @@
     ],
     "children": [
       {
-        "id": "page0",
+        "id": "pages0",
         "title": "页面配置"
       },
       {
-        "id": "page1",
+        "id": "pages1",
         "title": "组件配置"
       }
     ]
@@ -266,11 +266,11 @@
     ],
     "children": [
       {
-        "id": "app0",
+        "id": "apps0",
         "title": "config配置"
       },
       {
-        "id": "app1",
+        "id": "apps1",
         "title": "theme配置"
       }
     ]
