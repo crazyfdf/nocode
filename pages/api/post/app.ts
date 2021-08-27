@@ -24,6 +24,7 @@ export default async (req, res) => {
   data.file = data.file ? data.file : 'D://';
   const commend = `cd /D ${data.file} && uct create ${data.name}`;
   execSync(commend);
+  execSync(`cd /D ${data.file}/${data.name} && npm i`);
   // 创建完项目后将地址改成项目目录
   data.file = `${data.file}/${data.name}`;
   data.status = 0;

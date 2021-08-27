@@ -2,7 +2,50 @@
   {
     "id": "tabs",
     "label": "每个子列表的配置项，当tabs.length>1时显示列表栏",
-    "value": "[]",
+    "value": [
+      {
+        "name": "标题0",
+        "url": "",
+        "api": "",
+        "more": false,
+        "list": []
+      },
+      {
+        "name": "标题1",
+        "url": "",
+        "api": "",
+        "more": false,
+        "list": []
+      },
+      {
+        "name": "标题2",
+        "url": "",
+        "api": "",
+        "more": false,
+        "list": []
+      },
+      {
+        "name": "标题3",
+        "url": "",
+        "api": "",
+        "more": false,
+        "list": []
+      },
+      {
+        "name": "标题4",
+        "url": "",
+        "api": "",
+        "more": false,
+        "list": []
+      },
+      {
+        "name": "标题5",
+        "url": "",
+        "api": "",
+        "more": false,
+        "list": []
+      }
+    ],
     "type": "CodeData"
   },
   {

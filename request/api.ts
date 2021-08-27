@@ -37,7 +37,7 @@ module.exports = {
   deleteCollectionComponent: data => api.post('/delete/collectionComponent', { data }),
 
   // 导入组件
-  postComponentInput: data => api.patch('/patch/componentInput', { data }),
+  postComponentInput: data => api.post('/post/componentInput', { data }),
 
   // 新建页面
   postPage: data => api.post('/post/page', { data }),
@@ -86,6 +86,9 @@ module.exports = {
 
   // 启动app
   postRun: data => api.post('/post/run', { data }),
+
+  // 打开app
+  postCode: data => api.post('/post/code', { data }),
 
   // 获取模板
   getTemplate: data => api.post('/get/template', { data }),

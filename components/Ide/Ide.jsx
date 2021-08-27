@@ -216,7 +216,7 @@ export default function Ide (props) {
         editor.redo();
       }, // Redo
       'Ctrl-S': function (editor) {
-        onChange && onChange(value);
+        onChange && onChange(value && JSON.parse(value));
         autoFormatSelection(editor);
       },
     },

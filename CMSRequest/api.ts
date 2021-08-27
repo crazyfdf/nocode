@@ -30,7 +30,13 @@ module.exports = {
   postPage: (data): Promise<CMSPostResult> => api.post('/page', { data }),
 
   // 获取页面
-  getPage: data => api.get('/page', { data }),
+  getPage: data => {
+    if (data.id) {
+      return api.get(`/page/${data.id}`);
+    } else {
+      return api.get('/page', { data });
+    }
+  },
 
   // 删除页面
   deletePage: (id): Promise<CMSDeleteResult> => api.delete(`/page/${id}`),

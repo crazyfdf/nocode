@@ -55,7 +55,7 @@ const BaseForm: TBaseForm = {
       <Input
         type='number'
         placeholder={placeholder}
-        onChange={e => onChange(e.target.value)}
+        onChange={e => onChange(Number(e.target.value))}
         defaultValue={value}
       />
     );

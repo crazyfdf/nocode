@@ -47,12 +47,9 @@ function ListBox(props: PropsInterFace) {
     collection,
   } = props;
   const [current, setCurrent] = useState(defaultItem);
-  const [dataSource, setDataSource] = useState(dataInit);
+  const [dataSource, setDataSource] = useStateValue(dataInit);
   const [oldData, setOldData] = useState(dataInit);
 
-  useEffect(() => {
-    setDataSource(dataInit);
-  }, [dataInit]);
   // 添加
   const onInput = (item, e) => {
     e.stopPropagation();
@@ -129,7 +126,7 @@ function ListBox(props: PropsInterFace) {
           onClick={() => _changeCurrent(item)}
           className='rounded'
           style={
-            current.name === item.name
+            current?._id === item._id
               ? { backgroundImage: 'linear-gradient(to left, #ff6e7f, #bfe9ff)', padding: '12px' }
               : { padding: '12px' }
           }
