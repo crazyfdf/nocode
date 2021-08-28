@@ -1,6 +1,6 @@
 // // declaration.d.ts
 // import axios from 'axios';
-// // 为uctoo-request重新配置了axios的类型
+// // 为uct-request重新配置了axios的类型
 // declare module 'axios' {
 //   export interface AxiosInstance {
 //     <T = any>(config: AxiosRequestConfig): Promise<T>;

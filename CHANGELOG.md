@@ -18,7 +18,7 @@ All notable changes to this project will be documented in this file. See [standa
 - **使用 usereducer 重构 usestate:** 使用 useReducer 重构 useState ([bad99c9](https://github.com/crazyfdf/nocode/commit/bad99c994f7da967385e6d1cc5996f24143fcd7f))
 - **添加脚手架与添加组件库功能:** 添加脚手架与添加组件库功能 ([7c39817](https://github.com/crazyfdf/nocode/commit/7c3981749c7fa0b45cc3d2e8e2005feebf6ee9aa))
 - **添加删除功能:** 添加删除功能 ([c955999](https://github.com/crazyfdf/nocode/commit/c955999c336b094908962a569d43c54ecc48d7a2))
-- **修改 uctoo-request 兼容 get 传递 data 的错误:** 修改 uctoo-request 兼容 get 传递 data 的错误 ([800b481](https://github.com/crazyfdf/nocode/commit/800b481872e9e1c92a7518a101ea66290082f74b))
+- **修改 uct-request 兼容 get 传递 data 的错误:** 修改 uct-request 兼容 get 传递 data 的错误 ([800b481](https://github.com/crazyfdf/nocode/commit/800b481872e9e1c92a7518a101ea66290082f74b))
 - **选择文件目录:** 选择文件目录 ([98ca35a](https://github.com/crazyfdf/nocode/commit/98ca35ac4299b105707224e2e0b8961a8271afb1))
 - **展示组件:** 展示组件 ([a498076](https://github.com/crazyfdf/nocode/commit/a498076195479fa1da8aead192c82c1178940f46))
 - **支持创建 uctconfig 配置:** 支持创建 uctConfig 配置 ([0a2a6a4](https://github.com/crazyfdf/nocode/commit/0a2a6a4b4d03439a24e67cb5d39219f552c7fe91))
