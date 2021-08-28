@@ -1,4 +1,4 @@
-import api from 'uctoo-request';
+import api from '@/packages/uctoo-request';
 
 const request = api.create({
   baseURL: `${process.env.baseURL}/api`,

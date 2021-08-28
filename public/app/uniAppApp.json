@@ -57,13 +57,13 @@
   {
     "id": "store",
     "value": { "$storeKey": [] },
-    "children": [{ "id": "$storeKey", "type": "Text", "value": [], "label": "全局变量" }],
+    "children": [{ "id": "$storeKey", "type": "CodeData", "value": [], "label": "全局变量" }],
     "type": "CodeData",
     "label": "全局管理"
   },
   {
     "id": "map",
-    "value": { "key": [] },
+    "value": { "key": "" },
     "children": [{ "id": "key", "type": "Text", "value": [], "label": "腾讯地图key" }],
     "type": "CodeData",
     "label": "地图配置"

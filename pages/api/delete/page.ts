@@ -8,12 +8,10 @@ const {
 
 export default async function (req, res) {
   const { app, page } = req.body.data;
-  const commend = `cd /D ${page.file} && uct remove ${page.name} page`;
+  const commend = `cd /D ${app.file} && uct remove ${page.name} page`;
   exec(commend, (err, stdout, stderr) => {
     if (err) {
-      console.log(stderr);
-    } else {
-      console.log(`${page.name}已删除`);
+      console.log(err);
     }
   });
   let i = 0;

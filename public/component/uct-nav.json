@@ -3,7 +3,7 @@
     "id": "height",
     "type": "Text",
     "label": "导航栏高度，单位px，非rpx",
-    "value": "30"
+    "value": ""
   },
   {
     "id": "titleWidth",
@@ -14,7 +14,7 @@
   {
     "id": "titleColor",
     "label": "标题的颜色",
-    "value": "#606266",
+    "value": "#5b5c5d",
     "type": "Color"
   },
   {

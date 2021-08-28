@@ -1,0 +1,25 @@
+{
+  "name": "uctoo-request",
+  "version": "0.0.8",
+  "description": "用于获取服务端数据的api客户端组件",
+  "main": "index.js",
+  "workspaces": [
+    "lib/*"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "uctoo",
+    "axios"
+  ],
+  "dependencies": {
+    "axios": "^0.21.1"
+  },
+  "author": "huoling",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/UCT/uctoo-api-client.git"
+  }
+}

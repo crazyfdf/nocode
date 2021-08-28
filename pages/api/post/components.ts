@@ -3,7 +3,7 @@ import glob from 'globby';
 import { typeAdapter } from '@/components/Renderer/FormRenderAdapter';
 
 const { postComponent, getComponent, getComponentAST } = require('@/request/api');
-const { removeComment } = require('@/uct-cli/lib/utils');
+const { removeComment } = require('@/packages/uct-cli/lib/utils');
 
 export default async (req, res) => {
   let { components } = req.body.data;

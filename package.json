@@ -4,6 +4,9 @@
   "private": true,
   "main": "index.js",
   "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "dev": "electron . | next dev",
     "serve": "next dev",

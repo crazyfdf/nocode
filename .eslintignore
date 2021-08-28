@@ -7,5 +7,5 @@
 /**/*.jsx
 /next-env.d.ts
 /generator-docs
-/uctoo-request
 /uni-components
+/packages

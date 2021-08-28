@@ -17,7 +17,9 @@ export default async (req, res) => {
     style = {
       navigationBarTitleText: page.title,
     },
-    config = JSON.parse(fs.readFileSync(`uct-cli/plop-templates/page/${page.type}.json`, 'utf-8')),
+    config = JSON.parse(
+      fs.readFileSync(`packages/uct-cli/plop-templates/page/${page.type}.json`, 'utf-8'),
+    ),
   } = data;
 
   const commend = `cd /D ${app.file} && uct-plop createPage ${page.name} ${page.type}`;

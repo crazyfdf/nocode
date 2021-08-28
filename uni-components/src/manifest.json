@@ -77,5 +77,6 @@
     "devServer": {
       "port": 3306
     }
-  }
+  },
+  "vueVersion": "2"
 }

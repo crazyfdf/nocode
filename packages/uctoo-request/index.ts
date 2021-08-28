@@ -1,14 +1,19 @@
-import axios, { AxiosRequestConfig, Canceler, CancelTokenStatic, AxiosInstance } from 'axios';
+import axios, {
+  AxiosRequestConfig,
+  AxiosResponse,
+  Canceler,
+  CancelTokenStatic,
+  AxiosInstance,
+} from 'axios';
 import { apiConfig, RequestConfig } from './env';
-import { AxiosResponse } from 'axios';
 
 // 防止重复提交，利用axios的cancelToken
 let pending: any[] = []; // 声明一个数组用于存储每个ajax请求的取消函数和ajax标识
-const CancelToken: CancelTokenStatic = axios.CancelToken;
+const { CancelToken } = axios;
 
 const removePending = (config: RequestConfig, c?: Canceler): void => {
   // 获取请求的url
-  const flagUrl = config.url;
+  const { url: flagUrl } = config;
   // 判断该请求是否需要返回最初请求
   if (config.pending && Object.keys(config.pending).indexOf(flagUrl!) !== -1) {
     config.pending![flagUrl!] = c;
@@ -83,11 +88,7 @@ const api = {
           removePending(response.config);
         }
         // 获取返回数据，并处理。按自己业务需求修改。下面只是个demo
-        if (response.status >= 200 && response.status < 400) {
-          return response.data;
-        } else {
-          return Promise.reject('error 状态码异常');
-        }
+        return response.data;
       },
       (error: any) => {
         // 异常处理
