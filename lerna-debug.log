@@ -1,0 +1,6 @@
+31 error Error: Command failed with exit code 128: git add -- packages/uct-request/package.json packages/uct-cli/package.json packages/uct-cli/package-lock.json lerna.json
+31 error fatal: Pathspec 'packages/uct-cli/package.json' is in submodule 'packages/uct-cli'
+31 error     at makeError (E:\nvm\v14.15.3\node_modules\lerna\node_modules\execa\lib\error.js:60:11)
+31 error     at handlePromise (E:\nvm\v14.15.3\node_modules\lerna\node_modules\execa\index.js:118:26)
+31 error     at processTicksAndRejections (internal/process/task_queues.js:93:5)
+31 error     at async Promise.all (index 0)
