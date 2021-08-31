@@ -1,10 +1,10 @@
-const { exec } = require('child_process');
+const { exec, execSync } = require('child_process');
 
 export default (req, res) => {
   const { data } = req.body;
   const { path, type } = data;
   const commend = `cd /D ${path} && uct run ${type}`;
-  exec('uct close 8080');
+  execSync('uct close 8080');
   exec(commend, (err, stdout, stderr) => {
     if (err) {
       console.log(stderr);

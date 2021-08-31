@@ -1,8 +1,9 @@
-import { execSync } from 'child_process';
+import { exec, execSync } from 'child_process';
 
 const { postApp, getApp, postUniAppsConfig } = require('@/CMSRequest/api');
 const { postPage } = require('@/request/api');
 const uctuiConfig = require('@/public/app/uniAppApp.json');
+const theme = require('@/public/app/theme.json');
 
 export default async (req, res) => {
   const { data } = req.body;
@@ -10,6 +11,9 @@ export default async (req, res) => {
     (arr, item) => Object.assign(arr, { [item.id]: item.value }),
     {},
   );
+
+  // 创建theme配置
+  data.theme = data.theme ? data.theme : theme;
   data._updateTime = new Date().getTime();
   data._createTime = new Date().getTime();
   const uctId = await postUniAppsConfig({
@@ -22,9 +26,10 @@ export default async (req, res) => {
 
   // TODO:设置默认创建路径(user表的默认创建地址)
   data.file = data.file ? data.file : 'D://';
+
   const commend = `cd /D ${data.file} && uct create ${data.name}`;
   execSync(commend);
-  execSync(`cd /D ${data.file}/${data.name} && npm i`);
+
   // 创建完项目后将地址改成项目目录
   data.file = `${data.file}/${data.name}`;
   data.status = 0;
@@ -50,6 +55,7 @@ export default async (req, res) => {
     });
   }
   const { data: app } = await getApp({ id: appId.id });
+  exec(`cd /D ${data.file}/${data.name} && npm i`);
 
   res.status(201).json(app);
 };

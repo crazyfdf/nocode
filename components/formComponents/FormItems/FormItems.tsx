@@ -77,7 +77,7 @@ function EditableFormItems(props: FormItemsProps) {
       {formList.map((item: baseFormUnion) => {
         let FormItem = BaseForm[item.type];
         return (
-          <div key={uuid(6, 10)}>
+          <div key={item.id}>
             <Tooltip title={item.id}>
               <label className='font-medium'>{item.label}</label>
             </Tooltip>

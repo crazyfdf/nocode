@@ -1,8 +1,10 @@
-const { exec } = require('child_process');
+const { exec, execSync } = require('child_process');
 const { deleteApp, deleteUniAppsConfig } = require('@/CMSRequest/api');
 
 export default async function (req, res) {
   const { data: app } = req.body;
+  execSync('uct close 8080');
+
   const commend = `cd /D ${app.file}&& cd ../ && uct remove ${app.name} app`;
   exec(commend, (err, stdout, stderr) => {
     if (err) {

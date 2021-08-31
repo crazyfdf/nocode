@@ -67,7 +67,7 @@
   },
   {
     "id": "uct-black",
-    "value": "#black",
+    "value": "#000",
     "type": "Color",
     "label": "主色-black"
   },

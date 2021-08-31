@@ -1,6 +1,6 @@
 import { useState } from 'react';
+import { Popover } from 'antd';
 import { SketchPicker, ColorResult } from 'react-color';
-import { rgba2Obj, colorRGBA2Hex } from '@/utils/tool';
 
 export type ColorConfigType = string;
 
@@ -14,12 +14,8 @@ function colorPicker(props: ColorProps) {
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
   const [color, setColor] = useState(props.value);
 
-  const handleClick = () => {
-    setDisplayColorPicker(!displayColorPicker);
-  };
-
-  const handleClose = () => {
-    setDisplayColorPicker(false);
+  const handleClick = visible => {
+    setDisplayColorPicker(visible);
   };
 
   const handleChange = (color: ColorResult) => {
@@ -28,7 +24,12 @@ function colorPicker(props: ColorProps) {
   };
 
   return (
-    <div>
+    <Popover
+      visible={displayColorPicker}
+      onVisibleChange={handleClick}
+      trigger='click'
+      content={<SketchPicker color={color} onChange={handleChange} />}
+    >
       <div
         style={{
           background: '#fff',
@@ -37,7 +38,6 @@ function colorPicker(props: ColorProps) {
           display: 'inline-block',
           cursor: 'pointer',
         }}
-        onClick={handleClick}
       >
         <div
           style={{
@@ -48,30 +48,7 @@ function colorPicker(props: ColorProps) {
           }}
         />
       </div>
-      {displayColorPicker ? (
-        <>
-          <div
-            style={{
-              position: 'absolute',
-              zIndex: 2000,
-            }}
-          >
-            <SketchPicker color={color} onChange={handleChange} />
-          </div>
-          <div
-            style={{
-              position: 'fixed',
-              top: '0px',
-              right: '0px',
-              bottom: '0px',
-              left: '0px',
-              zIndex: 1000,
-            }}
-            onClick={handleClose}
-          />
-        </>
-      ) : null}
-    </div>
+    </Popover>
   );
 }
 

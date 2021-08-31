@@ -12,6 +12,7 @@ export default async (req, res) => {
     flag: 'w+',
     encoding: 'utf-8',
   });
+
   const appsConfig = await patchUniAppsConfig(id, { uctuiConfig });
 
   res.status(201).json(appsConfig);

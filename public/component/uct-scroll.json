@@ -117,13 +117,13 @@
   {
     "id": "downOption",
     "label": "列表下拉配置",
-    "value": "{\r\n  auto: false, // 不自动加载\r\n}",
+    "value": "{\n  \"auto\": false,\n}",
     "type": "CodeData"
   },
   {
     "id": "upOption",
     "label": "列表上拉配置",
-    "value": "{\r\n  auto: false, // 不自动加载\r\n  empty: {\r\n    tip: \"~ 空空如也 ~\", // 提示\r\n  },\r\n}",
+    "value": "{\n  \"auto\": false,\n  \"empty\": {\n    \"tip\": \"~ 空空如也 ~\"\n  },\n}",
     "type": "CodeData"
   }
 ]

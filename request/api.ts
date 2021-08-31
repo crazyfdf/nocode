@@ -60,6 +60,9 @@ module.exports = {
   // 修改页面组件配置
   patchPageComponentConfig: data => api.patch('/patch/pageComponentConfig', { data }),
 
+  // 删除页面组件配置
+  deletePageComponentConfig: data => api.patch('/delete/pageComponentConfig', { data }),
+
   // 导入页面
   postPageInput: data => api.post('/post/pageInput', { data }),
 
@@ -74,6 +77,9 @@ module.exports = {
 
   // 修改app配置
   patchUniAppsConfig: data => api.patch('/patch/uniAppsConfig', { data }),
+
+  // 修改app theme配置
+  patchTheme: data => api.patch('/patch/theme', { data }),
 
   // 收藏app
   postCollectionApp: data => api.post('/post/collectionApp', { data }),

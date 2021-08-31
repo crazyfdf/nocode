@@ -89,6 +89,9 @@ module.exports = {
   // 修改app配置
   patchUniAppsConfig: (id, data) => api.patch(`/uniAppsConfig/${id}`, { data }),
 
+  // 修改app theme配置
+  patchTheme: (id, data) => api.patch(`/app/${id}`, { data }),
+
   // 删除app配置
   deleteUniAppsConfig: (id): Promise<CMSDeleteResult> => api.delete(`/uniAppsConfig/${id}`),
 
