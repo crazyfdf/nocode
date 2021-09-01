@@ -160,7 +160,7 @@ function UniAppComponentsModal(props, ref) {
             <Select placeholder='select your gender'>
               <Option value='male'>Male</Option>
               <Option value='female'>Female</Option>
-              <Option value='other'>Other</Option>
+              <Option value='default'>Other</Option>
             </Select>
           </Form.Item> */}
 

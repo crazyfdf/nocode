@@ -3,12 +3,6 @@ import api from '@/packages/uct-request';
 const request = api.create({
   baseURL: process.env.baasBaseURL,
 });
-// request.interceptors.request.use((config)=>{
-//   if (config.method==='post') {
-
-//   }
-//   return config
-// })
 
 export default (() => {
   if (request) {

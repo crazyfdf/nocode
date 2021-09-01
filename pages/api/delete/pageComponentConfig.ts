@@ -1,4 +1,4 @@
-const { patchPageComponentsConfig } = require('@/CMSRequest/api');
+const { patchPage } = require('@/CMSRequest/api');
 const fs = require('fs');
 
 export default async (req, res) => {
@@ -6,9 +6,9 @@ export default async (req, res) => {
 
   const _file = fs.existsSync(`${file}/src`) ? `${file}/src/${path}` : `${file}/${path}`;
   if (!Object.keys(config).length) {
-    await patchPageComponentsConfig(pageId, { $set: { config: {} } });
+    await patchPage(pageId, { $set: { pageComponents: {} } });
   } else {
-    await patchPageComponentsConfig(pageId, { config });
+    await patchPage(pageId, { pageComponents: config });
   }
   fs.writeFile(`${_file}.json`, JSON.stringify(config, null, 2), err => {
     err && console.log(err);
@@ -26,7 +26,7 @@ export default async (req, res) => {
     }
   }
   let c: any = reg2.exec(vue.substring(start));
-  let end = c && start + c.index + key.length + 2;
+  let end = c && start + c.index + key.length + 1;
   if (!c) {
     c = reg3.exec(vue.substring(start));
     end = start + c.index + 2;

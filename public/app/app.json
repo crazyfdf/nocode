@@ -40,7 +40,7 @@
       },
       {
         "title": "其他",
-        "value": "other",
+        "value": "default",
         "icon": "icon-biaoqiankuozhan_shoucang-203"
       }
     ],
@@ -77,7 +77,7 @@
       },
       {
         "title": "其他",
-        "value": "other",
+        "value": "default",
         "icon": "icon-biaoqiankuozhan_shoucang-203"
       }
     ],
@@ -128,7 +128,7 @@
       },
       {
         "title": "其他",
-        "value": "other",
+        "value": "default",
         "icon": "icon-biaoqiankuozhan_shoucang-203"
       }
     ],
@@ -180,7 +180,7 @@
       },
       {
         "title": "其他",
-        "value": "other",
+        "value": "default",
         "icon": "icon-biaoqiankuozhan_shoucang-203"
       }
     ],
@@ -213,7 +213,7 @@
       },
       {
         "title": "其他",
-        "value": "other",
+        "value": "default",
         "icon": "icon-biaoqiankuozhan_shoucang-203"
       }
     ],
@@ -260,7 +260,7 @@
       },
       {
         "title": "其他",
-        "value": "other",
+        "value": "default",
         "icon": "icon-biaoqiankuozhan_shoucang-203"
       }
     ],

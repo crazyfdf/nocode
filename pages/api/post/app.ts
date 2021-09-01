@@ -1,4 +1,4 @@
-import { exec, execSync } from 'child_process';
+import { execSync } from 'child_process';
 
 const { postApp, getApp, postUniAppsConfig } = require('@/CMSRequest/api');
 const { postPage } = require('@/request/api');
@@ -55,7 +55,6 @@ export default async (req, res) => {
     });
   }
   const { data: app } = await getApp({ id: appId.id });
-  exec(`cd /D ${data.file}/${data.name} && npm i`);
-
+  execSync(`cd /D ${data.file} && npm i`);
   res.status(201).json(app);
 };

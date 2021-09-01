@@ -3,6 +3,7 @@ import { useEffect, useReducer, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import Icon from '@/components/Icon/Icon';
 import ListBox from '@/components/ListBox/ListBox';
+import Component from '@/components/ListBox/Component';
 import TabsCard from '@/components/TabsCard/TabCard';
 import { isNoEmpty, debounce } from '@/utils/tool';
 import UniAppModal from '@/components/Modal/UniAppModal';
@@ -14,7 +15,7 @@ import Theme from '@/components/AppConfig/Theme';
 const moduleList = require('@/public/app/app.json');
 const {
   getApp,
-  getComponent,
+  getComponents,
   getTemplate,
   patchComponent,
   patchUniAppsConfig,
@@ -95,12 +96,6 @@ export default function noCodeApp({ uniInit, unisInit }) {
     uniDispatch({ payload: uniInit });
     unisDispatch({ payload: unisInit });
     setLoading(false);
-    if (isNoEmpty(uni.app)) {
-      postRun({ path: `${uni.app.file}`, type: 'h5' });
-      setTimeout(() => {
-        setSrc(`http://localhost:8080/${uni.page.path}`);
-      }, 10000);
-    }
   }, [uniInit]);
 
   // 切换左侧下标
@@ -125,8 +120,7 @@ export default function noCodeApp({ uniInit, unisInit }) {
         break;
       case 'page':
         const { data: page } = await postPage({ page: values, app: uni.app });
-        uni.app.pageId.unshift(page);
-        value = uni.app.pageId;
+        value = [page, ...unis.page];
         break;
       case 'app':
         const app = await postApp(values);
@@ -144,7 +138,11 @@ export default function noCodeApp({ uniInit, unisInit }) {
       case 'app':
         setLoading(true);
         router.replace(`?id=${item._id}`);
+        postRun({ path: `${uni.app.file}`, type: 'h5' });
         setSrc('');
+        setTimeout(() => {
+          setSrc(`http://localhost:8080/${uni.page.path}`);
+        }, 10000);
         break;
       case 'page':
         setSrc(`http://localhost:8080/${item.path}`);
@@ -162,7 +160,6 @@ export default function noCodeApp({ uniInit, unisInit }) {
         break;
       case 'page':
         await deletePage({ app: uni.app, page: item });
-        uni.app.pageId.splice(index, 1);
         break;
       case 'app':
         await deleteApp(item);
@@ -177,7 +174,6 @@ export default function noCodeApp({ uniInit, unisInit }) {
 
   // 修改配置
   const configSave = async (item: any, key?: string) => {
-    // setLoading(true);
     const data = ['component', 'components'].includes(currentLeft)
       ? item
       : { [item.id]: item.value };
@@ -207,13 +203,12 @@ export default function noCodeApp({ uniInit, unisInit }) {
           uni[currentLeft].pagesConfigId.style = style;
         }
         if (currentRight === 'page1') {
-          [uni[currentLeft].pageComponentsId.config[key!][Object.keys(data)[0]]] =
-            Object.values(data);
+          [uni[currentLeft].pageComponents[key!][Object.keys(data)[0]]] = Object.values(data);
           patchPageComponentConfig({
             file: uni.app.file,
             path: uni[currentLeft].path,
-            pageId: uni[currentLeft].pageComponentsId._id,
-            config: uni[currentLeft].pageComponentsId.config,
+            pageId: uni[currentLeft]._id,
+            config: uni[currentLeft].pageComponents,
           });
         }
         break;
@@ -235,20 +230,19 @@ export default function noCodeApp({ uniInit, unisInit }) {
         }
         break;
     }
-    setLoading(false);
   };
 
   // 删除配置
   const configRemove = async (data: any) => {
     console.log(data);
     setLoading(true);
-    Reflect.deleteProperty(uni[currentLeft].pageComponentsId.config, Object.keys(data)[0]);
+    Reflect.deleteProperty(uni[currentLeft].pageComponents, Object.keys(data)[0]);
     unis.page = unis.page.map(v => (v._id === uni.page._id ? uni.page : v));
     await deletePageComponentConfig({
       file: uni.app.file,
       path: uni[currentLeft].path,
-      pageId: uni[currentLeft].pageComponentsId._id,
-      config: uni[currentLeft].pageComponentsId.config,
+      pageId: uni[currentLeft]._id,
+      config: uni[currentLeft].pageComponents,
       key: `${Object.keys(data)[0]}`,
     });
 
@@ -304,7 +298,6 @@ export default function noCodeApp({ uniInit, unisInit }) {
           file: uni.app.file,
           path: uni.page.path,
           pageId: uni.page._id,
-          pageComponentsId: uni.page.pageComponentsId._id,
           name: item.name,
           title: item.title,
           config: item.config,
@@ -325,10 +318,10 @@ export default function noCodeApp({ uniInit, unisInit }) {
           description: item.description,
           type: item.type,
           style: item.pagesConfigId.style,
-          config: item.pageComponentsId.config,
+          config: item.pageComponents,
         };
         const { data: page } = await postPage({ page: _page, app: uni.app });
-        unisDispatch({ type: 'edit', payload: { key: 'page', value: [page, ...uni.app.pageId] } });
+        unisDispatch({ type: 'edit', payload: { key: 'page', value: [page, ...unis.page] } });
         break;
       case 'apps':
         const app = await postApp({
@@ -361,16 +354,28 @@ export default function noCodeApp({ uniInit, unisInit }) {
                 </div>
               }
             >
-              <ListBox
-                isTemplate={item.id.endsWith('s')}
-                dataSource={unis[item.id]}
-                collection={collection}
-                changeCurrent={changeCurrent}
-                defaultItem={uni[item.id]}
-                config={item}
-                remove={remove}
-                input={input}
-              />
+              {item.id !== 'component' ? (
+                <ListBox
+                  isTemplate={['components', 'pages', 'apps'].includes(item.id)}
+                  dataSource={unis[item.id]}
+                  collection={collection}
+                  changeCurrent={changeCurrent}
+                  defaultItem={uni[item.id]}
+                  config={item}
+                  remove={remove}
+                  input={input}
+                />
+              ) : (
+                <Component
+                  uni={uni}
+                  unis={unis}
+                  remove={remove}
+                  configRemove={configRemove}
+                  changeCurrent={changeCurrent}
+                  config={item}
+                  collection={collection}
+                />
+              )}
             </TabPane>
           ))}
         </TabsCard>
@@ -418,30 +423,30 @@ export default function noCodeApp({ uniInit, unisInit }) {
               ),
           )}
         </div>
-        <UniAppModal
-          ref={uniModal}
-          add={add}
-          config={moduleList.find(item => item.id === currentLeft)}
-        />
       </div>
+      <UniAppModal
+        ref={uniModal}
+        add={add}
+        config={moduleList.find(item => item.id === currentLeft)}
+      />
     </Spin>
   );
 }
 
 export async function getServerSideProps(context) {
-  const { data: components } = await getComponent();
+  const { data: components } = await getComponents();
   const { data: apps } = await getApp({});
   const { data: templates } = await getTemplate({});
   const app = context.query.id
     ? (await getApp({ id: context.query.id })).data ?? {}
     : apps[0] ?? {};
   const uniInit = {
-    component: isNoEmpty(components) ? components[0] : {},
-    page: isNoEmpty(app && app.pageId) ? app.pageId[0] : {},
+    component: {},
+    page: {},
     app: app,
-    components: isNoEmpty(templates[0]) ? templates[0][0] : {},
-    pages: isNoEmpty(templates[1]) ? templates[1][0] : {},
-    apps: isNoEmpty(templates[2]) ? templates[2][0] : {},
+    components: {},
+    pages: {},
+    apps: {},
   };
   const unisInit = {
     component: components,

@@ -39,7 +39,7 @@ function ListBox(props: PropsInterFace) {
   const {
     dataSource: dataInit = [],
     changeCurrent,
-    defaultItem = dataInit[0],
+    defaultItem,
     config,
     isTemplate = false,
     input,
@@ -48,8 +48,9 @@ function ListBox(props: PropsInterFace) {
   } = props;
   const [current, setCurrent] = useState(defaultItem);
   const [dataSource, setDataSource] = useStateValue(dataInit);
-  const [oldData, setOldData] = useState(dataInit);
-
+  const [type, setType] = useState(''); // 筛选类型
+  const [value, setValue] = useState(''); // 搜索值
+  const [pageSize, setPageSize] = useState(20);
   // 添加
   const onInput = (item, e) => {
     e.stopPropagation();
@@ -70,16 +71,36 @@ function ListBox(props: PropsInterFace) {
 
   // 切换类型
   const filterData = type => {
-    const _dataSource = type ? dataInit.filter(item => item.type === type) : dataInit;
-    setDataSource(_dataSource);
-    setOldData(_dataSource);
+    setType(type);
   };
+  // 搜索
+  const onSearch = value => {
+    setValue(value);
+  };
+  // 筛选列表
+  useEffect(() => {
+    const _dataSource = dataInit.filter(item => {
+      if (type && value) {
+        return item.type === type && item.title.indexOf(value) !== -1;
+      }
+      if (type) {
+        return item.type === type;
+      }
+      if (value) {
+        return item.title.indexOf(value) !== -1;
+      }
+      return item;
+    });
+    setDataSource(_dataSource);
+  }, [type, value]);
 
   // 切换当前
   const _changeCurrent = item => {
     setCurrent(item);
     changeCurrent && changeCurrent(item);
   };
+
+  // 给类型添加icon
   const typeIcon = type => {
     let res = 'icon-biaoqiankuozhan_shoucang-203';
     for (let i = 0; i < config.type.length; i++) {
@@ -90,18 +111,19 @@ function ListBox(props: PropsInterFace) {
     }
     return res;
   };
-  const onSearch = value => {
-    const _dataSource = value
-      ? dataSource.filter(item => item.title.indexOf(value) !== -1)
-      : oldData;
-    setDataSource(_dataSource);
+
+  const onShowSizeChange = (page, pageSize) => {
+    setPageSize(pageSize);
   };
+
   return (
     <List
       grid={{ gutter: 10, column: 1 }}
       dataSource={dataSource}
       pagination={{
-        pageSize: 5,
+        onShowSizeChange: onShowSizeChange,
+        pageSize,
+        size: 'small',
       }}
       header={
         <div className='flex justify-between'>
@@ -122,7 +144,7 @@ function ListBox(props: PropsInterFace) {
       }
       renderItem={(item, index) => (
         <List.Item
-          key={item.name}
+          key={item._id}
           onClick={() => _changeCurrent(item)}
           className='rounded'
           style={

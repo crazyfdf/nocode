@@ -6,9 +6,14 @@ const { Panel } = Collapse;
 
 export default function Page(props) {
   const { uni, configRemove, unis, configSave } = props;
+  let components: any[] = [];
+  unis.component?.forEach(item => {
+    components = components.concat(item.componentId);
+  });
+
   return (
     <Collapse accordion>
-      {Object.entries(uni.page.pageComponentsId.config).map(([key, value]) => (
+      {Object.entries(uni.page.pageComponents).map(([key, value]) => (
         <Panel
           header={key}
           key={key}
@@ -23,7 +28,7 @@ export default function Page(props) {
           }
         >
           <FormItems
-            formList={unis.component.find(item => item.name === key.replace(/\d+/gi, ''))?.config}
+            formList={components.find(v => v.name === key.replace(/\d+/gi, ''))?.config}
             defaultData={value}
             onChange={data => configSave(data, key)}
           />

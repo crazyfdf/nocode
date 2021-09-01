@@ -75,6 +75,9 @@ const EditorModal = (props, ref) => {
             >
               <Input />
             </Form.Item>
+            <Form.Item label='字段名说明' name='label' tooltip='label'>
+              <Input />
+            </Form.Item>
             <Form.Item label='类型' name='type'>
               <Select onChange={onChange}>
                 {formTpl.map(item1 => (
@@ -84,11 +87,6 @@ const EditorModal = (props, ref) => {
                 ))}
               </Select>
             </Form.Item>
-            {item.label && (
-              <Form.Item label='字段名说明' name='label' tooltip='label'>
-                <Input />
-              </Form.Item>
-            )}
             {['Text', 'Textarea'].includes(item.type) && (
               <Form.Item label='字段默认值' name='value' tooltip='value'>
                 <Input />

@@ -1,11 +1,7 @@
 import api from '@/request/index';
-import { ComponentDoc } from '@/types/component';
 import { CMSPostResult } from '@/types/cmsType';
 
 module.exports = {
-  // 获取组件ast文档信息
-  getComponentAST: data => api.get<ComponentDoc>('/get/componentAST', { data }),
-
   // 新建组件库文档
   postComponentDocs: data => api.post('/post/componentDocs', { data }),
 
@@ -14,6 +10,15 @@ module.exports = {
 
   // 添加组件库
   postComponents: data => api.post('/post/components', { data }),
+
+  // 获取组件库
+  getComponents: data => api.get('/get/components', { data }),
+
+  // 修改组件库
+  patchComponents: data => api.patch('/patch/components', { data }),
+
+  // 删除组件库
+  deleteComponents: data => api.post('/delete/components', { data }),
 
   // 新建组件
   postComponent: data => api.post('/post/component', { data }),

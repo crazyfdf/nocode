@@ -1,14 +1,14 @@
 const { postComponent } = require('@/CMSRequest/api');
-const fs = require('fs');
+// const fs = require('fs');
 
 export default async (req, res) => {
   let { data } = req.body;
 
   // 1 创建配置文件
-  const cwd = `public/component/${data.title}.json`;
-  fs.writeFile(cwd, JSON.stringify(data.config, null, 2), err => {
-    err && console.log(err);
-  });
+  // const commend = `public/component/${data.title}.json`;
+  // fs.writeFile(commend, JSON.stringify(data.config, null, 2), err => {
+  //   err && console.log(err);
+  // });
   data._updateTime = new Date().getTime();
   data._createTime = new Date().getTime();
   data.status = 0;

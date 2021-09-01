@@ -79,7 +79,7 @@ function EditableFormItems(props: FormItemsProps) {
         return (
           <div key={item.id}>
             <Tooltip title={item.id}>
-              <label className='font-medium'>{item.label}</label>
+              <label className='font-medium'>{item.label || item.id}</label>
             </Tooltip>
             <div className='flex justify-between items-center mt-2 mb-4'>
               {edit && <MinusCircleFilled onClick={() => handleDelItem(item)} />}

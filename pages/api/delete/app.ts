@@ -1,4 +1,4 @@
-const { exec, execSync } = require('child_process');
+const { execSync } = require('child_process');
 const { deleteApp, deleteUniAppsConfig } = require('@/CMSRequest/api');
 
 export default async function (req, res) {
@@ -6,13 +6,7 @@ export default async function (req, res) {
   execSync('uct close 8080');
 
   const commend = `cd /D ${app.file}&& cd ../ && uct remove ${app.name} app`;
-  exec(commend, (err, stdout, stderr) => {
-    if (err) {
-      console.log(stderr);
-    } else {
-      console.log(`${app.name}已删除`);
-    }
-  });
+  execSync(commend);
 
   const response = (
     await Promise.all([deleteApp(app._id), deleteUniAppsConfig(app.uctuiConfigId._id)])

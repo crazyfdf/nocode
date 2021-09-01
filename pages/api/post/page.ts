@@ -1,12 +1,6 @@
 import { exec } from 'child_process';
 
-const {
-  postPage,
-  postPagesConfig,
-  patchApp,
-  postPageComponentsConfig,
-  getPage,
-} = require('@/CMSRequest/api');
+const { postPage, postPagesConfig, patchApp, getPage } = require('@/CMSRequest/api');
 const fs = require('fs');
 
 export default async (req, res) => {
@@ -40,16 +34,11 @@ export default async (req, res) => {
     _createTime: page._createTime,
   });
 
-  const pageComponent = await postPageComponentsConfig({
-    config,
-    _updateTime: page._updateTime,
-    _createTime: page._createTime,
-  });
   const pageRes = await postPage({
     ...page,
     pagesConfigId: pageConfig.id,
     status: 0,
-    pageComponentsId: pageComponent.id,
+    pageComponents: config,
   });
 
   const pageId = app.pageId ? [pageRes.id, ...app.pageId.map(item => item._id)] : [pageRes.id];

@@ -26,6 +26,24 @@ module.exports = {
   // 取消收藏组件
   deleteCollectionComponent: id => api.patch(`/component/${id}`, { data: { status: 0 } }),
 
+  // 新建组件库
+  postComponents: (data): Promise<CMSPostResult> => api.post('/components', { data }),
+
+  // 获取组件库
+  getComponents: data => {
+    if (data.id) {
+      return api.get(`/components/${data.id}`);
+    } else {
+      return api.get('/components', { data });
+    }
+  },
+
+  // 修改组件库
+  patchComponents: (id, data) => api.patch(`/components/${id}`, { data }),
+
+  // 删除组件库
+  deleteComponents: (id): Promise<CMSDeleteResult> => api.delete(`/components/${id}`),
+
   // 新建页面
   postPage: (data): Promise<CMSPostResult> => api.post('/page', { data }),
 
@@ -37,6 +55,8 @@ module.exports = {
       return api.get('/page', { data });
     }
   },
+  // 修改页面
+  patchPage: (id, data) => api.patch(`/page/${id}`, { data }),
 
   // 删除页面
   deletePage: (id): Promise<CMSDeleteResult> => api.delete(`/page/${id}`),
@@ -49,15 +69,6 @@ module.exports = {
 
   // 删除页面配置
   deletePagesConfig: (id): Promise<CMSDeleteResult> => api.delete(`/pagesConfig/${id}`),
-
-  // 新建页面组件配置
-  postPageComponentsConfig: data => api.post('/pageComponentsConfig', { data }),
-
-  // 修改页面组件配置
-  patchPageComponentsConfig: (id, data) => api.patch(`/pageComponentsConfig/${id}`, { data }),
-
-  // 删除页面组件配置
-  deletePageComponentsConfig: id => api.delete(`/pageComponentsConfig/${id}`),
 
   // 收藏页面
   postCollectionPage: id => api.patch(`/page/${id}`, { data: { status: 1 } }),
