@@ -1,7 +1,12 @@
 const path = require('path');
 // const glob=require('glob')
 // const PurifyCssPlugin =require('purifycss-webpack')
-module.exports = {
+
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+
+module.exports = withBundleAnalyzer({
   reactStrictMode: false,
   env: {
     dirname: path.resolve(),
@@ -26,15 +31,15 @@ module.exports = {
     //     },
     //   });
     // }
-    // config.plugins=[
-    //   new PurifyCssPlugin ({
-    //     paths: glob.sync(path.join(__dirname,'src/**/*.html'))
-    //   })
-    // ]
+    // config.plugins = [
+    // new PurifyCssPlugin ({
+    //   paths: glob.sync(path.join(__dirname,'src/**/*.html'))
+    // })
+    // ];
     config.resolve.alias = {
       ...config.resolve.alias,
       '@': path.resolve(__dirname),
     };
     return config;
   },
-};
+});
