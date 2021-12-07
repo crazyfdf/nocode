@@ -101,14 +101,15 @@
   "husky": {
     "hooks": {
       "commit-msg": "commitlint --config .commitlintrc.js -E HUSKY_GIT_PARAMS",
-      "pre-commit": "lint-staged && yarn tsc && git add ."
+      "pre-commit": "lint-staged && yarn tsc"
     }
   },
   "lint-staged": {
     "*.{tsx,ts}": [
       "stylelint",
       "prettier --write",
-      "eslint --fix"
+      "eslint --fix",
+      "git add ."
     ],
     "*.{css,less,scss}": [
       "stylelint",

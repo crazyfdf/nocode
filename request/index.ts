@@ -7,7 +7,6 @@ const request = api.create({
 export default (() => {
   if (request) {
     return request;
-  } else {
-    throw new Error('请先创建request实例');
   }
+  throw new Error('请先创建request实例');
 })();
